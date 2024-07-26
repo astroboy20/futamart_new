@@ -4,7 +4,7 @@ import {
   Logo_Black_Small,
   PhoneIcon,
   WhatsappIcon,
-} from "@/app/assets";
+} from "@/assets";
 import React from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";

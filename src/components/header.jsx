@@ -10,7 +10,7 @@ import {
   Logo_X,
   SearchIcon,
   SmallLogo,
-} from "@/app/assets";
+} from "@/assets";
 import { Input } from "./ui/input";
 
 const Header = () => {
