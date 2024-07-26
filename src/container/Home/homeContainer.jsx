@@ -9,8 +9,8 @@ const HomeContainer = () => {
   return (
     <>
       <Categories />
+      <PopularBrand />
       <div className="px-[6%]">
-        <PopularBrand />
         <BestProducts />
         <ExploreProducts />
       </div>
