@@ -3,7 +3,7 @@ import { Categories } from "../../components/categories";
 import { BestProducts } from "./products/BestProducts";
 import { ExploreProducts } from "./products/ExploreProducts";
 import { PopularBrand } from "./popularBrand";
-import { Promotion } from "@/components/Promotion";
+import { Promotion } from "@/components/promotion";
 
 const HomeContainer = () => {
   return (
