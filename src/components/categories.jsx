@@ -2,8 +2,8 @@ import { categories } from "@/providers/data";
 
 const Categories = () => {
   return (
-    <div className="pl-[6%] sm:w-[100%]">
-      <ul className="flex gap-[20px] sm:px-0 no-scrollbar overflow-x-scroll">
+    <div className="pl-[6%] sm:w-[100%] w-full">
+      <ul className="flex gap-[30px] sm:px-0 no-scrollbar overflow-x-scroll">
         {categories.map((category, index) => {
           return (
             <li

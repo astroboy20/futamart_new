@@ -1,9 +1,9 @@
 "use client"
-// import { Fav, Next_Icon } from "@/assets";
-// import Rating from "@/components/Rating";
 import Link from "next/link";
-// import AddToCart from "@/components/AddToCart";
 import { BASE_URL, useFetchItems } from "@/hooks/useFetchItems";
+import { StarRating } from "@/components/rating";
+import { AddToCart } from "@/components/addToCart";
+import { Fav, Next_Icon } from "@/assets";
 
 const ExploreProducts = () => {
   const {
@@ -28,7 +28,7 @@ const ExploreProducts = () => {
         </h1>
         <p className="flex items-center gap-3 text-[10px] lg:text-[20px]">
           View all
-          {/* <Next_Icon /> */}
+          <Next_Icon />
         </p>
       </div>
 
@@ -52,22 +52,22 @@ const ExploreProducts = () => {
                     {singleProduct.title}
                   </p>
                 </Link>
-                {/* <Fav /> */}
+                <Fav />
               </div>
               <p className="text-[#888282] text-[8px] leading-[9.75px] w-[70px] h-[10px] sm:w-[105px] sm:h-[20px] sm:text-[16px] sm:leading-[19.5px] truncate">
                 &#8358;{singleProduct.price}
               </p>
-              {/* <Rating
+              <StarRating
                 rating={singleProduct.rating.rate}
                 width={10}
                 height={10}
-              /> */}
-              {/* <AddToCart
+              />
+              <AddToCart
                 id={singleProduct.id}
                 className="bg-black w-[64px] h-[20px] text-[8px] leading-[9.75px] sm:w-[132px] sm:h-[36px] sm:text-[14px] sm:leading-[17.07px] text-white rounded-sm border-none"
               >
                 Add to cart
-              </AddToCart> */}
+              </AddToCart>
             </div>
           </div>
         ))}

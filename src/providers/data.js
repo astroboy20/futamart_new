@@ -3,13 +3,13 @@ export const categories = [
   "food",
   "Electronics & gadgets",
   "Fashion & clothing",
-  "Fashion & clothing",
-  "Fashion & clothing",
-  "Fashion & clothing",
-  "Fashion & clothing",
-  "Fashion & clothing",
-  "Fashion & clothing",
-  "Fashion & clothing",
+  "Beauty & Skincare",
+  "Hair products",
+  "Footwears",
+  // "Fashion & clothing",
+  // "Fashion & clothing",
+  // "Fashion & clothing",
+  // "Fashion & clothing",
 ];
 
 export const promotionData = {
