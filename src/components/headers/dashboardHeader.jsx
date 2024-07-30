@@ -14,7 +14,7 @@ import { IoMdNotifications } from "react-icons/io";
 import { RiLogoutCircleLine } from "react-icons/ri";
 import { IoChatbubbles } from "react-icons/io5";
 import { IoSettingsSharp } from "react-icons/io5";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 
 const DashboardHeader = () => {
   const pathname = usePathname();
@@ -34,7 +34,6 @@ const DashboardHeader = () => {
           <Logo_Right />
         </header>
       ) : (
-        <AnimatePresence>
           <motion.main
             className="lg:hidden bg-black fixed top-0 w-4/5 left-0 h-[100vh] z-50 flex flex-col gap-5 py-8 px-5"
             initial={{ x: "-100vw" }}
@@ -126,7 +125,6 @@ const DashboardHeader = () => {
               Logout
             </Link>
           </motion.main>
-        </AnimatePresence>
       )}
     </>
   );
