@@ -11,7 +11,7 @@ import {
   SearchIcon,
   SmallLogo,
 } from "@/assets";
-import { Input } from "./ui/input";
+import { Input } from "../ui/input";
 
 const Header = () => {
   return (

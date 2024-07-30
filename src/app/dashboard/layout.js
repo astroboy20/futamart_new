@@ -22,9 +22,9 @@ import React from "react";
 export default function RootLayout({ children }) {
   return (
     <>
-      <main className="flex  bg-black p-5 w-full h-[100vh] overflow-hidden">
+      <main className="flex lg:bg-black lg:p-5 w-full h-[100vh] overflow-hidden">
         <DashboardSidebar />
-        <main className="w-[100%] bg-[#F2F3F4] rounded-[16px] px-10 py-10">{children}</main>
+        <main className="p-5 w-[100%] bg-[#F2F3F4] rounded-[16px] lg:px-10 lg:py-10 overflow-y-scroll no-scrollbar">{children}</main>
       </main>
     </>
   );

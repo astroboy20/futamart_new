@@ -17,7 +17,7 @@ import React from "react";
 const DashboardSidebar = ({ children }) => {
   const pathname = usePathname();
   return (
-    <div className="w-[40%] h-[100vh] pr-5 flex flex-col gap-10 overflow-hidden">
+    <div className="hidden lg:w-[40%] h-[100vh] pr-5 lg:flex flex-col gap-10 overflow-hidden ">
       <Logo_White />
       <div className="flex flex-col gap-7 text-[#F2F3F4] text-[20px]">
         <Link
