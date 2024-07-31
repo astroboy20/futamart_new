@@ -1,6 +1,7 @@
 import { ReactQueryClientProvider } from "@/providers/providers";
 import "./globals.css";
 import { Inter, Montserrat } from "next/font/google";
+import { AuthProvider } from "@/context/AuthContext";
 
 const inter = Inter({ subsets: ["latin"] });
 const montserrat = Montserrat({
@@ -18,10 +19,12 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <ReactQueryClientProvider>
-      <html lang="en">
-        <body className={montserrat.variable}>{children}</body>
-      </html>
-    </ReactQueryClientProvider>
+    <AuthProvider>
+      <ReactQueryClientProvider>
+        <html lang="en">
+          <body className={montserrat.variable}>{children}</body>
+        </html>
+      </ReactQueryClientProvider>
+    </AuthProvider>
   );
 }

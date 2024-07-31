@@ -5,11 +5,11 @@ const Modal = ({ isOpen, message }) => {
   if (!isOpen) return null;
   return (
     <Alert variant="destructive">
-      <ExclamationTriangleIcon className="h-4 w-4" />
+      {/* <ExclamationTriangleIcon className="h-4 w-4" /> */}
       <AlertTitle>Error</AlertTitle>
       <AlertDescription>{message}</AlertDescription>
     </Alert>
   );
 };
 
-export  {Modal};
+export { Modal };

@@ -21,6 +21,7 @@ const AddToCart = ({ id, quantity, className, children }) => {
         method: "POST",
         headers: {
           Authorization: `Token ${token}`,
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(cartData),
       }
@@ -47,4 +48,4 @@ const AddToCart = ({ id, quantity, className, children }) => {
     </button>
   );
 };
-export  {AddToCart};
+export { AddToCart };

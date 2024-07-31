@@ -1,11 +1,9 @@
-
-
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
-export const BASE_URL = "https://fakestoreapi.com/products";
+export const BASE_URL = `${process.env.NEXT_PUBLIC_API_URL}`;
 
-export const useFetchItems = ({url}) => {
+export const useFetchItems = ({ url }) => {
   return useQuery({
     queryKey: [url],
     queryFn: async () => {
@@ -23,5 +21,3 @@ export const useFetchItems = ({url}) => {
     },
   });
 };
-
-

@@ -24,7 +24,7 @@ const Register = () => {
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
-  // const { login } = useAuth();
+  const { login } = useAuth();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -46,13 +46,12 @@ const Register = () => {
         }
       );
       const result = await response.json();
-      // console.log(result.data.message);
       if (!response.ok) {
         return setError(result.message), setLoading(false);
       }
       setLoading(false);
       setError(null);
-      // login(result.data);
+      login(result.data);
     } catch (error) {
       console.log(error);
       setLoading(false);

@@ -6,14 +6,14 @@ import { FormWithPhone } from "./form/FormWithPhone";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
-import { useAuth } from "@/context/AuthContext";
 import { Modal } from "@/components/modal";
+import { useAuth } from "@/context/AuthContext";
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [options, setOptions] = useState("email");
-  // const {login} = useAuth()
+  const { login } = useAuth();
   const handleOptions = (option) => {
     setOptions(option);
   };
@@ -47,7 +47,7 @@ const Login = () => {
       }
       setLoading(false);
       setError(null);
-      // login(result.data.token);
+      login(result.data.token);
     } catch (error) {
       console.log(error);
       setLoading(false);
