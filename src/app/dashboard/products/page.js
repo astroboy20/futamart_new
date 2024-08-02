@@ -1,3 +1,4 @@
+"use client"
 import { DashboardHeader } from "@/components/headers/dashboardHeader";
 import { Products } from "@/container/dashboard/products";
 

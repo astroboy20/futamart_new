@@ -1,4 +1,4 @@
-import DashboardLayout from "@/components/dashboardSidebar";
+"use client"
 import { DashboardHeader } from "@/components/headers/dashboardHeader";
 import { Home } from "@/container/dashboard/home";
 

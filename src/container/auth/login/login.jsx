@@ -5,7 +5,6 @@ import { FormWithEmail } from "./form/FormWithEmail";
 import { FormWithPhone } from "./form/FormWithPhone";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-
 import { Modal } from "@/components/modal";
 import { useAuth } from "@/context/AuthContext";
 
@@ -14,6 +13,7 @@ const Login = () => {
   const [error, setError] = useState(null);
   const [options, setOptions] = useState("email");
   const { login } = useAuth();
+
   const handleOptions = (option) => {
     setOptions(option);
   };
@@ -27,6 +27,7 @@ const Login = () => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
