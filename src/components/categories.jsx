@@ -1,23 +1,25 @@
 "use client";
+import { BASE_URL, useFetchItems } from "@/hooks/useFetchItems";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
 const Categories = () => {
-  const [categories, setCategories] = useState([]);
   const pathname = usePathname();
-  useEffect(() => {
-    const getCategories = async () => {
-      const categoriesData = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/categories`
-      );
-      const apiCategories = await categoriesData.json();
-      setCategories([
-        { _id: 1, name: "All category", slug: "" },
-        ...apiCategories.data,
-      ]);
-    };
-    getCategories();
-  }, []);
+  const {
+    data: allCategories,
+    isLoading,
+    error,
+  } = useFetchItems({ url: `${BASE_URL}/categories` });
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
+  const categories = [
+    { _id: 1, name: "All category", slug: "" },
+    ...allCategories.data,
+  ];
   return (
     <div className="sm:w-[100%] w-full">
       <ul className="flex gap-[30px] sm:px-0 no-scrollbar overflow-x-scroll">
