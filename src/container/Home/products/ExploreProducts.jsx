@@ -23,7 +23,7 @@ const ExploreProducts = () => {
   return (
     <div className="flex flex-col gap-10 pb-10">
       <div className="flex justify-between items-center">
-        <h1 className="text-[24px] lg:text-[35px] font-[600]">
+        <h1 className="text-[20px] lg:text-[35px] font-[600]">
           Explore Products
         </h1>
         <p className="flex items-center gap-3 text-[10px] lg:text-[20px]">

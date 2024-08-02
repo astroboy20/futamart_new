@@ -2,7 +2,6 @@ import { ReactQueryClientProvider } from "@/providers/providers";
 import "./globals.css";
 import { Inter, Montserrat } from "next/font/google";
 import { AuthProvider } from "@/context/AuthContext";
-import { Suspense } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 const montserrat = Montserrat({
@@ -10,7 +9,7 @@ const montserrat = Montserrat({
   style: ["normal", "italic"],
   subsets: ["latin"],
   display: "swap",
-  variable: '--font-montserrat',
+  variable: "--font-montserrat",
 });
 
 export const metadata = {
@@ -23,7 +22,9 @@ export default function RootLayout({ children }) {
     <AuthProvider>
       <ReactQueryClientProvider>
         <html lang="en">
-          <body className={montserrat.variable}>{children}</body>
+          <body className={montserrat.variable}>
+            {children}
+          </body>
         </html>
       </ReactQueryClientProvider>
     </AuthProvider>

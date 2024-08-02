@@ -197,7 +197,6 @@ const Register = () => {
             </div>
           )}
           <Button
-            isDisabled={loading}
             className="bg-[#1A1A1A] w-full rounded-[16px] text-[16px] text-[#fff] my-5 font-[700] py-[25px]"
             type="submit"
           >

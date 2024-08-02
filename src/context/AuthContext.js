@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { createContext, useContext, useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
@@ -6,12 +6,16 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
     const router = useRouter()
-    const [redirect, setRedirect] = useState(null);
     const [user, setUser] = useState(null);
+    const [redirect, setRedirect] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+
     useEffect(() => {
         const token = Cookies.get('token');
         if (token) {
             fetchUser(token);
+        } else {
+            setIsLoading(false);
         }
 
         const searchParams = new URLSearchParams(window.location.search);
@@ -19,13 +23,19 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     const fetchUser = async (token) => {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
-        const data = await response.json();
-        setUser(data);
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            const data = await response.json();
+            setUser(data);
+        } catch (error) {
+            console.error('Failed to fetch user:', error);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const login = async (jwt) => {
@@ -39,6 +49,10 @@ export const AuthProvider = ({ children }) => {
         setUser(null);
         router.push('/login');
     };
+
+    if (isLoading) {
+        return <div>Loading...</div>;
+    }
 
     return (
         <AuthContext.Provider value={{ user, login, logout }}>
