@@ -10,7 +10,7 @@ const montserrat = Montserrat({
   style: ["normal", "italic"],
   subsets: ["latin"],
   display: "swap",
-  variable: '--font-montserrat',
+  variable: "--font-montserrat",
 });
 
 export const metadata = {
@@ -20,14 +20,16 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <Suspense fallback={<div>loading...</div>}>
-      <AuthProvider>
-        <ReactQueryClientProvider>
-          <html lang="en">
-            <body className={montserrat.variable}>{children}</body>
-          </html>
-        </ReactQueryClientProvider>
-      </AuthProvider>
-    </Suspense>
+    <html lang="en">
+      <body className={montserrat.variable}>
+        <AuthProvider>
+          <ReactQueryClientProvider>
+            <Suspense fallback={<div>loading...</div>}>
+              {children}
+            </Suspense>
+          </ReactQueryClientProvider>
+        </AuthProvider>
+      </body>
+    </html>
   );
 }
