@@ -24,9 +24,9 @@ export default function RootLayout({ children }) {
       <body className={montserrat.variable}>
         <AuthProvider>
           <ReactQueryClientProvider>
-            <Suspense fallback={<div>loading...</div>}>
+            {/* <Suspense fallback={<div>loading...</div>}> */}
               {children}
-            </Suspense>
+            {/* </Suspense> */}
           </ReactQueryClientProvider>
         </AuthProvider>
       </body>
