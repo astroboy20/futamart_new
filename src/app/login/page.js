@@ -4,11 +4,8 @@ import { Suspense } from "react";
 
 export default function Page() {
   return (
-    <Suspense>
-      {" "}
-      <AuthLayout>
-        <Login />
-      </AuthLayout>
-    </Suspense>
+    <AuthLayout>
+      <Login />
+    </AuthLayout>
   );
 }

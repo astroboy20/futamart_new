@@ -5,11 +5,9 @@ import { Suspense } from "react";
 export default function Page() {
   return (
     <main>
-      <Suspense fallback={<div>Loading</div>}>
-        <AuthLayout>
-          <Register />
-        </AuthLayout>
-      </Suspense>
+      <AuthLayout>
+        <Register />
+      </AuthLayout>
     </main>
   );
 }

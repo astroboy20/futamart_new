@@ -19,14 +19,14 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <AuthProvider>
-      <ReactQueryClientProvider>
-        <html lang="en">
-          <body className={montserrat.variable}>
+    <html lang="en">
+      <body className={montserrat.variable}>
+        <AuthProvider>
+          <ReactQueryClientProvider>
             {children}
-          </body>
-        </html>
-      </ReactQueryClientProvider>
-    </AuthProvider>
+          </ReactQueryClientProvider>
+        </AuthProvider>
+      </body>
+    </html>
   );
 }
