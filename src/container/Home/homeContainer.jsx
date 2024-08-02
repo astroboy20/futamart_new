@@ -8,9 +8,9 @@ import { Promotion } from "@/components/promotion";
 const HomeContainer = () => {
   return (
     <>
-      <Categories />
-      <PopularBrand />
       <div className="px-[6%]">
+        <Categories />
+        <PopularBrand />
         <BestProducts />
         <ExploreProducts />
       </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { Footer } from "@/components/footer";
+import { Header } from "@/components/headers/header";
 import { Promotion } from "@/components/promotion";
 import { OtherProducts } from "@/container/singleProduct/otherProducts";
 import { SingleProduct } from "@/container/singleProduct/singleProduct";
@@ -22,6 +23,7 @@ const Page = ({ params }) => {
 
   return (
     <main>
+      <Header />
       <SingleProduct getSingleProduct={getSingleProduct} />
       <OtherProducts
         relatedProducts={getSingleProduct?.data?.relatedProducts}

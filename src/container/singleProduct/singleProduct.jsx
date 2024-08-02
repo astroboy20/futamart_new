@@ -32,7 +32,7 @@ const SingleProduct = ({ getSingleProduct }) => {
               {getSingleProduct?.data?.business?.businessName}
             </p>
           </div>
-          <Link href={`seller/${getSingleProduct?.data?.business?.slug}`}>
+          <Link href={`/seller/${getSingleProduct?.data?.business?.slug}`}>
             <span
               className="underline text-[10px] leading-[12.19px] font-medium sm:text-[12px] lg:leading-[14.63px]"
               href=""

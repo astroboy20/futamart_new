@@ -8,7 +8,7 @@ const AddToCart = ({ id, quantity, className, children }) => {
   const [isLoading, setIsLoading] = useState(false);
   const cartData = {
     productId: id,
-    quantity: quantity,
+    quantity: 1,
   };
   const handleClick = async (event) => {
     setIsLoading(true);

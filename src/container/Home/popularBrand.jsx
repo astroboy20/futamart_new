@@ -2,8 +2,10 @@ import Image from "next/image";
 
 const PopularBrand = () => {
   return (
-    <div className="pt-10 pl-[6%] flex flex-col gap-4">
-      <header className="text-[24px] lg:text-[35px] font-[600]">Popular Brands</header>
+    <div className="pt-10 flex flex-col gap-4">
+      <header className="text-[24px] lg:text-[35px] font-[600]">
+        Popular Brands
+      </header>
       <div className="flex w-full overflow-x-scroll no-scrollbar gap-[20px]">
         <div className="flex justify-between p-[3%] flex-shrink-0 bg-[#DBDBDB] rounded-[4px] h-fit w-[300px] lg:overflow-y-hidden lg:w-[720px] lg:p-[1.5%] lg:h-[250px]">
           <div className="flex flex-col  gap-[15px] h-full">

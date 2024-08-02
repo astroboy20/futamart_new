@@ -1,20 +1,21 @@
 "use client"
 import { createContext, useContext, useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
     const router = useRouter()
-    // const { redirect } = router.query;
-    const searchParams = useSearchParams()
-    const redirect = searchParams.get('redirect')
+    const [redirect, setRedirect] = useState(null);
     const [user, setUser] = useState(null);
     useEffect(() => {
         const token = Cookies.get('token');
         if (token) {
             fetchUser(token);
         }
+
+        const searchParams = new URLSearchParams(window.location.search);
+        setRedirect(searchParams.get('redirect'));
     }, []);
 
     const fetchUser = async (token) => {

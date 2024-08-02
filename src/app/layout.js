@@ -20,14 +20,12 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <Suspense fallback={<div>loading...</div>}>
-      <AuthProvider>
-        <ReactQueryClientProvider>
-          <html lang="en">
-            <body className={montserrat.variable}>{children}</body>
-          </html>
-        </ReactQueryClientProvider>
-      </AuthProvider>
-    </Suspense>
+    <AuthProvider>
+      <ReactQueryClientProvider>
+        <html lang="en">
+          <body className={montserrat.variable}>{children}</body>
+        </html>
+      </ReactQueryClientProvider>
+    </AuthProvider>
   );
 }

@@ -8,6 +8,8 @@ import {
   Hamburger,
   Logo,
   Logo_X,
+  PersonIcon,
+  ProfileIcon,
   SearchIcon,
   SmallLogo,
 } from "@/assets";
@@ -20,11 +22,13 @@ const Header = () => {
         <Link href="/">
           <SmallLogo />
         </Link>
-        <div className="flex gap-[10px] items-center">
-          <FavouriteIcon />
+        <div className="flex gap-[12px] items-center">
           <Link href="/cart">
             <CartIcon />
           </Link>
+          <div className="flex lg:hidden">
+            <Hamburger />
+          </div>
         </div>
       </div>
       <div className="hidden lg:flex">
@@ -44,12 +48,9 @@ const Header = () => {
             placeholder="search items here..."
           />
         </div>
-        <div className="flex lg:hidden">
-          <Hamburger />
-        </div>
       </div>
       <div className="hidden lg:flex gap-[10px] items-center">
-        <FavouriteIcon />
+        <PersonIcon />
         <Link href="/cart">
           <CartIcon />
         </Link>
