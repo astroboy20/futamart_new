@@ -32,7 +32,7 @@ const BestProducts = () => {
       </div>
 
       <div className="p-3 sm:py-3 sm:px-0 grid grid-cols-2 gap-[15px] md:grid-cols-2 lg:grid-cols-4">
-        {bestProducts.data?.map((singleProduct) => (
+        {bestProducts?.data?.map((singleProduct) => (
           <div
             key={singleProduct._id}
             className="pb-3 max-w-[180px] cursor-pointer shadow-md bg-[#f2f4f4] sm:max-w-[295px]"

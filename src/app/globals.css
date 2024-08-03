@@ -72,12 +72,16 @@
   }
 }
 
-@layer base { 
+@layer base {
   * {
     @apply border-border;
   }
   body {
     @apply bg-background text-foreground;
     font-family: "Montserrat";
+  }
+  /* In your global CSS file or Tailwind CSS configuration */
+  .overflow-hidden {
+    overflow: hidden;
   }
 }

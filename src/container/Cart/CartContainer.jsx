@@ -7,9 +7,9 @@ const CartContainer = () => {
   const { data: cart, isLoading, error } = getCart({ url: `${BASE_URL}/cart` });
   if (isLoading) return <div>Loading</div>;
   if (error) return <div>{error.message}</div>;
-  if (cart.data.items.length < 1)
+  if (cart?.data?.items?.length < 1)
     return (
-      <div className="text-center">
+      <div className="text-center mb-5">
         <p>Nothing here</p>
         <Link href="/">Go and shop</Link>
       </div>

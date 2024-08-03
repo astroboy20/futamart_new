@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   CartIcon,
@@ -16,9 +16,19 @@ import { MobileNavbar } from "../mobileNavbar";
 
 const Header = () => {
   const [show, setShow] = useState(false);
+
   const handleShow = () => {
     setShow(!show);
   };
+
+  useEffect(() => {
+    if (show) {
+      document.body.classList.add("overflow-hidden");
+    } else {
+      document.body.classList.remove("overflow-hidden");
+    }
+  }, [show]);
+
   return (
     <header className="flex flex-col lg:flex-row gap-[20px] lg:items-center w-full py-8 px-[6%] lg:justify-between lg:py-[3%] lg:px-[6%]">
       <div className="flex items-center justify-between lg:hidden">
@@ -59,7 +69,7 @@ const Header = () => {
         </Link>
       </div>
 
-      {show && <MobileNavbar  handleShow={handleShow}/>}
+      {show && <MobileNavbar handleShow={handleShow} />}
     </header>
   );
 };
