@@ -27,12 +27,12 @@ const CartContainer = () => {
     return data;
   };
   return (
-    <div className="w-[93%] mb-3 sm:w-[90%] mx-[auto]">
+    <div className="w-[93%] mb-10 sm:w-[90%] mx-[auto]">
       <div>
         <p className="text-[24px] mb-3 leading-[29.26px] font-semibold sm:text-[40px] sm:leading-[48.76px]">
           Catalogue
         </p>
-        <div className="flex flex-col gap-7">
+        <div className="flex flex-col gap-7 w-full">
           {cart?.data?.items.map((item) => {
             return (
               <div
@@ -64,7 +64,7 @@ const CartContainer = () => {
                     </span>
                   </div>
                   <Link href={`/products/${item?.product?.slug}`}>
-                    <p className="font-semibold text-[16px] leading-[19.5px] sm:text-[28px] sm:leading-[34.13px] truncate w-[220px] lg:w-[850px] ">
+                    <p className="font-semibold text-[16px] leading-[19.5px] sm:text-[28px] sm:leading-[34.13px] truncate w-[180px] lg:w-[850px] ">
                       {item?.product?.name}
                     </p>
                   </Link>

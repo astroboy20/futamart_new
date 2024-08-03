@@ -13,8 +13,11 @@ const AddToCart = ({ id, quantity, className, children }) => {
   const handleClick = async (event) => {
     setIsLoading(true);
     const token = Cookies.get("token");
-    if (!token) return;
-    // event.stopPropagation();
+    if (!token) {
+      setIsLoading(false);
+      alert("Login!!");
+    }
+
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/add-cart`,
       {
