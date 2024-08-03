@@ -1,21 +1,24 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import {
   CartIcon,
-  FavouriteIcon,
   Hamburger,
   Logo,
   Logo_X,
   PersonIcon,
-  ProfileIcon,
   SearchIcon,
   SmallLogo,
 } from "@/assets";
 import { Input } from "../ui/input";
+import { MobileNavbar } from "../mobileNavbar";
 
 const Header = () => {
+  const [show, setShow] = useState(false);
+  const handleShow = () => {
+    setShow(!show);
+  };
   return (
     <header className="flex flex-col lg:flex-row gap-[20px] lg:items-center w-full py-8 px-[6%] lg:justify-between lg:py-[3%] lg:px-[6%]">
       <div className="flex items-center justify-between lg:hidden">
@@ -26,7 +29,7 @@ const Header = () => {
           <Link href="/cart">
             <CartIcon />
           </Link>
-          <div className="flex lg:hidden">
+          <div className="flex lg:hidden" onClick={handleShow}>
             <Hamburger />
           </div>
         </div>
@@ -55,6 +58,8 @@ const Header = () => {
           <CartIcon />
         </Link>
       </div>
+
+      {show && <MobileNavbar  handleShow={handleShow}/>}
     </header>
   );
 };
