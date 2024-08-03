@@ -1,18 +1,31 @@
 "use client";
 import Link from "next/link";
+import Cookies from "js-cookie";
 import { AddToCart } from "@/components/addToCart";
 import { BASE_URL, getCart } from "@/hooks/useFetchItems";
 const CartContainer = () => {
   const { data: cart, isLoading, error } = getCart({ url: `${BASE_URL}/cart` });
   if (isLoading) return <div>Loading</div>;
   if (error) return <div>{error.message}</div>;
-  if (!cart)
+  if (cart.data.items.length < 1)
     return (
       <div className="text-center">
         <p>Nothing here</p>
-        <Link href="/products">Go and shop</Link>
+        <Link href="/">Go and shop</Link>
       </div>
     );
+  const handleDelete = async (id) => {
+    const token = Cookies.get("token");
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/cart/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Token ${token}`,
+      },
+    });
+    const data = await res.json();
+    return data;
+  };
   return (
     <div className="w-[93%] mb-3 sm:w-[90%] mx-[auto]">
       <div>
@@ -24,21 +37,21 @@ const CartContainer = () => {
             return (
               <div
                 className="bg-[#F2F3F4] rounded-[4px] shadow-md flex items-center w-[100%] h-[140px] sm:h-[240px]"
-                key={item.product._id}
+                key={item?.product?._id}
               >
                 <Link href={`/products/${item.product.slug}`}>
                   <img
                     className="min-w-[140px] max-w-[140px] h-[140px] object-cover sm:min-w-[240px] sm:max-w-[240px] sm:h-[240px]"
-                    src={item.product.featuredImage}
+                    src={item?.product?.featuredImage}
                     alt=""
                   />
                 </Link>
                 <div className="px-3 sm:px-5 flex flex-col gap-4 sm:gap-6 w-full">
                   <div className="flex justify-between items-center">
                     <p className="text-[8px] text-[#888282] leading-[9.75px] font-medium sm:text-[14px] sm:leading-[17.07px]">
-                      {item.product.category.name}
+                      {item?.product?.category?.name}
                     </p>
-                    <span>
+                    <span onClick={() => handleDelete(item?.product?._id)}>
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         height="24px"
@@ -50,20 +63,20 @@ const CartContainer = () => {
                       </svg>
                     </span>
                   </div>
-                  <Link href={`/products/${item.product.slug}`}>
+                  <Link href={`/products/${item?.product?.slug}`}>
                     <p className="font-semibold text-[16px] leading-[19.5px] sm:text-[28px] sm:leading-[34.13px] truncate w-[220px] lg:w-[850px] ">
-                      {item.product.name}
+                      {item?.product?.name}
                     </p>
                   </Link>
                   <p className="text-[#888282] text-[12px] leading-[14.63px] font-semibold sm:text-[18px] sm:leading-[21.94px]">
-                    &#8358;{item.product.price}
+                    &#8358;{item?.product?.price}
                   </p>
                   <div className="flex justify-between items-center">
                     <button className="bg-[#000000] text-[#FFFFFF] font-normal rounded-[2px] text-[8px] leading-[9.75px] py-[4px] px-[10px] sm:py-[16px] sm:px-[10px] sm:text-[16px] sm:leading-[19.5px] ">
                       Chat with seller
                     </button>
                     <div className="flex items-center gap-1">
-                      <AddToCart id={item.product._id} quantity={1}>
+                      <AddToCart id={item?.product?._id} quantity={1}>
                         <span>
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -77,7 +90,7 @@ const CartContainer = () => {
                         </span>
                       </AddToCart>
                       <p className="font-normal text-[8px] leading-[9.75px] sm:text-[14px] sm:leading-[17.07px]">
-                        {item.quantity}
+                        {item?.quantity}
                       </p>
                       <span>
                         <svg
