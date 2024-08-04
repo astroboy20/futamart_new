@@ -15,11 +15,12 @@ import { GiChemicalTank } from "react-icons/gi";
 import { TbShoe } from "react-icons/tb";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
+import Cookies from "js-cookie";
 
 const MobileNavbar = ({ handleShow }) => {
   const { data: categories } = useFetchItems({ url: `${BASE_URL}/categories` });
-  console.log(categories);
-  const {logout} = useAuth()
+  const token = Cookies.get("token");
+  const { logout } = useAuth();
 
   const categoryIcons = {
     Food: <PiBowlFood size={"30px"} />,
@@ -94,7 +95,9 @@ const MobileNavbar = ({ handleShow }) => {
           <h2 className="text-[18px] font-[600]">Others</h2>
           <p>Sell on futamart</p>
           <p>Contact Us</p>
-          <p onClick={logout}>Log Out</p>
+          <p>
+            {token ? <span onClick={logout}>Log Out</span> : <Link href={"/login"}>Login</Link>}{" "}
+          </p>
         </div>
       </motion.div>
     </>
