@@ -18,7 +18,7 @@ const Categories = () => {
   }
   const categories = [
     { _id: 1, name: "All category", slug: "" },
-    ...allCategories.data,
+    ...allCategories?.data,
   ];
   return (
     <div className="sm:w-[100%] w-full">

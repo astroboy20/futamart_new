@@ -202,7 +202,7 @@ const Home = () => {
           <h1 className="text-[20px] font-[500] ">Notifications</h1>{" "}
           <div className="flex flex-col gap-5">
             {notification.map((data) => (
-              <div className="flex items-center gap-5">
+              <div key={data.id} className="flex items-center gap-5">
                 <Image
                   src={data.src}
                   width={40}
