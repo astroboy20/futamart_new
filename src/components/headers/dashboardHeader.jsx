@@ -103,18 +103,18 @@ const DashboardHeader = () => {
             >
               <IoSettingsSharp size={"30px"} /> Settings
             </Link>
+            <Link
+              href={"/"}
+              className={`flex items-center gap-3 ${
+                pathname === "/"
+                  ? "bg-[#FFFFFF33] border rounded-[8px] py-2 px-5 "
+                  : ""
+              }`}
+            >
+              <RiLogoutCircleLine size={"30px"} />
+              Logout
+            </Link>
           </div>
-          <Link
-            href={"/"}
-            className={`flex items-center gap-3 text-[20px] text-white mt-auto ${
-              pathname === "/"
-                ? "bg-[#FFFFFF33] border rounded-[8px] py-2 px-5 "
-                : ""
-            }`}
-          >
-            <RiLogoutCircleLine size={"30px"} />
-            Logout
-          </Link>
         </motion.main>
       ) : (
         <header className="lg:hidden flex justify-between bg-black fixed w-full left-0 top-0 p-5 rounded-b-[24px] z-50">

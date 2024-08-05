@@ -19,6 +19,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { notification } from "@/providers/data";
 
 const metrics = [
   {
@@ -65,20 +66,7 @@ const chartConfig = {
   },
 };
 
-const notification = [
-  {
-    id: 1,
-    name: "Delightsome",
-    src: "/images/notification1.png",
-    item: "Dr Materns Loafers",
-  },
-  {
-    id: 2,
-    name: "Delightsome",
-    src: "/images/notification1.png",
-    item: "Dr Materns Loafers",
-  },
-];
+const notifications = notification.slice(0,2)
 
 const Home = () => {
   return (
@@ -201,7 +189,7 @@ const Home = () => {
         <Card className="p-5 w-full lg:w-[30%] h-[180px] overflow-y-scroll no-scrollbar  shadow-[2px_2px_4px_0_rgba(0,0,0,0.1)] border-[#0000004D] rounded-[8px]">
           <h1 className="text-[20px] font-[500] ">Notifications</h1>{" "}
           <div className="flex flex-col gap-5">
-            {notification.map((data) => (
+            {notifications.map((data) => (
               <div key={data.id} className="flex items-center gap-5">
                 <Image
                   src={data.src}

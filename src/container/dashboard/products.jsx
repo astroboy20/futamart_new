@@ -1,9 +1,18 @@
-import { NotificationIconX, SearchIcon } from "@/assets";
+import { AddIcon, NotificationIconX, SearchIcon } from "@/assets";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { products } from "@/providers/data";
 import Image from "next/image";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 const Products = () => {
   return (
@@ -24,34 +33,40 @@ const Products = () => {
       </div>
 
       <div>
-        <Card className="p-5">
-          <div className="w-full flex justify-between items-center py-2 text-left font-semibold border-b border-gray-300">
-            <span className="flex-1 text-left">Name</span>
-            <span className="flex-1 text-center">Image</span>
-            <span className="flex-1 text-center">Categories</span>
-            <span className="flex-1 text-center">Size</span>
-            <span className="flex-1 text-right">Price</span>
-          </div>
-          {products.map((data, index) => (
-            <div
-              key={index}
-              className="w-full flex justify-between items-center py-2 border-b border-gray-300"
-            >
-              <p className="flex-1 text-left">{data.name}</p>
-              <div className="flex-1 flex items-center justify-center">
-                <Image
-                  src={data.src}
-                  width={48}
-                  height={48}
-                  alt="product-image"
-                  className="object-contain"
-                />
-              </div>
-              <p className="flex-1 text-center">{data.categories}</p>
-              <p className="flex-1 text-center">{data.size}</p>
-              <p className="flex-1 text-right">{data.price}</p>
-            </div>
-          ))}
+        <Card>
+          <Table>
+            <TableHeader className="bg-black text-white rounded-b-[50px]">
+              <TableRow className="rounded-b-[50px]">
+                <TableHead className="hidden lg:flex items-center text-white">Name </TableHead>
+                <TableHead className=" text-white">Image <span className="lg:hidden flex text-white">& Image</span></TableHead>
+                <TableHead className=" text-white">Categories</TableHead>
+                <TableHead className=" text-white">Size</TableHead>
+                <TableHead className=" text-white">Price</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {products.map((data) => (
+                <TableRow>
+                  <TableCell className="hidden lg:block mt-4">{data.name}</TableCell>
+                  <TableCell>
+                    {" "}
+                    <Image
+                      src={data.src}
+                      width={48}
+                      height={48}
+                      alt="product-image"
+                      className="object-contain"
+                    />
+                    <span className="lg:hidden flex">{data.name}</span>
+                  </TableCell>
+                  <TableCell>{data.categories}</TableCell>
+                  <TableCell>{data.size}</TableCell>
+                  <TableCell>{data.price}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+          <span className="lg:hidden flex absolute bottom-[30px] left-[75%]"><AddIcon/></span>
         </Card>
       </div>
     </main>

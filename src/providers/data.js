@@ -104,3 +104,47 @@ export const products = [
     src: "/images/products/product10.png",
   },
 ];
+
+export const notification = [
+  {
+    id: 1,
+    name: "Delightsome",
+    src: "/images/notification1.png",
+    item: "Dr Materns Loafers",
+    time:"40 mins ago"
+  },
+  {
+    id: 2,
+    name: "Delightsome",
+    src: "/images/notification1.png",
+    item: "Dr Materns Loafers",
+    time:"20 mins ago"
+  },
+  {
+    id: 3,
+    name: "Delightsome",
+    src: "/images/notification1.png",
+    item: "Dr Materns Loafers",
+    time:"20 mins ago"
+  },
+  {
+    id: 4,
+    name: "Delightsome",
+    src: "/images/notification1.png",
+    item: "Dr Materns Loafers",
+    time:"20 mins ago"
+  },
+  {
+    id: 5,
+    name: "Delightsome, Richard and Daniel  viewed your profile",
+    src: "/images/notification1.png",
+    time:"20 mins ago"
+  },
+  {
+    id: 6,
+    name: "Delightsome",
+    src: "/images/notification1.png",
+    item: "Dr Materns Loafers",
+    time:"20 mins ago"
+  },
+];
