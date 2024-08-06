@@ -1,9 +1,9 @@
-import { DashboardHeader } from "@/components/headers/dashboardHeader";
+import { Analytics } from "@/container/dashboard/analytics";
 
-export default function Page (){
-    return(
-        <div>
-          <DashboardHeader/>
-        </div>
-    )
+export default function Page() {
+  return (
+    <div>
+      <Analytics />
+    </div>
+  );
 }

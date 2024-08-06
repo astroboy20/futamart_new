@@ -19,7 +19,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { notification } from "@/providers/data";
+import { chartConfig, chartData, notification } from "@/providers/data";
 
 const metrics = [
   {
@@ -45,28 +45,7 @@ const metrics = [
   },
 ];
 
-const chartData = [
-  { month: "Mon", desktop: 186, mobile: 80 },
-  { month: "Tue", desktop: 305, mobile: 200 },
-  { month: "Wed", desktop: 237, mobile: 120 },
-  { month: "Thur", desktop: 73, mobile: 190 },
-  { month: "Fri", desktop: 209, mobile: 130 },
-  { month: "Sat", desktop: 214, mobile: 140 },
-  { month: "Sun", desktop: 214, mobile: 140 },
-];
-
-const chartConfig = {
-  desktop: {
-    label: "Desktop",
-    color: "#000",
-  },
-  mobile: {
-    label: "Mobile",
-    color: "#000",
-  },
-};
-
-const notifications = notification.slice(0,2)
+const notifications = notification.slice(0, 2);
 
 const Home = () => {
   return (
@@ -161,6 +140,7 @@ const Home = () => {
             </BarChart>
           </ChartContainer>
         </Card>
+
         <Card className="p-5 w-full lg:w-[30%] h-fit lg:h-[400px] shadow-[2px_2px_4px_0_rgba(0,0,0,0.1)] border-[#0000004D] rounded-[8px] bg-black flex flex-col gap-5">
           <div className="text-[8px] flex flex-col gap-4 lg:gap-2">
             <p className="rounded-full py-2 px-4 text-[#BD8B00] bg-[#FFEDBB] w-fit">

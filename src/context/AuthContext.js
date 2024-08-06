@@ -11,39 +11,40 @@ export const AuthProvider = ({ children }) => {
   const router = useRouter();
   const [user, setUser] = useState(null);
   const [redirect, setRedirect] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+//   const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    const token = Cookies.get("token");
-    if (token) {
-      fetchUser(token);
-    } else {
-      setIsLoading(false);
-    }
+//   useEffect(() => {
+//     const token = Cookies.get("token");
+//     if (token) {
+//       fetchUser(token);
+//     } else {
+//       setIsLoading(false);
+//     }
 
-    const searchParams = new URLSearchParams(window.location.search);
-    setRedirect(searchParams.get("redirect"));
-  }, []);
+//     const searchParams = new URLSearchParams(window.location.search);
+//     setRedirect(searchParams.get("redirect"));
+//   }, []);
 
-  const fetchUser = async (token) => {
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const data = await response.json();
-      setUser(data);
-    } catch (error) {
-      console.error("Failed to fetch user:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+//   const fetchUser = async (token) => {
+//     try {
+//       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user`, {
+//         headers: {
+//           Authorization: `Bearer ${token}`,
+//         },
+//       });
+//       const data = await response.json();
+//       setUser(data);
+//     } catch (error) {
+//       console.error("Failed to fetch user:", error);
+//     } finally {
+//       setIsLoading(false);
+//     }
+//   };
 
   const login = async (jwt) => {
     Cookies.set("token", jwt, { expires: 7 });
-    await fetchUser(jwt);
+    // await fetchUser(jwt);
     router.push(redirect || "/");
   };
 

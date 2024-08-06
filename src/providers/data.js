@@ -148,3 +148,25 @@ export const notification = [
     time:"20 mins ago"
   },
 ];
+
+
+export const chartData = [
+  { month: "Mon", desktop: 186, mobile: 80 },
+  { month: "Tue", desktop: 305, mobile: 200 },
+  { month: "Wed", desktop: 237, mobile: 120 },
+  { month: "Thur", desktop: 73, mobile: 190 },
+  { month: "Fri", desktop: 209, mobile: 130 },
+  { month: "Sat", desktop: 214, mobile: 140 },
+  { month: "Sun", desktop: 214, mobile: 140 },
+];
+
+export const chartConfig = {
+  desktop: {
+    label: "Desktop",
+    color: "#000",
+  },
+  mobile: {
+    label: "Mobile",
+    color: "#000",
+  },
+};

@@ -12,16 +12,20 @@ import { HiArchiveBox } from "react-icons/hi2";
 import { MdAnalytics } from "react-icons/md";
 import { IoMdNotifications } from "react-icons/io";
 import { RiLogoutCircleLine } from "react-icons/ri";
-import { IoChatbubbles } from "react-icons/io5";
-import { IoSettingsSharp } from "react-icons/io5";
+import { IoChatbubbles, IoSettingsSharp } from "react-icons/io5";
 import { motion } from "framer-motion";
 
 const DashboardHeader = () => {
   const pathname = usePathname();
+  const splitedPathname = pathname.split("/")[2];
+  const headerName = splitedPathname
+    ? splitedPathname[0].toUpperCase() + splitedPathname.slice(1)
+    : "Dashboard";
   const [show, setShow] = useState(false);
   const handleShow = () => {
     setShow(!show);
   };
+
   return (
     <>
       {show ? (
@@ -49,6 +53,7 @@ const DashboardHeader = () => {
                   ? "bg-[#FFFFFF33] border rounded-[8px] py-2 px-5 "
                   : ""
               }`}
+              onClick={handleShow}
             >
               <DashboardIcon /> Dashboard
             </Link>
@@ -59,6 +64,7 @@ const DashboardHeader = () => {
                   ? "bg-[#FFFFFF33] border rounded-[8px] py-2 px-5 "
                   : ""
               }`}
+              onClick={handleShow}
             >
               <HiArchiveBox size={"30px"} /> Products
             </Link>
@@ -69,6 +75,7 @@ const DashboardHeader = () => {
                   ? "bg-[#FFFFFF33] border rounded-[8px] py-2 px-5 "
                   : ""
               }`}
+              onClick={handleShow}
             >
               <IoChatbubbles size={"30px"} />
               Chats
@@ -80,6 +87,7 @@ const DashboardHeader = () => {
                   ? "bg-[#FFFFFF33] border rounded-[8px] py-2 px-5 "
                   : ""
               }`}
+              onClick={handleShow}
             >
               <MdAnalytics size={"30px"} /> Analytics
             </Link>
@@ -90,6 +98,7 @@ const DashboardHeader = () => {
                   ? "bg-[#FFFFFF33] border rounded-[8px] py-2 px-5 "
                   : ""
               }`}
+              onClick={handleShow}
             >
               <IoMdNotifications size={"30px"} /> Notifications
             </Link>
@@ -100,6 +109,7 @@ const DashboardHeader = () => {
                   ? "bg-[#FFFFFF33] border rounded-[8px] py-2 px-5 "
                   : ""
               }`}
+              onClick={handleShow}
             >
               <IoSettingsSharp size={"30px"} /> Settings
             </Link>
@@ -110,6 +120,7 @@ const DashboardHeader = () => {
                   ? "bg-[#FFFFFF33] border rounded-[8px] py-2 px-5 "
                   : ""
               }`}
+              onClick={handleShow}
             >
               <RiLogoutCircleLine size={"30px"} />
               Logout
@@ -122,7 +133,9 @@ const DashboardHeader = () => {
             <Hamburger_Left />
           </span>
 
-          <h1 className="text-[24px] font-[600] text-[#FFF8F8]">Dashboard</h1>
+          <h1 className="text-[24px] font-[600] text-[#FFF8F8]">
+            {headerName}
+          </h1>
           <Logo_Right />
         </header>
       )}
