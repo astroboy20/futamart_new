@@ -110,13 +110,14 @@ const Login = () => {
               <input type="checkbox" />
               keep me signed in
             </label>
-            <p className="underline">Forgot password?</p>
+            <Link href={"/forgot-password"}> <p className="underline">Forgot password?</p></Link>
+           
           </div>
           <div className="pt-5">
             {error && <Modal isOpen={true} message={error} />}
           </div>
           <Button
-            isDisabled={loading}
+            // disabled={loading}
             type="submit"
             className="bg-[#1A1A1A] w-full rounded-[16px] text-[16px] text-[#fff] my-5 font-[700] py-[25px]"
           >
