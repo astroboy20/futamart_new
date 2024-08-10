@@ -184,18 +184,19 @@ const Register = () => {
               </div>
             </formcontrol>
           </div>
-          <div className="flex justify-between text-[16px] font-[400]">
+          <div className="flex justify-center  text-[16px] font-[400]">
             <label className="flex gap-[5px] items-center">
-              <input type="checkbox" />
-              keep me signed in
+              <input type="checkbox" />I agree to the{" "}
+              <span className="text-[#F18341]">Terms of Service</span> and
+              <span className="text-[#F18341]">Policy</span>
             </label>
-            <p className="underline">Forgot password?</p>
           </div>
           {error && (
             <div className="pt-5">
               {error && <Modal isOpen={true} message={error} />}
             </div>
           )}
+
           <Button
             className="bg-[#1A1A1A] w-full rounded-[16px] text-[16px] text-[#fff] my-5 font-[700] py-[25px]"
             type="submit"
@@ -204,11 +205,14 @@ const Register = () => {
           </Button>
         </form>
 
-        <div className="text-[16px] font-[400]  lg:relative mt-[25px] mb-3  ">
-          <p className="text-[#8C92AB] text-center">
-            Have an account?
-            <Link href={"/login"}>
-              <span className="text-[#1a1a1a] font-[700]"> Sign in</span>{" "}
+        <div className="text-[16px]   lg:relative mt-[25px] mb-3  ">
+          <p className="text-[#1a1a1a] font-[700] text-center">
+            Sign In
+            <Link href={"/seller"}>
+              <span className="text-[#8C92AB] font-[700]">
+                {" "}
+                as a seller on futamart
+              </span>{" "}
             </Link>
           </p>
         </div>
