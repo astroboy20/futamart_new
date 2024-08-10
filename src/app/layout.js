@@ -2,6 +2,7 @@ import { ReactQueryClientProvider } from "@/providers/providers";
 import "./globals.css";
 import { Inter, Montserrat } from "next/font/google";
 import { AuthProvider } from "@/context/AuthContext";
+import { ChakraProvider } from "@chakra-ui/react";
 
 const inter = Inter({ subsets: ["latin"] });
 const montserrat = Montserrat({
@@ -23,7 +24,7 @@ export default function RootLayout({ children }) {
       <body className={montserrat.variable}>
         <AuthProvider>
           <ReactQueryClientProvider>
-            {children}
+            <ChakraProvider>{children}</ChakraProvider>
           </ReactQueryClientProvider>
         </AuthProvider>
       </body>
