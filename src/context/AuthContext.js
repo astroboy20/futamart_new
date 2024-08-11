@@ -3,7 +3,6 @@ import { createContext, useContext, useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { Typewriter } from "react-simple-typewriter";
-import { Logo } from "@/components/logo";
 import { Logo_Black } from "@/assets";
 const AuthContext = createContext();
 
@@ -14,33 +13,33 @@ export const AuthProvider = ({ children }) => {
 //   const [isLoading, setIsLoading] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
 
-//   useEffect(() => {
-//     const token = Cookies.get("token");
-//     if (token) {
-//       fetchUser(token);
-//     } else {
-//       setIsLoading(false);
-//     }
+  useEffect(() => {
+    const token = Cookies.get("token");
+    if (token) {
+      fetchUser(token);
+    } else {
+      setIsLoading(false);
+    }
 
-//     const searchParams = new URLSearchParams(window.location.search);
-//     setRedirect(searchParams.get("redirect"));
-//   }, []);
+    const searchParams = new URLSearchParams(window.location.search);
+    setRedirect(searchParams.get("redirect"));
+  }, []);
 
-//   const fetchUser = async (token) => {
-//     try {
-//       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user`, {
-//         headers: {
-//           Authorization: `Bearer ${token}`,
-//         },
-//       });
-//       const data = await response.json();
-//       setUser(data);
-//     } catch (error) {
-//       console.error("Failed to fetch user:", error);
-//     } finally {
-//       setIsLoading(false);
-//     }
-//   };
+  const fetchUser = async (token) => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = await response.json();
+      setUser(data);
+    } catch (error) {
+      console.error("Failed to fetch user:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const login = async (jwt) => {
     Cookies.set("token", jwt, { expires: 7 });
@@ -61,7 +60,7 @@ export const AuthProvider = ({ children }) => {
           <Logo_Black />
           <h1 className="text-[32px] font-[600]">
             {" "}
-            {/* <Typewriter
+            <Typewriter
               words={["futamart"]}
               loop={5}
               cursor
@@ -69,7 +68,7 @@ export const AuthProvider = ({ children }) => {
               typeSpeed={80}
               deleteSpeed={50}
               delaySpeed={1000}
-            /> */}
+            />
             futamart
           </h1>
         </div>

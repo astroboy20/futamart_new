@@ -6,9 +6,10 @@ import SellerRefForm from "./sellerRefForm";
 import { Camera } from "./camera";
 import { FileUpload } from "./fileUpload";
 import { Button } from "@/components/ui/button";
+import { BackIcon } from "@/assets";
 
 const ViewSellerContainer = () => {
-  const steps = ["Step 1", "Step 2", "Step 3", "Step 4"];
+  const steps = ["Introduction", "Seller Reference", "Camera", "File Upload"];
   const [activeStep, setActiveStep] = useState(0);
   const [content, setContent] = useState(null);
 
@@ -20,16 +21,66 @@ const ViewSellerContainer = () => {
     setActiveStep((prev) => (prev < steps.length - 1 ? prev + 1 : prev));
   };
 
+  const [businessData, setBusinessData] = useState({
+    businessName: "",
+    category: [],
+    address: "",
+    contact: "",
+    email: "",
+    image: "",
+    Credential: {
+      front_side: "",
+      back_side: "",
+    },
+  });
+
+  const handleChange = (e) => {
+    const { name, value, type, options } = e.target;
+  
+    if (type === 'select-multiple') {
+     
+      const selectedOptions = Array.from(options).filter(option => option.selected).map(option => option.value);
+      setBusinessData((prevData) => ({
+        ...prevData,
+        [name]: selectedOptions,
+      }));
+    } else {
+      setBusinessData((prevData) => ({
+        ...prevData,
+        [name]: value,
+      }));
+    }
+  };
+  
+
   const renderContent = () => {
     switch (activeStep) {
       case 0:
         return <Introduction nextStep={nextStep} />;
       case 1:
-        return <SellerRefForm nextStep={nextStep} />;
+        return (
+          <SellerRefForm
+            nextStep={nextStep}
+            handleChange={handleChange}
+            businessData={businessData}
+          />
+        );
       case 2:
-        return <Camera nextStep={nextStep} />;
+        return (
+          <Camera
+            nextStep={nextStep}
+            handleChange={handleChange}
+            businessData={businessData}
+          />
+        );
       case 3:
-        return <FileUpload nextStep={nextStep} />;
+        return (
+          <FileUpload
+            nextStep={nextStep}
+            handleChange={handleChange}
+            businessData={businessData}
+          />
+        );
       default:
         return (
           <div className="h-full">
@@ -53,13 +104,31 @@ const ViewSellerContainer = () => {
 
   useEffect(() => {
     setContent(renderContent());
-  }, [activeStep]); // Dependency should be activeStep
+  }, [activeStep]);
 
   return (
-    <div className="p-[5%]">
-      <ProgressUpdate steps={steps} activeStep={activeStep} />
-      {content}
-    </div>
+    <>
+      <div className="flex flex-col gap-8 p-[6%]">
+        {activeStep > 0 && (
+          <span onClick={prevStep}>
+            <BackIcon />
+          </span>
+        )}
+        <div className="lg:px-[6%] flex flex-col gap-6">
+          <ProgressUpdate
+            steps={steps}
+            activeStep={activeStep}
+            sizes={[
+              { width: "65px", height: "65px" },
+              { width: "50px", height: "50px" },
+              { width: "45px", height: "45px" },
+              { width: "30px", height: "30px" },
+            ]}
+          />
+          {content}
+        </div>
+      </div>
+    </>
   );
 };
 

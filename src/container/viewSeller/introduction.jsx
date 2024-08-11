@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 
@@ -10,8 +10,8 @@ const Introduction = ({ nextStep }) => {
   };
 
   return (
-    <div>
-      <div className="text-wrap mx-auto w-[full]  flex flex-col gap-4">
+    <>
+      <div className="text-wrap mx-auto w-[full] flex flex-col gap-4">
         <p className="text-wrap md:text-[28px] w-[281px] md:w-[444px] md:leading-[39.01px] font-bold">
           Requirements to become a seller on futamart
         </p>
@@ -46,12 +46,12 @@ const Introduction = ({ nextStep }) => {
         <Button
           disabled={!isChecked}
           onClick={nextStep}
-          className="bg-[#000000] text-[#FFFFFF] p-3 w-full my-5 shadow-sm rounded-[8px] md:text-[20px] sm:leading-[29.26px] "
+          className="bg-[#000000] text-[#FFFFFF] w-full my-5 shadow-sm rounded-[10px] md:text-[18px] sm:leading-[29.26px] h-[50px]"
         >
           Continue
         </Button>
       </div>
-    </div>
+    </>
   );
 };
 

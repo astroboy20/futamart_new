@@ -2,46 +2,42 @@ import { Button } from "@/components/ui/button";
 import { FormControl, FormLabel, Input, Select } from "@chakra-ui/react";
 import React from "react";
 
-const SellerRefForm = ({nextStep}) => {
+const SellerRefForm = ({ nextStep, businessData, handleChange }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log(businessData)
+    nextStep()
   };
   return (
-    <div className="flex flex-col gap-4 my-4 px-[5%]">
+    <div className="flex flex-col gap-4 my-4 ">
       <form onSubmit={handleSubmit}>
-        <FormControl>
-          <FormLabel fontSize={{ base: "16px", lg: "18px" }}>
-            Full name
-          </FormLabel>
-          <Input
-            size={"lg"}
-            width={"100%"}
-            box-shadow={"0px 0px 0px 1px #CDD1DC"}
-            placeholder=""
-          />
-        </FormControl>
         <FormControl>
           <FormLabel fontSize={{ base: "16px", lg: "18px" }}>
             Business name
           </FormLabel>
           <Input
+            name="businessName"
+            value={businessData?.businessName}
+            onChange={handleChange}
             size={"lg"}
             width={"100%"}
             box-shadow={"0px 0px 0px 1px #CDD1DC"}
             placeholder=""
-            name="business name"
           />
         </FormControl>
+
         <FormControl>
           <FormLabel fontSize={{ base: "16px", lg: "18px" }}>
             Business contact
           </FormLabel>
           <Input
+            name="contact"
+            value={businessData?.contact}
+            onChange={handleChange}
             size={"lg"}
             width={"100%"}
             box-shadow={"0px 0px 0px 1px #CDD1DC"}
             placeholder=""
-            name="business contact"
           />
         </FormControl>
         <FormControl>
@@ -49,11 +45,13 @@ const SellerRefForm = ({nextStep}) => {
             Business address
           </FormLabel>
           <Input
+            name="address"
+            value={businessData?.address}
+            onChange={handleChange}
             size={"lg"}
             width={"100%"}
             box-shadow={"0px 0px 0px 1px #CDD1DC"}
             placeholder=""
-            name="business address"
           />
         </FormControl>
         <FormControl>
@@ -64,34 +62,32 @@ const SellerRefForm = ({nextStep}) => {
             size={"lg"}
             width={"100%"}
             box-shadow={"0px 0px 0px 1px #CDD1DC"}
-            placeholder="Select option"
-            name="business category"
+            name="category"
+            value={businessData?.category}
+            onChange={handleChange}
           >
-            <option value="option1">Option 1</option>
-            <option value="option2">Option 2</option>
-            <option value="option3">Option 3</option>
+            <option value="" disabled hidden>
+              Select Category
+            </option>
+
+            <option value="Food">Food</option>
+            <option value="Electronics & Gadget">Electronics & Gadget</option>
+            <option value="Fashion & Clothing">Fashion & Clothing </option>
+            <option value="Beauty & Skincare">Beauty & Skincare </option>
+            <option value="Hair Products">Hair Products </option>
+            <option value="Footwears">Footwears </option>
+            <option value="Others">Others </option>
           </Select>
         </FormControl>
         <Button
-          onClick={nextStep}
-          className="bg-[#000000] text-[#FFFFFF] p-3 w-full my-5 shadow-sm rounded-[8px] md:text-[20px] sm:leading-[29.26px]"
+        //   onClick={nextStep}
+          className="bg-[#000000] text-[#FFFFFF] p-3 w-full my-5 shadow-sm rounded-[8px] md:text-[18px] sm:leading-[29.26px] h-[50px]"
           type="submit"
         >
           Continue
         </Button>
       </form>
-      {/* <Button   
-            size={"lg"}
-            width={"100%"}
-            background={"#1a1a1a"}
-            borderRadius={"16px"}
-            fontSize={{ base: "16px", lg: "16px" }}
-            fontWeight={"700"}
-            color={"#fff"}
-            my={5}
-          >
-            Continue
-          </Button> */}
+     
     </div>
   );
 };
