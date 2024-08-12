@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 
-const Camera = ({nextStep}) => {
+const Camera = ({ nextStep }) => {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const [error, setError] = useState(null);
@@ -12,6 +12,7 @@ const Camera = ({nextStep}) => {
   const [isLoading, setIsLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [pictureTaken, setPictureTaken] = useState(false);
+  const [imageUrl, setImageUrl] = useState(null);
 
   useEffect(() => {
     const getUserMedia = async () => {
@@ -36,8 +37,8 @@ const Camera = ({nextStep}) => {
       const videoDevices = devices.filter(
         (device) => device.kind === "videoinput"
       );
-      const device = videoDevices.find((device) =>
-        device.label.includes("back") // or "front", depending on the camera
+      const device = videoDevices.find(
+        (device) => device.label.includes("back") // or "front", depending on the camera
       );
 
       if (device && device.deviceId) {
@@ -70,7 +71,7 @@ const Camera = ({nextStep}) => {
       const formData = new FormData();
       const blob = dataURLtoBlob(imageUrl);
       formData.append("file", blob, `photo-${Date.now()}.jpg`);
-      formData.append("upload_preset", "futamart"); // Specify your upload preset here
+      formData.append("upload_preset", "futamart");
 
       const response = await axios.post(
         "https://api.cloudinary.com/v1_1/dm42ixhsz/image/upload",
@@ -81,8 +82,7 @@ const Camera = ({nextStep}) => {
           },
         }
       );
-
-      // Handle the response if needed
+      setImageUrl(response.data?.secure_url);
     } catch (error) {
       console.error("Error uploading image:", error);
     } finally {
@@ -105,6 +105,7 @@ const Camera = ({nextStep}) => {
 
   const handleContinue = () => {
     nextStep()
+    typeof window != "undefined" && localStorage.setItem("imageUrl", imageUrl);
   };
 
   return (
@@ -131,7 +132,11 @@ const Camera = ({nextStep}) => {
         onClick={pictureTaken ? handleContinue : capture}
         className="bg-[#000000] text-[#FFFFFF] p-3 w-full my-5 shadow-sm rounded-[8px] md:text-[18px] sm:leading-[29.26px] h-[50px]"
       >
-        {uploading ? "Uploading..." : pictureTaken ? "Continue" : "Take Picture"}
+        {uploading
+          ? "Uploading..."
+          : pictureTaken
+          ? "Continue"
+          : "Take Picture"}
       </Button>
       {capturedImage && (
         <div className="mt-4">

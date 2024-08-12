@@ -2,11 +2,12 @@
 import { ProgressUpdate } from "@/components/progressUpdate";
 import { useEffect, useState } from "react";
 import { Introduction } from "./introduction";
-import SellerRefForm from "./sellerRefForm";
+import {SellerRefForm} from "./sellerRefForm";
 import { Camera } from "./camera";
 import { FileUpload } from "./fileUpload";
 import { Button } from "@/components/ui/button";
 import { BackIcon } from "@/assets";
+import { progressBarSizes } from "@/providers/data";
 
 const ViewSellerContainer = () => {
   const steps = ["Introduction", "Seller Reference", "Camera", "File Upload"];
@@ -21,37 +22,27 @@ const ViewSellerContainer = () => {
     setActiveStep((prev) => (prev < steps.length - 1 ? prev + 1 : prev));
   };
 
-  const [businessData, setBusinessData] = useState({
-    businessName: "",
-    category: [],
-    address: "",
-    contact: "",
-    email: "",
-    image: "",
-    Credential: {
-      front_side: "",
-      back_side: "",
-    },
-  });
+  // const [businessData, setBusinessData] = useState({
+  //   businessName: "",
+  //   category: [],
+  //   address: "",
+  //   contact: "",
+  //   email: "",
+  //   image: "",
+  //   Credential: {
+  //     front_side: "",
+  //     back_side: "",
+  //   },
+  // });
 
-  const handleChange = (e) => {
-    const { name, value, type, options } = e.target;
-  
-    if (type === 'select-multiple') {
-     
-      const selectedOptions = Array.from(options).filter(option => option.selected).map(option => option.value);
-      setBusinessData((prevData) => ({
-        ...prevData,
-        [name]: selectedOptions,
-      }));
-    } else {
-      setBusinessData((prevData) => ({
-        ...prevData,
-        [name]: value,
-      }));
-    }
-  };
-  
+  // const handleChange = (e) => {
+  //   const { name, value } = e.target;
+
+  //   setBusinessData((prevData) => ({
+  //     ...prevData,
+  //     [name]: value,
+  //   }));
+  // };
 
   const renderContent = () => {
     switch (activeStep) {
@@ -61,24 +52,24 @@ const ViewSellerContainer = () => {
         return (
           <SellerRefForm
             nextStep={nextStep}
-            handleChange={handleChange}
-            businessData={businessData}
+            // handleChange={handleChange}
+            // businessData={businessData}
           />
         );
       case 2:
         return (
           <Camera
             nextStep={nextStep}
-            handleChange={handleChange}
-            businessData={businessData}
+            // handleChange={handleChange}
+            // businessData={businessData}
           />
         );
       case 3:
         return (
           <FileUpload
             nextStep={nextStep}
-            handleChange={handleChange}
-            businessData={businessData}
+            // handleChange={handleChange}
+            // businessData={businessData}
           />
         );
       default:
@@ -118,12 +109,7 @@ const ViewSellerContainer = () => {
           <ProgressUpdate
             steps={steps}
             activeStep={activeStep}
-            sizes={[
-              { width: "65px", height: "65px" },
-              { width: "50px", height: "50px" },
-              { width: "45px", height: "45px" },
-              { width: "30px", height: "30px" },
-            ]}
+            sizes={progressBarSizes}
           />
           {content}
         </div>

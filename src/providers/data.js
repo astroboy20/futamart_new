@@ -111,44 +111,43 @@ export const notification = [
     name: "Delightsome",
     src: "/images/notification1.png",
     item: "Dr Materns Loafers",
-    time:"40 mins ago"
+    time: "40 mins ago",
   },
   {
     id: 2,
     name: "Delightsome",
     src: "/images/notification1.png",
     item: "Dr Materns Loafers",
-    time:"20 mins ago"
+    time: "20 mins ago",
   },
   {
     id: 3,
     name: "Delightsome",
     src: "/images/notification1.png",
     item: "Dr Materns Loafers",
-    time:"20 mins ago"
+    time: "20 mins ago",
   },
   {
     id: 4,
     name: "Delightsome",
     src: "/images/notification1.png",
     item: "Dr Materns Loafers",
-    time:"20 mins ago"
+    time: "20 mins ago",
   },
   {
     id: 5,
     name: "Delightsome, Richard and Daniel  viewed your profile",
     src: "/images/notification1.png",
-    time:"20 mins ago"
+    time: "20 mins ago",
   },
   {
     id: 6,
     name: "Delightsome",
     src: "/images/notification1.png",
     item: "Dr Materns Loafers",
-    time:"20 mins ago"
+    time: "20 mins ago",
   },
 ];
-
 
 export const chartData = [
   { month: "Mon", desktop: 186, mobile: 80 },
@@ -170,3 +169,23 @@ export const chartConfig = {
     color: "#000",
   },
 };
+
+export const progressBarSizes = [
+  {
+    width: { a: "65px", b: "50px" },
+    height: { a: "65px", b: "50px" },
+  },
+  {
+    width: { a: "50px", b: "45px" },
+    height: { a: "50px", b: "45px" },
+  },
+  {
+    width: { a: "45px", b: "30px" },
+    height: { a: "45px", b: "30px" },
+  },
+  {
+    width: { a: "30px", b: "15px" },
+    height: { a: "30px", b: "15px" },
+  },
+];
+

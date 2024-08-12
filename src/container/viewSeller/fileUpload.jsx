@@ -5,6 +5,18 @@ import { useState } from "react";
 
 const FileUpload = ({ nextStep }) => {
     const [isChecked, setIsChecked] = useState(false);
+    const [fileFront,  setFileFront] = useState (null)
+
+    const handleFileFrontChange = (event)=>{
+        if (e.target.files){
+            setFileFront(e.target.fill[0])
+        }
+    }
+    const handleFileFrontUpload = (event)=>{
+        if (e.target.files){
+            setFileFront(e.target.fill[0])
+        }
+    }
 
     const handleCheckboxChange = (e) => {
       setIsChecked(e.target.checked);
