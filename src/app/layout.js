@@ -24,7 +24,11 @@ export default function RootLayout({ children }) {
       <body className={montserrat.variable}>
         <AuthProvider>
           <ReactQueryClientProvider>
-            <ChakraProvider>{children}</ChakraProvider>
+            <ChakraProvider
+              toastOptions={{ defaultOptions: { position: "top" } }}
+            >
+              {children}
+            </ChakraProvider>
           </ReactQueryClientProvider>
         </AuthProvider>
       </body>

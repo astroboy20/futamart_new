@@ -9,7 +9,7 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const router = useRouter();
   const [user, setUser] = useState(null);
-  const [redirect, setRedirect] = useState(null);
+//   const [redirect, setRedirect] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 //   const [isLoading, setIsLoading] = useState(false);
 
@@ -21,8 +21,9 @@ export const AuthProvider = ({ children }) => {
       setIsLoading(false);
     }
 
-    const searchParams = new URLSearchParams(window.location.search);
-    setRedirect(searchParams.get("redirect"));
+    // const searchParams = new URLSearchParams(window.location.search);
+    // setRedirect(searchParams.get("redirect"));
+    // console.log("redirect",redirect)
   }, []);
 
   const fetchUser = async (token) => {
@@ -41,7 +42,7 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const login = async (jwt) => {
+  const login = async (jwt, redirect) => {
     Cookies.set("token", jwt, { expires: 7 });
     await fetchUser(jwt);
     router.push(redirect || "/");
@@ -69,7 +70,7 @@ export const AuthProvider = ({ children }) => {
               deleteSpeed={50}
               delaySpeed={1000}
             />
-            futamart
+            {/* futamart */}
           </h1>
         </div>
       </div>

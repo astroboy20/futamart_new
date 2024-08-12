@@ -8,12 +8,13 @@ import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/modal";
 import { useAuth } from "@/context/AuthContext";
 import { ClipLoader } from "react-spinners";
+import { useToast } from "@chakra-ui/react";
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
   const [options, setOptions] = useState("email");
   const { login } = useAuth();
+  const toast = useToast();
 
   const handleOptions = (option) => {
     setOptions(option);
@@ -45,17 +46,38 @@ const Login = () => {
       );
       const result = await response.json();
       if (!response.ok) {
-        return setError(result.message), setLoading(false);
+        setLoading(false);
+        toast({
+          title: "Error",
+          description: result?.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+        return;
       }
       setLoading(false);
-      setError(null);
-      login(result.data.token);
+      // setError(null);
+      toast({
+        title: "Success",
+        description: result?.message,
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+      login(result.data?.token, result.data?.redirectUrl);
     } catch (error) {
       console.log(error);
       setLoading(false);
+      toast({
+        title: "An error occurred.",
+        description: "Unable to sign in. Please try again later.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
     }
   };
-
   return (
     <div className="flex flex-col gap-10 pt-10 pb-5 px-5 lg:gap-9 lg:px-20 lg:pt-10 lg:pb-0 h-[100%]">
       <div className="flex flex-col">
@@ -111,18 +133,18 @@ const Login = () => {
               <input type="checkbox" />
               keep me signed in
             </label>
-            <Link href={"/forgot-password"}> <p className="underline">Forgot password?</p></Link>
-           
+            <Link href={"/forgot-password"}>
+              {" "}
+              <p className="underline">Forgot password?</p>
+            </Link>
           </div>
-          <div className="pt-5">
-            {error && <Modal isOpen={true} message={error} />}
-          </div>
+        
           <Button
             disabled={loading}
             type="submit"
             className="bg-[#1A1A1A] w-full rounded-[16px] text-[16px] text-[#fff] my-5 font-[700] py-[25px]"
           >
-            {loading ? <ClipLoader  color="white"/> : "Continue"}
+            {loading ? <ClipLoader color="white" /> : "Continue"}
           </Button>
         </form>
 

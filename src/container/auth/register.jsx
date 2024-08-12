@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/context/AuthContext";
 import { Modal } from "@/components/modal";
+import { useToast } from "@chakra-ui/react";
+import { ClipLoader } from "react-spinners";
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -18,11 +20,14 @@ const Register = () => {
     confirmPassword: "",
   });
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [checked, setChecked] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-
+  const toast = useToast();
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
+  };
+  const handleChecked = (e) => {
+    setChecked(e.target.checked);
   };
   const { login } = useAuth();
 
@@ -47,14 +52,29 @@ const Register = () => {
       );
       const result = await response.json();
       if (!response.ok) {
-        return setError(result.message), setLoading(false);
+        setLoading(false);
+        toast({
+          title: "An error occurred.",
+          description: result?.message || "Unable to sign in. Please try again later.",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+        return;
       }
       setLoading(false);
-      setError(null);
-      login(result.data);
+      toast({
+        title: "Success",
+        description: result?.message,
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+      login(result.data, "/dashboard");
     } catch (error) {
-      console.log(error);
+      console.log(error?.message);
       setLoading(false);
+      
     }
   };
 
@@ -186,33 +206,31 @@ const Register = () => {
           </div>
           <div className="flex justify-center  text-[16px] font-[400]">
             <label className="flex gap-[5px] items-center">
-              <input type="checkbox" />I agree to the{" "}
+              <input
+                type="checkbox"
+                checked={checked}
+                onChange={handleChecked}
+              />
+              I agree to the{" "}
               <span className="text-[#F18341]">Terms of Service</span> and
               <span className="text-[#F18341]">Policy</span>
             </label>
           </div>
-          {error && (
-            <div className="pt-5">
-              {error && <Modal isOpen={true} message={error} />}
-            </div>
-          )}
-
+         
           <Button
+            disabled={!checked}
             className="bg-[#1A1A1A] w-full rounded-[16px] text-[16px] text-[#fff] my-5 font-[700] py-[25px]"
             type="submit"
           >
-            {loading ? "Loading..." : "Continue"}
+            {loading ? <ClipLoader color="white"/> : "Continue"}
           </Button>
         </form>
 
-        <div className="text-[16px]   lg:relative mt-[25px] mb-3  ">
-          <p className="text-[#1a1a1a] font-[700] text-center">
-            Sign In
-            <Link href={"/seller"}>
-              <span className="text-[#8C92AB] font-[700]">
-                {" "}
-                as a seller on futamart
-              </span>{" "}
+        <div className="text-[16px] font-[400]  lg:relative mt-[25px] mb-3  ">
+          <p className="text-[#8C92AB] text-center">
+            Have an account?
+            <Link href={"/login"}>
+              <span className="text-[#1a1a1a] font-[700]"> Sign in</span>{" "}
             </Link>
           </p>
         </div>
