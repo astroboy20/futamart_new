@@ -1,26 +1,111 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Select } from "@chakra-ui/react";
+import axios from "axios";
 import { useState } from "react";
+import Cookies from "js-cookie";
 
 const FileUpload = ({ nextStep }) => {
-    const [isChecked, setIsChecked] = useState(false);
-    const [fileFront,  setFileFront] = useState (null)
+  const [isChecked, setIsChecked] = useState(false);
+  const [files, setFiles] = useState({
+    Credentials: {
+      front_side: null,
+      back_side: null,
+    },
+  });
+  const [loading, setLoading] = useState({
+    front_side: false,
+    back_side: false,
+  });
+  const [uploaded, setUploaded] = useState({
+    front_side: false,
+    back_side: false,
+  });
 
-    const handleFileFrontChange = (event)=>{
-        if (e.target.files){
-            setFileFront(e.target.fill[0])
-        }
-    }
-    const handleFileFrontUpload = (event)=>{
-        if (e.target.files){
-            setFileFront(e.target.fill[0])
-        }
-    }
+  const token = Cookies.get("token");
 
-    const handleCheckboxChange = (e) => {
-      setIsChecked(e.target.checked);
-    };
+  const handleFileChange = async (event, side) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    if (uploaded[side]) return;
+
+    setLoading((prevLoading) => ({
+      ...prevLoading,
+      [side]: true,
+    }));
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file, `photo-${Date.now()}.png`);
+      formData.append("upload_preset", "futamart");
+
+      const response = await axios.post(
+        "https://api.cloudinary.com/v1_1/dm42ixhsz/image/upload",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      const imageUrl = response.data?.secure_url;
+
+      setFiles((prevFiles) => ({
+        ...prevFiles,
+        Credentials: {
+          ...prevFiles.Credentials,
+          [side]: imageUrl,
+        },
+      }));
+
+      setUploaded((prevUploaded) => ({
+        ...prevUploaded,
+        [side]: true,
+      }));
+    } catch (error) {
+      console.error("Error uploading image:", error);
+    } finally {
+      setLoading((prevLoading) => ({
+        ...prevLoading,
+        [side]: false,
+      }));
+    }
+  };
+
+  typeof window != "undefined" &&
+    localStorage.setItem("files", JSON.stringify(files));
+
+  const handleCheckboxChange = (e) => {
+    setIsChecked(e.target.checked);
+  };
+  const businessData =
+    typeof window != "undefined" &&
+    JSON.parse(localStorage.getItem("businessData"));
+  const image =
+    typeof window != "undefined" && localStorage.getItem("imageUrl");
+  const data = { ...businessData, image, ...files };
+//   console.log(data);
+
+  const handleSubmit = () => {
+    try {
+      const response = axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/business/register`,
+        data,
+        {
+          headers:{
+            Authorization: `Bearer ${token}`
+          },
+        }
+
+    
+      );
+      console.log(data)
+      console.log(response.data)
+    } catch (error) {
+        console.log(Error)
+    }
+  };
 
   return (
     <div className="flex flex-col gap-8">
@@ -36,8 +121,8 @@ const FileUpload = ({ nextStep }) => {
           name="document"
         >
           <option value="nin">NIN</option>
-          <option value="voters card">Voter`s card</option>
-          <option value="drivers license">Driver`s license</option>
+          <option value="voters card">Voter's card</option>
+          <option value="drivers license">Driver's license</option>
         </Select>
       </div>
       <div className="p-3 flex-col justify-center items-center gap-5 flex lg:flex-row">
@@ -55,21 +140,39 @@ const FileUpload = ({ nextStep }) => {
             Front side of your document
           </p>
           <p className="text-[8px] leading-[9.75px] lg:text-[10px] lg:leading-[12.19px]">
-            Upload the front page of your document support JPG, PNG, PDF
+            Upload the front page of your document. Supports JPG, PNG, PDF.
           </p>
-          <input className="hidden" type="file" name="" id="file" />
+          <input
+            className="hidden"
+            type="file"
+            id="front_side"
+            onChange={(event) => handleFileChange(event, "front_side")}
+            disabled={uploaded.front_side}
+          />
           <label
-            className="border cursor-pointer text-[8.75px] leading-[10.36px] lg:text-[11px] lg:leading-[13.41px] border-[#000000] rounded-full p-2"
-            htmlFor="file"
+            className={`border ${
+              files.Credentials.front_side
+                ? "border-transparent"
+                : "border-black"
+            } cursor-pointer text-[8.75px] leading-[10.36px] lg:text-[11px] lg:leading-[13.41px] border-[#000000] rounded-full p-2`}
+            htmlFor="front_side"
           >
-            Choose a file
+            {files.Credentials.front_side ? (
+              <p className="border cursor-pointer text-[8.75px] leading-[10.36px] lg:text-[11px] lg:leading-[13.41px] text-[#fff] bg-[#000]  rounded-full p-2">
+                Uploaded
+              </p>
+            ) : loading.front_side ? (
+              "Uploading..."
+            ) : (
+              "Choose a file"
+            )}
           </label>
         </div>
         <div className="flex flex-col gap-3 bg-[#F2F3F4] border-[2px] border-dotted rounded-[28px] p-4 items-center text-center border-[#000000] w-[238px] h-full">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             height="18px"
-            viewBox="0 -960 960 960"
+            viewBox="http://www.w3.org/2000/svg"
             width="29px"
             fill="#000000"
           >
@@ -79,33 +182,50 @@ const FileUpload = ({ nextStep }) => {
             Back side of your document
           </p>
           <p className="text-[8px] leading-[9.75px] lg:text-[10px] lg:leading-[12.19px]">
-            Upload the front page of your document support JPG, PNG, PDF
+            Upload the back page of your document. Supports JPG, PNG, PDF.
           </p>
-          <input className="hidden" type="file" name="" id="file" />
+          <input
+            className="hidden"
+            type="file"
+            id="back_side"
+            onChange={(event) => handleFileChange(event, "back_side")}
+            disabled={uploaded.back_side}
+          />
           <label
-            className="border cursor-pointer text-[8.75px] leading-[10.36px] lg:text-[11px] lg:leading-[13.41px] border-[#000000] rounded-full p-2"
-            htmlFor="file"
+            className={`border ${
+              files.Credentials.back_side
+                ? "border-transparent"
+                : "border-black"
+            } cursor-pointer text-[8.75px] leading-[10.36px] lg:text-[11px] lg:leading-[13.41px] border-[#000000] rounded-full  p-2`}
+            htmlFor="back_side"
           >
-            Choose a file
+            {files.Credentials.back_side ? (
+              <p className="border cursor-pointer text-[8.75px] leading-[10.36px] lg:text-[11px] lg:leading-[13.41px] text-[#fff] bg-[#000]  rounded-full p-2">
+                Uploaded
+              </p>
+            ) : loading.back_side ? (
+              "Uploading..."
+            ) : (
+              "Choose a file"
+            )}
           </label>
         </div>
       </div>
       <label className="flex items-center gap-2">
         <input
           type="checkbox"
-          name=""
-          id=""
           checked={isChecked}
           onChange={handleCheckboxChange}
         />
         <p className="text-[9px] leading-[10.97px] font-medium lg:text-[13px] lg:leading-[15.85px]">
-          I confirmed that I uploaded valid government-Issued ID. This ID
-          includes my picture, signature, name, date of birth and address
+          I confirm that I uploaded a valid government-Issued ID. This ID
+          includes my picture, signature, name, date of birth, and address.
         </p>
       </label>
       <Button
-        disabled={!isChecked}
-        onClick={nextStep}
+        disabled={!isChecked || !uploaded.front_side || !uploaded.back_side}
+        onClick={handleSubmit}
+        type="submit"
         className="text-[15px] leading-[18.29px] w-full bg-[#000000] text-[#FFFFFF] p-3 rounded-md lg:text-[24px] lg:leading-[29.26px] h-[50px]"
       >
         Register business

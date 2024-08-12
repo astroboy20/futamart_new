@@ -2,7 +2,7 @@
 import { ProgressUpdate } from "@/components/progressUpdate";
 import { useEffect, useState } from "react";
 import { Introduction } from "./introduction";
-import {SellerRefForm} from "./sellerRefForm";
+import { SellerRefForm } from "./sellerRefForm";
 import { Camera } from "./camera";
 import { FileUpload } from "./fileUpload";
 import { Button } from "@/components/ui/button";
@@ -22,56 +22,16 @@ const ViewSellerContainer = () => {
     setActiveStep((prev) => (prev < steps.length - 1 ? prev + 1 : prev));
   };
 
-  // const [businessData, setBusinessData] = useState({
-  //   businessName: "",
-  //   category: [],
-  //   address: "",
-  //   contact: "",
-  //   email: "",
-  //   image: "",
-  //   Credential: {
-  //     front_side: "",
-  //     back_side: "",
-  //   },
-  // });
-
-  // const handleChange = (e) => {
-  //   const { name, value } = e.target;
-
-  //   setBusinessData((prevData) => ({
-  //     ...prevData,
-  //     [name]: value,
-  //   }));
-  // };
-
   const renderContent = () => {
     switch (activeStep) {
       case 0:
         return <Introduction nextStep={nextStep} />;
       case 1:
-        return (
-          <SellerRefForm
-            nextStep={nextStep}
-            // handleChange={handleChange}
-            // businessData={businessData}
-          />
-        );
+        return <SellerRefForm nextStep={nextStep} />;
       case 2:
-        return (
-          <Camera
-            nextStep={nextStep}
-            // handleChange={handleChange}
-            // businessData={businessData}
-          />
-        );
+        return <Camera nextStep={nextStep} />;
       case 3:
-        return (
-          <FileUpload
-            nextStep={nextStep}
-            // handleChange={handleChange}
-            // businessData={businessData}
-          />
-        );
+        return <FileUpload nextStep={nextStep} />;
       default:
         return (
           <div className="h-full">

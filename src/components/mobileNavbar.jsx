@@ -93,10 +93,18 @@ const MobileNavbar = ({ handleShow }) => {
 
         <div className="flex flex-col gap-5">
           <h2 className="text-[18px] font-[600]">Others</h2>
-          <p>Sell on futamart</p>
+          <Link href="/seller">
+            {" "}
+            <p>Sell on futamart</p>
+          </Link>
+
           <p>Contact Us</p>
           <p>
-            {token ? <span onClick={logout}>Log Out</span> : <Link href={"/login"}>Login</Link>}{" "}
+            {token ? (
+              <span onClick={logout}>Log Out</span>
+            ) : (
+              <Link href={"/login"}>Login</Link>
+            )}{" "}
           </p>
         </div>
       </motion.div>
