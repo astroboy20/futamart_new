@@ -10,8 +10,8 @@ export const AuthProvider = ({ children }) => {
   const router = useRouter();
   const [user, setUser] = useState(null);
   const [redirect, setRedirect] = useState(null);
-//   const [isLoading, setIsLoading] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+//   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const token = Cookies.get("token");
@@ -43,7 +43,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (jwt) => {
     Cookies.set("token", jwt, { expires: 7 });
-    // await fetchUser(jwt);
+    await fetchUser(jwt);
     router.push(redirect || "/");
   };
 

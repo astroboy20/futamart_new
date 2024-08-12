@@ -4,6 +4,7 @@ import { Select } from "@chakra-ui/react";
 import axios from "axios";
 import { useState } from "react";
 import Cookies from "js-cookie";
+import { ClipLoader } from "react-spinners";
 
 const FileUpload = ({ nextStep }) => {
   const [isChecked, setIsChecked] = useState(false);
@@ -21,8 +22,24 @@ const FileUpload = ({ nextStep }) => {
     front_side: false,
     back_side: false,
   });
+  
+  const [isLoading, setIsLoading] = useState(false);
 
   const token = Cookies.get("token");
+
+  typeof window != "undefined" &&
+    localStorage.setItem("files", JSON.stringify(files));
+
+  const handleCheckboxChange = (e) => {
+    setIsChecked(e.target.checked);
+  };
+
+  const businessData =
+    typeof window != "undefined" &&
+    JSON.parse(localStorage.getItem("businessData"));
+  const image =
+    typeof window != "undefined" && localStorage.getItem("imageUrl");
+  const data = { ...businessData, image, ...files };
 
   const handleFileChange = async (event, side) => {
     const file = event.target.files[0];
@@ -73,37 +90,22 @@ const FileUpload = ({ nextStep }) => {
     }
   };
 
-  typeof window != "undefined" &&
-    localStorage.setItem("files", JSON.stringify(files));
-
-  const handleCheckboxChange = (e) => {
-    setIsChecked(e.target.checked);
-  };
-  const businessData =
-    typeof window != "undefined" &&
-    JSON.parse(localStorage.getItem("businessData"));
-  const image =
-    typeof window != "undefined" && localStorage.getItem("imageUrl");
-  const data = { ...businessData, image, ...files };
-//   console.log(data);
-
   const handleSubmit = () => {
+    setIsLoading(true);
     try {
       const response = axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}/business/register`,
         data,
         {
-          headers:{
-            Authorization: `Bearer ${token}`
+          headers: {
+            Authorization: `Bearer ${token}`,
           },
         }
-
-    
       );
-      console.log(data)
-      console.log(response.data)
     } catch (error) {
-        console.log(Error)
+      console.log(Error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -228,7 +230,11 @@ const FileUpload = ({ nextStep }) => {
         type="submit"
         className="text-[15px] leading-[18.29px] w-full bg-[#000000] text-[#FFFFFF] p-3 rounded-md lg:text-[24px] lg:leading-[29.26px] h-[50px]"
       >
-        Register business
+        {isLoading ? (
+          <ClipLoader color="gray" size={20} />
+        ) : (
+          " Register business"
+        )}
       </Button>
     </div>
   );

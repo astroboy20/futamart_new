@@ -7,6 +7,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/modal";
 import { useAuth } from "@/context/AuthContext";
+import { ClipLoader } from "react-spinners";
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
@@ -117,11 +118,11 @@ const Login = () => {
             {error && <Modal isOpen={true} message={error} />}
           </div>
           <Button
-            // disabled={loading}
+            disabled={loading}
             type="submit"
             className="bg-[#1A1A1A] w-full rounded-[16px] text-[16px] text-[#fff] my-5 font-[700] py-[25px]"
           >
-            {loading ? "Loading..." : "Continue"}
+            {loading ? <ClipLoader  color="white"/> : "Continue"}
           </Button>
         </form>
 
