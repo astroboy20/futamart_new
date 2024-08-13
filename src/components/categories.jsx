@@ -2,6 +2,7 @@
 import { BASE_URL, useFetchItems } from "@/hooks/useFetchItems";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Skeleton } from "./ui/skeleton";
 const Categories = () => {
   const pathname = usePathname();
   const {
@@ -11,10 +12,14 @@ const Categories = () => {
   } = useFetchItems({ url: `${BASE_URL}/categories` });
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div>
+        <Skeleton className="w-full h-4" />
+      </div>
+    );
   }
   if (error) {
-    return <div>Error: {error.message}</div>;
+    return <div>{error.message}</div>;
   }
   const categories = [
     { _id: 1, name: "All category", slug: "" },

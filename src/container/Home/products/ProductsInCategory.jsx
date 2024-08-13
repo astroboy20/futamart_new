@@ -1,9 +1,11 @@
 "use client";
 import { Fav } from "@/assets";
 import { AddToCart } from "@/components/addToCart";
+import { Loading } from "@/components/loading";
 import { StarRating } from "@/components/rating";
 import { BASE_URL, useFetchItems } from "@/hooks/useFetchItems";
 import Link from "next/link";
+import Image from "next/image";
 const ProductsInCategory = ({ slug }) => {
   const {
     data: categoryProduct,
@@ -14,8 +16,25 @@ const ProductsInCategory = ({ slug }) => {
   });
 
   console.log(categoryProduct);
-  if (isLoading) return <div>Loading</div>;
-  if (error) return <div>{error.message}</div>;
+  if (isLoading)
+    return (
+      <div className="p-3 sm:py-3 sm:px-0 grid grid-cols-2 gap-2 lg:gap-[15px] md:grid-cols-2 lg:grid-cols-4 w-full">
+        <Loading />
+      </div>
+    );
+  if (error)
+    return (
+      <div className="w-full h-fit my-[10%] flex flex-col items-center justify-center text-[20px] font-bold">
+        <Image
+          src={"/images/error.png"}
+          width={200}
+          height={200}
+          objectFit="cover"
+          alt=">Web interface icons created by mim_studio - Flaticon"
+        />
+        {error.message}
+      </div>
+    );
   return (
     <div className="p-3 sm:py-3 sm:px-0 grid grid-cols-2 gap-[15px] md:grid-cols-2 lg:grid-cols-4 ">
       {categoryProduct?.data.map((singleProduct) => {

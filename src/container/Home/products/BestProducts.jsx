@@ -4,6 +4,7 @@ import { BASE_URL, useFetchItems } from "@/hooks/useFetchItems";
 import { StarRating } from "@/components/rating";
 import { AddToCart } from "@/components/addToCart";
 import { Fav, Next_Icon } from "@/assets";
+import { Loading } from "@/components/loading";
 
 const BestProducts = () => {
   const {
@@ -13,10 +14,14 @@ const BestProducts = () => {
   } = useFetchItems({ url: `${BASE_URL}/top-rated-products` });
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="p-3 sm:py-3 sm:px-0 grid grid-cols-2 gap-2 lg:gap-[15px] md:grid-cols-2 lg:grid-cols-4 w-full">
+        <Loading />
+      </div>
+    );
   }
   if (error) {
-    return <div>Error: {error.message}</div>;
+    return <div>{error.message}</div>;
   }
 
   return (

@@ -5,7 +5,6 @@ import { FormWithEmail } from "./form/FormWithEmail";
 import { FormWithPhone } from "./form/FormWithPhone";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Modal } from "@/components/modal";
 import { useAuth } from "@/context/AuthContext";
 import { ClipLoader } from "react-spinners";
 import { useToast } from "@chakra-ui/react";

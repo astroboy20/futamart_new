@@ -4,12 +4,13 @@ import Cookies from "js-cookie";
 
 export const BASE_URL = `${process.env.NEXT_PUBLIC_API_URL}`;
 
-export const useFetchItems = ({ url }) => {
+export const useFetchItems = ({ url, token }) => {
   return useQuery({
     queryKey: [url],
     queryFn: async () => {
       try {
-        const response = await axios.get(url);
+        const headers = token ? { Authorization: `Bearer ${token}` } : {};
+        const response = await axios.get(url, { headers });
         return response.data;
       } catch (error) {
         throw new Error(
@@ -22,6 +23,7 @@ export const useFetchItems = ({ url }) => {
     },
   });
 };
+
 export const getCart = ({ url }) => {
   const token = Cookies.get("token");
   return useQuery({

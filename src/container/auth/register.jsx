@@ -2,11 +2,10 @@
 import { DontShow, GoogleIcon, PasswordIcon } from "@/assets";
 import Link from "next/link";
 import React from "react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/context/AuthContext";
-import { Modal } from "@/components/modal";
 import { useToast } from "@chakra-ui/react";
 import { ClipLoader } from "react-spinners";
 
