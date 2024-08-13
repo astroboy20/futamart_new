@@ -2,34 +2,93 @@
 import Link from "next/link";
 import Cookies from "js-cookie";
 import { AddToCart } from "@/components/addToCart";
-import { BASE_URL, getCart } from "@/hooks/useFetchItems";
+import { BASE_URL, useFetchItems } from "@/hooks/useFetchItems";
+import { Loading } from "@/components/loading";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useToast } from "@chakra-ui/react";
 const CartContainer = () => {
-  const { data: cart, isLoading, error } = getCart({ url: `${BASE_URL}/cart` });
-  if (isLoading) return <div>Loading</div>;
-  if (error) return <div>{error.message}</div>;
-  if (cart?.data?.items?.length < 1)
+  const token = Cookies.get("token");
+  const queryClient = useQueryClient();
+  const toast = useToast();
+
+  const {
+    data: cart,
+    isLoading,
+    error,
+  } = useFetchItems({ url: `${BASE_URL}/cart` });
+
+  const mutation = useMutation({
+    mutationFn: async (id) => {
+      const res = await fetch(`${BASE_URL}/cart/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token ? `Bearer ${token}` : undefined,
+        },
+      });
+      if (!res.ok) {
+        throw new Error("Failed to delete item from cart");
+      }
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries([`${BASE_URL}/cart`]);
+      toast({
+        title: "Item removed",
+        description: "The item has been removed from your cart.",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to remove item from cart.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    },
+  });
+
+  const handleDelete = (id) => {
+    mutation.mutate(id);
+  };
+
+  if (isLoading)
     return (
-      <div className="text-center mb-5">
-        <p>Nothing here</p>
-        <Link href="/">Go and shop</Link>
+      <div className="p-3 sm:py-3 sm:px-0 grid grid-cols-1 gap-2 lg:gap-[15px] md:grid-cols-2 lg:grid-cols-1 w-full">
+        <Loading />
       </div>
     );
-  const handleDelete = async (id) => {
-    const token = Cookies.get("token");
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/cart/${id}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Token ${token}`,
-      },
-    });
-    const data = await res.json();
-    return data;
-  };
+  if (error)
+    return (
+      <div className="text-center mb-5 h-[50dvh] flex items-center justify-center font-bold">
+        {error.message}
+      </div>
+    );
+  if (cart?.data === null || cart?.data?.items?.length  === 0)
+    return (
+      <div className="text-center mb-5 h-[50dvh] flex items-center justify-center">
+        <div>
+          {" "}
+          <p>Nothing here</p>
+          <p>
+            Go and{" "}
+            <Link href="/" className="font-bold underline">
+              {" "}
+              shop
+            </Link>
+          </p>{" "}
+        </div>
+      </div>
+    );
+
   return (
-    <div className="w-[93%] mb-10 sm:w-[90%] mx-[auto]">
+    <div className="w-[100%] mt-3 mb-10 lg:my-10 px-[6%]  mx-[auto]">
       <div>
-        <p className="text-[24px] mb-3 leading-[29.26px] font-semibold sm:text-[40px] sm:leading-[48.76px]">
+        <p className="text-[20px] mb-3 leading-[29.26px] font-semibold sm:text-[35px] sm:leading-[48.76px]">
           Catalogue
         </p>
         <div className="flex flex-col gap-7 w-full">
@@ -64,7 +123,7 @@ const CartContainer = () => {
                     </span>
                   </div>
                   <Link href={`/products/${item?.product?.slug}`}>
-                    <p className="font-semibold text-[16px] leading-[19.5px] sm:text-[28px] sm:leading-[34.13px] truncate w-[180px] lg:w-[850px] ">
+                    <p className="font-semibold text-[16px] leading-[19.5px] sm:text-[24px] sm:leading-[34.13px] truncate w-[180px] lg:w-[850px] ">
                       {item?.product?.name}
                     </p>
                   </Link>

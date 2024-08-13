@@ -22,7 +22,6 @@ const MobileNavbar = ({ handleShow }) => {
   const { data: categories } = useFetchItems({ url: `${BASE_URL}/categories` });
   const { data: userData } = useFetchItems({
     url: `${BASE_URL}/user`,
-    token: token,
   });
 
   const { logout } = useAuth();
