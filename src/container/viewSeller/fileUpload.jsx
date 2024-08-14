@@ -5,9 +5,11 @@ import axios from "axios";
 import { useState } from "react";
 import Cookies from "js-cookie";
 import { ClipLoader } from "react-spinners";
+import {  ModalContainer } from "@/components/modal";
 
 const FileUpload = ({ nextStep }) => {
   const [isChecked, setIsChecked] = useState(false);
+  const [showModal, setShowModal] = useState(false)
   const [files, setFiles] = useState({
     Credentials: {
       front_side: null,
@@ -102,12 +104,19 @@ const FileUpload = ({ nextStep }) => {
           },
         }
       );
+      setShowModal(true)
+      
     } catch (error) {
       console.log(Error);
+      setShowModal(true)
     } finally {
       setIsLoading(false);
     }
   };
+
+  const handleClose = ()=>{
+    setShowModal(false)
+  }
 
   return (
     <div className="flex flex-col gap-8">
@@ -225,7 +234,7 @@ const FileUpload = ({ nextStep }) => {
         </p>
       </label>
       <Button
-        disabled={!isChecked || !uploaded.front_side || !uploaded.back_side}
+        // disabled={!isChecked || !uploaded.front_side || !uploaded.back_side}
         onClick={handleSubmit}
         type="submit"
         className="text-[15px] leading-[18.29px] w-full bg-[#000000] text-[#FFFFFF] p-3 rounded-md lg:text-[24px] lg:leading-[29.26px] h-[50px]"
@@ -236,6 +245,8 @@ const FileUpload = ({ nextStep }) => {
           " Register business"
         )}
       </Button>
+
+      <ModalContainer isOpen={showModal} onClose={handleClose}/>
     </div>
   );
 };

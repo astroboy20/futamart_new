@@ -36,7 +36,7 @@ const BestProducts = () => {
         </p>
       </div>
 
-      <div className="p-3 sm:py-3 sm:px-0 grid grid-cols-2 gap-[15px] md:grid-cols-2 lg:grid-cols-4">
+      <div className="py-3 sm:py-3 sm:px-0 grid grid-cols-2 gap-[15px] md:grid-cols-2 lg:grid-cols-4">
         {bestProducts?.data?.map((singleProduct) => (
           <div
             key={singleProduct._id}

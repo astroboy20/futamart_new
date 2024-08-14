@@ -90,7 +90,7 @@ const Home = () => {
       </div>
 
       <div className="flex flex-col lg:flex-row items-center gap-5 w-full">
-        <Card className="p-5 w-full lg:w-[70%] h-fit  lg:h-[400px] shadow-[2px_2px_4px_0_rgba(0,0,0,0.1)] border-[#0000004D] rounded-[8px]">
+        <Card className="p-5 w-full lg:w-[70%] h-fit  lg:h-[400px] overflow-y-scroll no-scrollbar shadow-[2px_2px_4px_0_rgba(0,0,0,0.1)] border-[#0000004D] rounded-[8px]">
           <div className="flex justify-between mb-10 lg:mb-0">
             <div>
               <p className="text-[14px] lg:text-[18px] font-[500]">

@@ -1,6 +1,5 @@
 import {
-  Logo,
-  Logo_Black,
+
   Logo_Black_Small,
   PhoneIcon,
   WhatsappIcon,
@@ -14,7 +13,7 @@ const Footer = () => {
     <footer className="flex flex-col ">
       <div className="bg-[rgb(247,247,247)] flex flex-col gap-[30px] py-10 px-5 lg:flex-row justify-between  lg:px-[5%] lg:py-6">
         <div className="flex flex-col gap-5">
-          <div className="flex items-center gap-2.5 text-[32px] font-[700] lg:text-[40px] ">
+          <div className="flex items-center gap-2.5 text-[24px] font-[700] lg:text-[40px] ">
             <Logo_Black_Small /> futamart
           </div>
           <div className="flex flex-col gap-2.5 text-[14px] font-[400] lg:text-[18px] ">

@@ -10,13 +10,8 @@ const SellerRefForm = ({ nextStep }) => {
     address: "",
     contact: "",
     email: "",
-    // image: "",
-    // Credential: {
-    //   front_side: "",
-    //   back_side: "",
-    // },
   });
-
+  const [valid, setValid] = useState(true);
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -26,6 +21,12 @@ const SellerRefForm = ({ nextStep }) => {
     }));
   };
 
+  const validation =
+    !businessData.address ||
+    !businessData.category ||
+    !businessData.businessName ||
+    !businessData.email ||
+    !businessData.contact;
   const handleSubmit = (e) => {
     e.preventDefault();
     typeof window != "undefined" &&
@@ -124,6 +125,7 @@ const SellerRefForm = ({ nextStep }) => {
         </FormControl>
 
         <Button
+          disabled={validation}
           className="bg-[#000000] text-[#FFFFFF] p-3 w-full my-5 shadow-sm rounded-[8px] md:text-[18px] sm:leading-[29.26px] h-[50px]"
           type="submit"
         >

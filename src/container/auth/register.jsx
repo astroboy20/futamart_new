@@ -69,7 +69,7 @@ const Register = () => {
         duration: 5000,
         isClosable: true,
       });
-      login(result.data, "/dashboard");
+      login(result.data);
     } catch (error) {
       console.log(error?.message);
       setLoading(false);
