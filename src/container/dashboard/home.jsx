@@ -20,6 +20,9 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { chartConfig, chartData, notification } from "@/providers/data";
+import { ModalContainer } from "@/components/modal";
+import { useState } from "react";
+import Link from "next/link";
 
 const metrics = [
   {
@@ -48,8 +51,11 @@ const metrics = [
 const notifications = notification.slice(0, 2);
 
 const Home = () => {
+ 
+
   return (
     <main className="flex flex-col gap-5 lg:gap-10 mt-[100px] lg:mt-0">
+     
       <div className="flex justify-between items-center lg:items-start">
         <div className="w-[80%] lg:w-[70%] h-fit px-3 py-1 border-2 shadow-[2px_2px_4px_0_rgba(0,0,0,0.12)] rounded flex items-center gap-5">
           <SearchIcon />
@@ -61,7 +67,11 @@ const Home = () => {
 
         <div className="flex items-center gap-5">
           <NotificationIconX />
-          <Button className="hidden lg:block">Add products</Button>
+          <Link href="/dashboard/products">
+            <Button className="hidden lg:block" >
+              View products
+            </Button>
+          </Link>
         </div>
       </div>
 

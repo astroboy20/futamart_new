@@ -2,6 +2,7 @@ import { NotificationIconX } from "@/assets";
 import { Button } from "@/components/ui/button";
 import { notification } from "@/providers/data";
 import Image from "next/image";
+import Link from "next/link";
 
 const Notification = () => {
   return (
@@ -10,7 +11,9 @@ const Notification = () => {
         <h1 className="text-[24px] font-[600] underline">Notification</h1>
         <div className="flex items-center gap-5">
           <NotificationIconX />
-          <Button className="hidden lg:block">Add products</Button>
+          <Link href="/dashboard/products">
+            <Button className="hidden lg:block">View products</Button>
+          </Link>
         </div>
       </div>
 
@@ -21,7 +24,8 @@ const Notification = () => {
               <Image src={data.src} width={48} height={48} alt="user-image" />
               <p>
                 {data.name} {data.item ? "added" : ""}{" "}
-                <span className="underline"> {data?.item}</span> {data.item ? "to cart" : ""}{" "}
+                <span className="underline"> {data?.item}</span>{" "}
+                {data.item ? "to cart" : ""}{" "}
               </p>
             </div>
             <p className="text-[8px] lg:text-[14px] italic">{data.time}</p>

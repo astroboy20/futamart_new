@@ -8,6 +8,7 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { chartConfig, chartData } from "@/providers/data";
+import Link from "next/link";
 import { Bar, BarChart, CartesianGrid, LabelList, XAxis } from "recharts";
 
 const Analytics = () => {
@@ -17,7 +18,11 @@ const Analytics = () => {
         <h1 className="text-[24px] font-[600] underline">Analytics</h1>
         <div className="flex items-center gap-5">
           <NotificationIconX />
-          <Button className="hidden lg:block">Add products</Button>
+          <Link href="/dashboard/products">
+            <Button className="hidden lg:block" >
+              View products
+            </Button>
+          </Link>
         </div>
       </div>
 
