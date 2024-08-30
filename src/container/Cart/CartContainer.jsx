@@ -78,8 +78,8 @@ const CartContainer = () => {
             className="h-60 pt-10 mx-auto"
           />
           <p className="font-bold pt-10 text-[21px]"> Your cart is empty</p>
-          <p className="text-gray-500 mb-20 font-semibold text-base sm:text-sm">
-            Looks like you have not added anything yet to your cart. Go <br />
+          <p className="text-gray-500 mb-20 px-4 font-semibold text-base sm:text-sm">
+            Looks like you have not added anything yet to your cart. Go
             ahead and explore top categories
           </p>
 
