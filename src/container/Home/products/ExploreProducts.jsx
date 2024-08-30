@@ -31,10 +31,10 @@ const ExploreProducts = () => {
         <h1 className="text-[20px] lg:text-[35px] font-[600]">
           Explore Products
         </h1>
-        <p className="flex items-center gap-3 text-[10px] lg:text-[20px]">
+        {/* <p className="flex items-center gap-3 text-[10px] lg:text-[20px]">
           View all
           <Next_Icon />
-        </p>
+        </p> */}
       </div>
 
       <div className="py-3 sm:py-3 sm:px-0 grid grid-cols-2 gap-[15px] md:grid-cols-2 lg:grid-cols-4">
