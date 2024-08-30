@@ -167,7 +167,7 @@ const Header = () => {
                   Settings
                 </Link>
                 <Link
-                  href="/register-seller"
+                  href="/seller"
                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                 >
                   Sell on FUTAMart
