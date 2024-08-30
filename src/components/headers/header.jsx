@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import Cookies from "js-cookie";
 import {
   CartIcon,
   Hamburger,
@@ -16,10 +17,18 @@ import { MobileNavbar } from "../mobileNavbar";
 
 const Header = () => {
   const [show, setShow] = useState(false);
+  const [dropdownVisible, setDropdownVisible] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const dropdownRef = useRef(null);
 
   const handleShow = () => {
     setShow(!show);
   };
+
+  useEffect(() => {
+    const token = Cookies.get("token");
+    setIsAuthenticated(!!token);
+  }, []);
 
   useEffect(() => {
     if (show) {
@@ -28,6 +37,44 @@ const Header = () => {
       document.body.classList.remove("overflow-hidden");
     }
   }, [show]);
+
+  const handlePersonIconClick = (e) => {
+    e.stopPropagation();
+    setDropdownVisible((prev) => !prev);
+  };
+
+  const handleMouseEnter = () => {
+    setDropdownVisible(true);
+  };
+
+  const handleMouseLeave = () => {
+    if (!dropdownVisible) {
+      setDropdownVisible(false);
+    }
+  };
+
+  const handleClickOutside = (event) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setDropdownVisible(false);
+    }
+  };
+
+  useEffect(() => {
+    if (dropdownVisible) {
+      document.addEventListener("click", handleClickOutside);
+    } else {
+      document.removeEventListener("click", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, [dropdownVisible]);
+
+  const handleLogout = () => {
+    Cookies.remove("token");
+    setIsAuthenticated(false);
+    window.location.href = "/login";
+  };
 
   return (
     <header className="flex flex-col lg:flex-row gap-[20px] lg:items-center w-full py-8 px-[6%] lg:justify-between lg:py-[3%] lg:px-[6%]">
@@ -62,13 +109,83 @@ const Header = () => {
           />
         </div>
       </div>
-      <div className="hidden lg:flex gap-[10px] items-center">
-        <PersonIcon />
-        <Link href="/cart">
-          <CartIcon />
-        </Link>
+      <div
+        className="hidden lg:flex gap-[10px] cursor-pointer items-center relative"
+        onClick={handlePersonIconClick}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        ref={dropdownRef}
+      >
+        <PersonIcon/>
+        {dropdownVisible && (
+          <div className="absolute top-full right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50">
+            {!isAuthenticated ? (
+              <div className="py-2">
+                <Link
+                  href="/login"
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
+                  Log In
+                </Link>
+                <Link
+                  href="/register"
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
+                  Sign Up
+                </Link>
+              </div>
+            ) : (
+              <div className="py-2">
+                <Link
+                  href="/profile"
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
+                  Profile
+                </Link>
+                <Link
+                  href="/"
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
+                  Chats
+                </Link>
+                <Link
+                  href="/"
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
+                  Favourite products
+                </Link>
+                <Link
+                  href="/cart"
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
+                  Cart
+                </Link>
+                <Link
+                  href="/cart"
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
+                  Settings
+                </Link>
+                <Link
+                  href="/register-seller"
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
+                  Sell on FUTAMart
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
+                  Log Out
+                </button>
+              </div>
+            )}
+          </div>
+        )}
       </div>
-
+      <Link href="/cart">
+        <CartIcon />
+      </Link>
       {show && <MobileNavbar handleShow={handleShow} />}
     </header>
   );
