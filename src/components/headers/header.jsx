@@ -117,6 +117,9 @@ const Header = () => {
         ref={dropdownRef}
       >
         <PersonIcon/>
+        <Link href="/cart">
+        <CartIcon />
+      </Link>
         {dropdownVisible && (
           <div className="absolute top-full right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50">
             {!isAuthenticated ? (
@@ -183,9 +186,7 @@ const Header = () => {
           </div>
         )}
       </div>
-      <Link href="/cart">
-        <CartIcon />
-      </Link>
+
       {show && <MobileNavbar handleShow={handleShow} />}
     </header>
   );
