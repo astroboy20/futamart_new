@@ -75,9 +75,10 @@ const CartContainer = () => {
             <img 
               src="/images/empty-cart.png" 
               alt="Empty Cart" 
-              className="h-80 pt-10 mx-auto" 
+              className="h-60 pt-10 mx-auto" 
             />
-            <p className="font-bold pt-10 text-[26px]">Cart is Empty!!!</p>
+            <p className="font-bold pt-10 text-[26px] sm:text-[22px]">Cart is Empty</p>
+            <p className="text-gray-500 mb-20 font-semibold sm:text-sm">Looks like you have not added anything yet to your cart. Go <br/>ahead and explore top categories</p>
             {/* <Link href="/" className="font-bold underline">
               <button className="mt-2 px-4 py-2  text-white rounded">
                 Shop now
