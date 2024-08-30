@@ -68,27 +68,30 @@ const CartContainer = () => {
         {error.message}
       </div>
     );
-    if (cart?.data === null || cart?.data?.items?.length === 0)
-      return (
-        <div className="text-center mb-5 h-[50dvh] flex items-center justify-center">
-          <div>
-            <img 
-              src="/images/empty-cart.png" 
-              alt="Empty Cart" 
-              className="h-60 pt-10 mx-auto" 
-            />
-            <p className="font-bold pt-10 text-[26px] sm:text-[22px]">Cart is Empty</p>
-            <p className="text-gray-500 mb-20 font-semibold sm:text-sm">Looks like you have not added anything yet to your cart. Go <br/>ahead and explore top categories</p>
-            {/* <Link href="/" className="font-bold underline">
+  if (cart?.data === null || cart?.data?.items?.length === 0)
+    return (
+      <div className="text-center mb-5 h-[50dvh] flex items-center justify-center">
+        <div>
+          <img
+            src="/images/empty-cart.png"
+            alt="Empty Cart"
+            className="h-60 pt-10 mx-auto"
+          />
+          <p className="font-bold pt-10 text-[21px]"> Your cart is empty</p>
+          <p className="text-gray-500 mb-20 font-semibold text-base sm:text-sm">
+            Looks like you have not added anything yet to your cart. Go <br />
+            ahead and explore top categories
+          </p>
+
+          {/* <Link href="/" className="font-bold underline">
               <button className="mt-2 px-4 py-2  text-white rounded">
                 Shop now
               </button>
             </Link> */}
-          </div>
         </div>
-      );
-  
-  
+      </div>
+    );
+
   return (
     <div className="w-[100%] mt-3 mb-10 lg:my-10 px-[6%]  mx-[auto]">
       <div>
