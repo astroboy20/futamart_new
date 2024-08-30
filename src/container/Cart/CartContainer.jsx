@@ -68,23 +68,26 @@ const CartContainer = () => {
         {error.message}
       </div>
     );
-  if (cart?.data === null || cart?.data?.items?.length  === 0)
-    return (
-      <div className="text-center mb-5 h-[50dvh] flex items-center justify-center">
-        <div>
-          {" "}
-          <p>Nothing here</p>
-          <p>
-            Go and{" "}
-            <Link href="/" className="font-bold underline">
-              {" "}
-              shop
-            </Link>
-          </p>{" "}
+    if (cart?.data === null || cart?.data?.items?.length === 0)
+      return (
+        <div className="text-center mb-5 h-[50dvh] flex items-center justify-center">
+          <div>
+            <img 
+              src="/images/empty-cart.png" 
+              alt="Empty Cart" 
+              className="h-80 pt-10 mx-auto" 
+            />
+            <p className="font-bold pt-10 text-[26px]">Cart is Empty!!!</p>
+            {/* <Link href="/" className="font-bold underline">
+              <button className="mt-2 px-4 py-2  text-white rounded">
+                Shop now
+              </button>
+            </Link> */}
+          </div>
         </div>
-      </div>
-    );
-
+      );
+  
+  
   return (
     <div className="w-[100%] mt-3 mb-10 lg:my-10 px-[6%]  mx-[auto]">
       <div>
