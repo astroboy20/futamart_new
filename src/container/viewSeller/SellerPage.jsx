@@ -31,11 +31,12 @@ export default async function Page({ params }) {
   return (
     <div className="px-[6%]">
      <div>
-      <SellerProfile
-        sellerName={data.business.businessName || 'N/A'}
-        sellerProfileImage={data.business.user_image || '/default-profile.png'}
-        businessDetails={`Address: ${data.business.business_address || 'N/A'}, Contact: ${data.business.business_contact || 'N/A'}, Email: ${data.business.business_email || 'N/A'}`}
-      />
+     <SellerProfile
+  sellerName={data.business.businessName || 'N/A'}
+  sellerProfileImage={data.business.user_image || '/images/Sample_User_Icon.png'}
+  businessDetails={`Address: ${data.business.business_address || 'N/A'}, Contact: ${data.business.business_contact || 'N/A'}, Email: ${data.business.business_email || 'N/A'}`}
+/>
+
 
       
       <div className="py-3 sm:py-3 sm:px-0 grid grid-cols-2 gap-[15px] md:grid-cols-2 lg:grid-cols-4">
