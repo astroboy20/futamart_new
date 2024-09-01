@@ -58,7 +58,7 @@ const CartContainer = () => {
 
   if (isLoading)
     return (
-      <div className="p-3 sm:py-3 sm:px-0 grid grid-cols-1 gap-2 lg:gap-[15px] md:grid-cols-2 lg:grid-cols-1 w-full">
+      <div className="p-3 sm:py-3 sm:px-[6%] grid grid-cols-1 gap-2 lg:gap-[15px] md:grid-cols-2 lg:grid-cols-1 w-full">
         <Loading />
       </div>
     );

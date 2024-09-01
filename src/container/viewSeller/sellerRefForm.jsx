@@ -1,7 +1,18 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { FormControl, FormLabel, Input, Select } from "@chakra-ui/react";
+import {
+  FormControl,
+  FormLabel,
+  Input,
+  Select,
+  Spinner,
+  useToast,
+} from "@chakra-ui/react";
+import axios from "axios";
 import React, { useState } from "react";
+import { IoIosAddCircle } from "react-icons/io";
+
+
 
 const SellerRefForm = ({ nextStep }) => {
   const [businessData, setBusinessData] = useState({
@@ -11,14 +22,49 @@ const SellerRefForm = ({ nextStep }) => {
     contact: "",
     email: "",
   });
+  const [logo, setLogo] = useState(null); // State for the logo URL
+  const [loading, setLoading] = useState(false); // State for loading
   const [valid, setValid] = useState(true);
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+  const toast = useToast(); // Initialize the toast hook
 
-    setBusinessData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+  const handleChange = async (e) => {
+    const { name, value, type, files } = e.target;
+
+    if (type === "file") {
+      const file = files ? files[0] : null;
+      if (file) {
+        setLoading(true); // Start loading
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("upload_preset", "futamart");
+
+        try {
+          const response = await axios.post(
+            "https://api.cloudinary.com/v1_1/dm42ixhsz/image/upload",
+            formData
+          );
+          setLogo(response.data.secure_url); // Store the logo URL
+
+          // Show success toast
+          toast({
+            title: "Upload Successful",
+            description: "Your logo has been uploaded successfully.",
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+          });
+        } catch (err) {
+          console.error("Upload failed:", err);
+        } finally {
+          setLoading(false); // End loading
+        }
+      }
+    } else {
+      setBusinessData((prevData) => ({
+        ...prevData,
+        [name]: value,
+      }));
+    }
   };
 
   const validation =
@@ -26,12 +72,17 @@ const SellerRefForm = ({ nextStep }) => {
     !businessData.category ||
     !businessData.businessName ||
     !businessData.email ||
-    !businessData.contact;
+    !businessData.contact ||
+    !logo; // Ensure logo URL is also checked
+
   const handleSubmit = (e) => {
     e.preventDefault();
     typeof window != "undefined" &&
-      localStorage.setItem("businessData", JSON.stringify(businessData));
-    console.log(businessData);
+      localStorage.setItem(
+        "businessData",
+        JSON.stringify({ ...businessData, logo })
+      );
+    console.log("Business Data:", { ...businessData, logo });
     nextStep();
   };
 
@@ -89,7 +140,6 @@ const SellerRefForm = ({ nextStep }) => {
           </FormLabel>
           <Input
             name="address"
-            type="address"
             value={businessData.address}
             onChange={handleChange}
             size={"lg"}
@@ -122,6 +172,31 @@ const SellerRefForm = ({ nextStep }) => {
             <option value="Footwears">Footwears</option>
             <option value="Others">Others</option>
           </Select>
+        </FormControl>
+
+        <FormControl display={"flex"} flexDirection={"column"} gap={"16px"}>
+          <div className="text-[16px] sm:text-[18px] font-medium">
+            Business Logo
+          </div>
+          <div className="border-2 p-3 rounded-lg w-full">
+            {loading ? (
+              <Spinner color="black" />
+            ) : (
+              <label
+                htmlFor="logo"
+                className="flex items-center gap-2 cursor-pointer"
+              >
+                <IoIosAddCircle size={30} /> Choose Logo
+              </label>
+            )}
+            <input
+              className="hidden"
+              type="file"
+              id="logo"
+              name="logo"
+              onChange={handleChange}
+            />
+          </div>
         </FormControl>
 
         <Button
