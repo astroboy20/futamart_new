@@ -34,7 +34,7 @@ export default async function Page({ params }) {
         <SellerProfile
           sellerName={data.business.businessName || "N/A"}
           sellerProfileImage={
-            data.business.user_image || "/images/Sample_User_Icon.png"
+            data.business.business_logo || "/images/Sample_User_Icon.png"
           }
           businessDetails={`Address: ${
             data.business.business_address || "N/A"
