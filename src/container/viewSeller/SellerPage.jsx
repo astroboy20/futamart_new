@@ -25,6 +25,7 @@ export default async function Page({ params }) {
   }
 
   const data = await fetchBusinessData(collectionName);
+console.log(data.business.user_image);
 
   const products = data.product || [];
 

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { StarRating } from "./rating";
 
 const SellerProfile = ({ sellerName, sellerProfileImage, businessDetails }) => {
-  // Splitting businessDetails into an object for better formatting
+
   const details = businessDetails.split(', ').reduce((acc, detail) => {
     const [key, value] = detail.split(': ');
     acc[key] = value;
@@ -15,7 +15,7 @@ const SellerProfile = ({ sellerName, sellerProfileImage, businessDetails }) => {
   return (
     <div className="flex flex-col sm:flex-row items-start space-y-4 sm:space-y-0 sm:space-x-[80px] mb-10">
       <img 
-        src="{sellerProfileImage} "
+        src={sellerProfileImage} 
         alt={sellerName} 
         className="rounded-full w-48 h-48 object-cover" 
       />
