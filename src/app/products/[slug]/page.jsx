@@ -24,10 +24,13 @@ const Page = ({ params }) => {
   return (
     <main>
       <Header />
+      <div className="px-[6%]">
       <SingleProduct getSingleProduct={getSingleProduct} />
       <OtherProducts
         relatedProducts={getSingleProduct?.data?.relatedProducts}
       />
+      </div>
+      
       <Promotion />
       <Footer />
     </main>
