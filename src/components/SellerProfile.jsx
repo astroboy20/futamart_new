@@ -16,7 +16,7 @@ const SellerProfile = ({ sellerName, sellerProfileImage, businessDetails }) => {
       <img
         src={sellerProfileImage}
         alt={sellerName}
-        className="rounded-full h-24 w-24 sm:h-24 sm:w-24 md:h-48 md:w-48 lg:h-48 lg:w-48 object-cover"
+        className="rounded-full h-24 w-24 sm:h-24 sm:w-24 md:h-48 md:w-48 lg:h-48 lg:w-48 mr-5 sm:mt-3 lg:mt-0 object-cover"
       />
 
       <div className="flex flex-col gap-4">
