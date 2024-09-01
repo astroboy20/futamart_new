@@ -138,7 +138,7 @@ const Header = () => {
                 </Link>
               </div>
             ) : (
-              <div className="py-2">
+              <div className="py-2"> 
                 <Link
                   href="/profile"
                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
