@@ -1,13 +1,16 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { Select } from "@chakra-ui/react";
+import { Select, useToast } from "@chakra-ui/react";
 import axios from "axios";
 import { useState } from "react";
 import Cookies from "js-cookie";
 import { ClipLoader } from "react-spinners";
 import {  ModalContainer } from "@/components/modal";
+import { useRouter } from "next/navigation";
 
 const FileUpload = ({ nextStep }) => {
+  const router = useRouter()
+  const toast = useToast()
   const [isChecked, setIsChecked] = useState(false);
   const [showModal, setShowModal] = useState(false)
   const [files, setFiles] = useState({
@@ -92,10 +95,10 @@ const FileUpload = ({ nextStep }) => {
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     setIsLoading(true);
     try {
-      const response = axios.post(
+      const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}/business/register`,
         data,
         {
@@ -104,11 +107,24 @@ const FileUpload = ({ nextStep }) => {
           },
         }
       );
-      setShowModal(true)
-      
+      toast({
+        title: "Registration Successful",
+        description: response?.data?.message || "Business registered successfully.",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+      console.log(response?.data?.message);
+      router.push("/dashboard")
     } catch (error) {
-      console.log(Error);
-      setShowModal(true)
+      console.error("Error during registration:", error);
+      toast({
+        title: "Registration Failed",
+        description: "There was an error registering the business.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
     } finally {
       setIsLoading(false);
     }
