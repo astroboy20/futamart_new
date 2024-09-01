@@ -26,6 +26,7 @@ export default async function Page({ params }) {
 
   const data = await fetchBusinessData(collectionName);
 
+
   const products = data.product || [];
 
   return (
