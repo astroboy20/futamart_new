@@ -47,7 +47,7 @@ const SingleProduct = ({ getSingleProduct }) => {
           <div className="flex items-center gap-3 lg:gap-6">
             <img
               className="w-[48px] h-[48px] object-cover rounded-full lg:h-[80px] lg:w-[80px]"
-              src={getSingleProduct?.data?.business?.user_image}
+              src={getSingleProduct?.data?.business?.business_logo}
               alt=""
             />
             <p className="text-[16px] font-semibold leading-[19.5px] capitalize sm:text-[20px] lg:leading-[23.38px]">
