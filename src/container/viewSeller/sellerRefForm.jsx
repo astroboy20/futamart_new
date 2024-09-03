@@ -22,10 +22,10 @@ const SellerRefForm = ({ nextStep }) => {
     contact: "",
     email: "",
   });
-  const [logo, setLogo] = useState(null); // State for the logo URL
-  const [loading, setLoading] = useState(false); // State for loading
+  const [logo, setLogo] = useState(null); 
+  const [loading, setLoading] = useState(false); 
   const [valid, setValid] = useState(true);
-  const toast = useToast(); // Initialize the toast hook
+  const toast = useToast(); 
 
   const handleChange = async (e) => {
     const { name, value, type, files } = e.target;
@@ -33,7 +33,7 @@ const SellerRefForm = ({ nextStep }) => {
     if (type === "file") {
       const file = files ? files[0] : null;
       if (file) {
-        setLoading(true); // Start loading
+        setLoading(true); 
         const formData = new FormData();
         formData.append("file", file);
         formData.append("upload_preset", "futamart");
@@ -43,9 +43,9 @@ const SellerRefForm = ({ nextStep }) => {
             "https://api.cloudinary.com/v1_1/dm42ixhsz/image/upload",
             formData
           );
-          setLogo(response.data.secure_url); // Store the logo URL
+          setLogo(response.data.secure_url); 
 
-          // Show success toast
+         
           toast({
             title: "Upload Successful",
             description: "Your logo has been uploaded successfully.",
@@ -56,7 +56,7 @@ const SellerRefForm = ({ nextStep }) => {
         } catch (err) {
           console.error("Upload failed:", err);
         } finally {
-          setLoading(false); // End loading
+          setLoading(false); 
         }
       }
     } else {
@@ -73,7 +73,7 @@ const SellerRefForm = ({ nextStep }) => {
     !businessData.businessName ||
     !businessData.email ||
     !businessData.contact ||
-    !logo; // Ensure logo URL is also checked
+    !logo; 
 
   const handleSubmit = (e) => {
     e.preventDefault();
