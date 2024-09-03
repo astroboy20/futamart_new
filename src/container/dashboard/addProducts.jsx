@@ -10,23 +10,53 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { BASE_URL, useFetchItems } from "@/hooks/useFetchItems";
 import { useToast } from "@chakra-ui/react";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { FaPlus } from "react-icons/fa";
+import { FaPlus, FaTrash } from "react-icons/fa";
+import Cookies from "js-cookie"
 
-const AddProducts = () => {
+const AddProducts = ({ onClose }) => {
   const toast = useToast();
-  const [featuredImage, setFeaturedImage] = useState(null);
-  const [additionalImages, setAdditionalImages] = useState([]);
+  const router = useRouter();
+  const token = Cookies.get("token")
+  const { data } = useFetchItems({ url: `${BASE_URL}/categories` });
+  const categoriesData = data?.data;
+  const [isLoading, setIsLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    category: "",
+    description: "",
+    price: "",
+    attributes: [{ name: "", variants: [] }],
+    featuredImage: null,
+    additionalImages: [],
+  });
 
-  const handleFeaturedChange = (e) => {
-    const file = e.target.files[0];
-    setFeaturedImage(URL.createObjectURL(file));
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
+  //featuredImage
+  const handleFeaturedChange = (e) => {
+    const file = e.target.files[0];
+    setFormData((prevData) => ({
+      ...prevData,
+      featuredImage: URL.createObjectURL(file),
+    }));
+  };
+
+  //additional images
   const handleAdditionalImageChange = (e) => {
     const files = Array.from(e.target.files);
-    if (additionalImages.length + files?.length > 5) {
+    if (formData.additionalImages.length + files?.length > 5) {
       toast({
         title: "Limit Reached",
         description: "You can only add up to 5 images.",
@@ -37,7 +67,131 @@ const AddProducts = () => {
       return;
     }
     const newImages = files.map((file) => URL.createObjectURL(file));
-    setAdditionalImages((prevImages) => [...prevImages, ...newImages]);
+    setFormData((prevData) => ({
+      ...prevData,
+      additionalImages: [...formData.additionalImages, ...newImages],
+    }));
+  };
+
+  //category
+  const handleSelectChange = (value) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      category: value,
+    }));
+  };
+
+  //Attributes
+  // Attributes
+  const handleAddAttribute = () => {
+    const hasEmptyAttribute = formData.attributes.some(
+      (attr) => !attr.name.trim() || attr.variants.some((v) => !v.trim())
+    );
+
+    if (hasEmptyAttribute) {
+      toast({
+        title: "Incomplete Attribute",
+        description:
+          "Please fill in the name and variants of all attributes before adding a new one.",
+        status: "warning",
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    setFormData((prevData) => ({
+      ...prevData,
+      attributes: [...prevData.attributes, { name: "", variants: [""] }],
+    }));
+  };
+
+  const handleAttributeChange = (index, value) => {
+    const updatedAttributes = formData.attributes.map((attr, i) =>
+      i === index ? { ...attr, name: value } : attr
+    );
+    setFormData((prevData) => ({
+      ...prevData,
+      attributes: updatedAttributes,
+    }));
+  };
+
+  const handleAddVariant = (attrIndex) => {
+    const attribute = formData.attributes[attrIndex];
+
+    if (!attribute.name.trim()) {
+      toast({
+        title: "Empty Attribute",
+        description:
+          "Please fill in the attribute name before adding variants.",
+        status: "warning",
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    const updatedAttributes = formData.attributes.map((attr, i) =>
+      i === attrIndex ? { ...attr, variants: [...attr.variants, ""] } : attr
+    );
+    setFormData((prevData) => ({
+      ...prevData,
+      attributes: updatedAttributes,
+    }));
+  };
+
+  const handleVariantChange = (attrIndex, variantIndex, value) => {
+    const updatedAttributes = formData.attributes.map((attr, i) =>
+      i === attrIndex
+        ? {
+            ...attr,
+            variants: attr.variants.map((variant, j) =>
+              j === variantIndex ? value : variant
+            ),
+          }
+        : attr
+    );
+    setFormData((prevData) => ({
+      ...prevData,
+      attributes: updatedAttributes,
+    }));
+  };
+
+  const handleDeleteVariant = (attrIndex, variantIndex) => {
+    const updatedAttributes = formData.attributes.map((attr, i) =>
+      i === attrIndex
+        ? {
+            ...attr,
+            variants: attr.variants.filter((_, j) => j !== variantIndex),
+          }
+        : attr
+    );
+    setFormData((prevData) => ({
+      ...prevData,
+      attributes: updatedAttributes,
+    }));
+  };
+
+  const handleDeleteAttribute = (attrIndex) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      attributes: prevData.attributes.filter((_, i) => i !== attrIndex),
+    }));
+  };
+
+  const handleSubmit = () => {
+    console.log(formData);
+    onClose();
+    try {
+      const request = axios.post(`${BASE_URL}/products`, formData, 
+      {headers: {
+        Authorization: `Bearer ${token}`
+      }});
+      console.log(request.data)
+
+    } catch (error) {
+      throw new Error("Something went wrong", error)
+    }
   };
 
   return (
@@ -54,9 +208,9 @@ const AddProducts = () => {
         <div className="h-fit text-black rounded-[16px] flex flex-col gap-10">
           <p className="text-[16px] font-[600]">Upload Product Image</p>
           <div className="w-auto h-[320px] border border-black border-dashed rounded-[8px] flex justify-center items-center">
-            {featuredImage ? (
+            {formData.featuredImage ? (
               <img
-                src={featuredImage}
+                src={formData.featuredImage}
                 className="w-full h-full object-cover"
                 alt="Featured"
               />
@@ -88,7 +242,7 @@ const AddProducts = () => {
           <div className="h-fit text-black rounded-[16px] flex flex-col gap-10">
             <p className="text-[16px] font-[600]">Upload Additional Images</p>
             <div className="grid grid-cols-3 gap-2">
-              {additionalImages.map((imgSrc, index) => (
+              {formData.additionalImages.map((imgSrc, index) => (
                 <div key={index} className="relative">
                   <img
                     src={imgSrc}
@@ -97,7 +251,7 @@ const AddProducts = () => {
                   />
                 </div>
               ))}
-              {/* Plus icon for adding more images */}
+
               <div className="flex justify-center items-center border border-dashed border-black h-[100px] cursor-pointer">
                 <input
                   className="hidden"
@@ -119,7 +273,13 @@ const AddProducts = () => {
         <div className="flex flex-col gap-10">
           <div className="flex flex-col gap-5">
             <label className="text-[16px] font-[500]">Product Name</label>
-            <Input className="h-[55px]" placeholder="Dr Martens Loafers" />
+            <Input
+              className="h-[55px]"
+              placeholder="Dr Martens Loafers"
+              value={formData.name}
+              name="name"
+              onChange={handleChange}
+            />
           </div>
           <div className="z-50 flex flex-col gap-5">
             <label className="text-[16px] font-[500]">Category</label>
@@ -128,41 +288,103 @@ const AddProducts = () => {
                 <SelectValue placeholder="Select Category" />
               </SelectTrigger>
               <SelectContent className="z-[10000]" portal>
-                <SelectItem value="food">Food</SelectItem>
-                <SelectItem value="electronics">
-                  Electronics & Gadgets
-                </SelectItem>
-                <SelectItem value="fashion">Fashion & Clothing</SelectItem>
-                <SelectItem value="beauty">Beauty & Skincare</SelectItem>
-                <SelectItem value="hair">Hair Products</SelectItem>
-                <SelectItem value="footwears">Footwears</SelectItem>
-                <SelectItem value="others">Others</SelectItem>
+                {categoriesData?.map((data) => (
+                  <SelectItem
+                    onChange={handleSelectChange}
+                    name="category"
+                    value={data._id}
+                    key={data._id} // Add a key to avoid warnings
+                  >
+                    {data.name}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
+
+          {/* Attribute Management Section */}
           <div className="flex flex-col gap-5">
-            <label className="text-[16px] font-[500]">Product Size</label>
-            <Input className="h-[55px]" placeholder="35-45" />
+            <label className="text-[16px] font-[500]">Attributes</label>
+            {formData.attributes?.map((attr, attrIndex) => (
+              <div key={attrIndex} className="flex flex-col gap-2 mb-4">
+                <div className="flex items-center gap-2 w-full">
+                  <Input
+                    className="h-[55px]"
+                    value={attr.name}
+                    onChange={(e) =>
+                      handleAttributeChange(attrIndex, e.target.value)
+                    }
+                    placeholder={`Attribute ${attrIndex + 1}`}
+                  />
+                  <Button
+                    onClick={() => handleDeleteAttribute(attrIndex)}
+                    className="bg-red-500 hover:bg-red-700 text-white"
+                  >
+                    <FaTrash />
+                  </Button>
+                </div>
+                {attr.variants.map((variant, variantIndex) => (
+                  <div
+                    key={variantIndex}
+                    className="flex items-center gap-2 ml-4"
+                  >
+                    <Input
+                      className="h-[40px]"
+                      value={variant}
+                      onChange={(e) =>
+                        handleVariantChange(
+                          attrIndex,
+                          variantIndex,
+                          e.target.value
+                        )
+                      }
+                      placeholder={`Variant ${variantIndex + 1}`}
+                    />
+                    <Button
+                      onClick={() =>
+                        handleDeleteVariant(attrIndex, variantIndex)
+                      }
+                      className="bg-red-500 hover:bg-red-700 text-white h-[40px]"
+                    >
+                      <FaTrash />
+                    </Button>
+                  </div>
+                ))}
+                <Button
+                  onClick={() => handleAddVariant(attrIndex)}
+                  className="ml-auto w-fit mt-2 h-[40px]"
+                >
+                  Add Variant
+                </Button>
+              </div>
+            ))}
+            <Button onClick={handleAddAttribute}>Add Attribute</Button>
+          </div>
+
+          <div className="flex flex-col gap-5">
+            <label className="text-[16px] font-[500]">Product Price</label>
+            <Input
+              className="h-[55px]"
+              placeholder="Dr Martens Loafers"
+              value={formData.price}
+              name="price"
+              onChange={handleChange}
+            />
           </div>
           <div className="flex flex-col gap-5">
-            <label className="text-[16px] font-[500]">Attribute</label>
-            <div className="flex gap-2 items center ">
-              <Input className="h-[55px]" placeholder="35-45" />{" "}
-              <Button className="h-[55px]">Add</Button>
-            </div>
-          </div>
-          <div className="flex flex-col gap-5">
-            <label className="text-[16px] font-[500]">
-              Product Description
-            </label>
-            <Textarea placeholder="Add your product description here" />
-          </div>
-          <div className="flex flex-col gap-5">
-            <label className="text-[16px] font-[500]">Price</label>
-            <Input className="h-[55px]" placeholder="#5,500" />
+            <label className="text-[16px] font-[500]">Description</label>
+            <Textarea
+              placeholder="Description of the product"
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+            />
           </div>
           <div className="lg:ml-auto">
-            <Button className="rounded-[4px] w-full lg:w-fit h-[55px]">
+            <Button
+              onClick={handleSubmit}
+              className="rounded-[4px] w-full lg:w-fit h-[55px]"
+            >
               Upload Products
             </Button>
           </div>
