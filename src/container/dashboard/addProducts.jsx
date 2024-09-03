@@ -16,12 +16,12 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { FaPlus, FaTrash } from "react-icons/fa";
-import Cookies from "js-cookie"
+import Cookies from "js-cookie";
 
 const AddProducts = ({ onClose }) => {
   const toast = useToast();
   const router = useRouter();
-  const token = Cookies.get("token")
+  const token = Cookies.get("token");
   const { data } = useFetchItems({ url: `${BASE_URL}/categories` });
   const categoriesData = data?.data;
   const [isLoading, setIsLoading] = useState(false);
@@ -47,10 +47,12 @@ const AddProducts = ({ onClose }) => {
   //featuredImage
   const handleFeaturedChange = (e) => {
     const file = e.target.files[0];
-    setFormData((prevData) => ({
-      ...prevData,
-      featuredImage: URL.createObjectURL(file),
-    }));
+    if (file) {
+      setFormData((prevData) => ({
+        ...prevData,
+        featuredImage: URL.createObjectURL(file),
+      }));
+    }
   };
 
   //additional images
@@ -75,13 +77,13 @@ const AddProducts = ({ onClose }) => {
 
   //category
   const handleSelectChange = (value) => {
+    console.log("Selected Category Value:", value);
     setFormData((prevData) => ({
       ...prevData,
       category: value,
     }));
   };
 
-  //Attributes
   // Attributes
   const handleAddAttribute = () => {
     const hasEmptyAttribute = formData.attributes.some(
@@ -180,18 +182,62 @@ const AddProducts = ({ onClose }) => {
   };
 
   const handleSubmit = () => {
-    console.log(formData);
-    onClose();
-    try {
-      const request = axios.post(`${BASE_URL}/products`, formData, 
-      {headers: {
-        Authorization: `Bearer ${token}`
-      }});
-      console.log(request.data)
+    console.log("Form Data:", formData);
 
-    } catch (error) {
-      throw new Error("Something went wrong", error)
+    // Array to hold missing fields
+    const missingFields = [];
+
+    if (!formData.name) missingFields.push("Product Name");
+    if (!formData.category) missingFields.push("Category");
+    if (!formData.price) missingFields.push("Price");
+    if (!formData.description) missingFields.push("Description");
+    if (!formData.featuredImage) missingFields.push("Featured Image");
+
+    // If there are any missing fields, show a toast and return
+    if (missingFields.length > 0) {
+      toast({
+        title: "Missing Fields",
+        description: `Please fill in the following: ${missingFields.join(
+          ", "
+        )}.`,
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
     }
+
+    setIsLoading(true);
+
+    axios
+      .post(`${BASE_URL}/products`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        console.log("Product Uploaded:", response);
+        setIsLoading(false);
+        toast({
+          title: "Product Uploaded",
+          description: "The product was successfully uploaded.",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+        onClose();
+      })
+      .catch((error) => {
+        console.log("Upload Error:", error);
+        setIsLoading(false);
+        toast({
+          title: "Error",
+          description: "There was an error uploading the product.",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      });
   };
 
   return (
@@ -283,17 +329,18 @@ const AddProducts = ({ onClose }) => {
           </div>
           <div className="z-50 flex flex-col gap-5">
             <label className="text-[16px] font-[500]">Category</label>
-            <Select>
+            <Select
+              onValueChange={handleSelectChange} // This directly passes the selected value
+              name="category"
+            >
               <SelectTrigger className="w-full h-[55px] z-50 relative">
                 <SelectValue placeholder="Select Category" />
               </SelectTrigger>
               <SelectContent className="z-[10000]" portal>
                 {categoriesData?.map((data) => (
                   <SelectItem
-                    onChange={handleSelectChange}
-                    name="category"
                     value={data._id}
-                    key={data._id} // Add a key to avoid warnings
+                    key={data._id} // Ensure a key is provided to avoid warnings
                   >
                     {data.name}
                   </SelectItem>
