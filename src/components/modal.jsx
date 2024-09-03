@@ -1,13 +1,9 @@
 "use client";
 import React from "react";
-import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
-// import { , useDisclosure, useToast } from "@chakra-ui/react";
 import {
   Modal,
   ModalOverlay,
   ModalContent,
-  ModalHeader,
-  ModalFooter,
   ModalBody,
   ModalCloseButton,
   Button,
@@ -32,7 +28,7 @@ const ModalContainer = ({ isOpen, onClose }) => {
       >
         <ModalCloseButton />
         <ModalBody>
-          <AddProducts />
+          <AddProducts onClose={onClose}/>
         </ModalBody>
       </ModalContent>
     </Modal>
