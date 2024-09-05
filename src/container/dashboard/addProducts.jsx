@@ -17,6 +17,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { FaPlus, FaTrash } from "react-icons/fa";
 import Cookies from "js-cookie";
+import { ClipLoader } from "react-spinners";
 
 const AddProducts = ({ onClose }) => {
   const toast = useToast();
@@ -44,21 +45,21 @@ const AddProducts = ({ onClose }) => {
     }));
   };
 
-  //featuredImage
+  // Handle featured image upload and preview
   const handleFeaturedChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       setFormData((prevData) => ({
         ...prevData,
-        featuredImage: URL.createObjectURL(file),
+        featuredImage: file,
       }));
     }
   };
 
-  //additional images
+  // Handle additional images upload and preview
   const handleAdditionalImageChange = (e) => {
     const files = Array.from(e.target.files);
-    if (formData.additionalImages.length + files?.length > 5) {
+    if (formData.additionalImages.length + files.length > 5) {
       toast({
         title: "Limit Reached",
         description: "You can only add up to 5 images.",
@@ -68,23 +69,23 @@ const AddProducts = ({ onClose }) => {
       });
       return;
     }
-    const newImages = files.map((file) => URL.createObjectURL(file));
+
     setFormData((prevData) => ({
       ...prevData,
-      additionalImages: [...formData.additionalImages, ...newImages],
+      additionalImages: [...prevData.additionalImages, ...files],
     }));
   };
 
   //category
   const handleSelectChange = (value) => {
-    console.log("Selected Category Value:", value);
+    // console.log("Selected Category Value:", value);
     setFormData((prevData) => ({
       ...prevData,
       category: value,
     }));
   };
 
-  // Attributes
+  // Attributes logic
   const handleAddAttribute = () => {
     const hasEmptyAttribute = formData.attributes.some(
       (attr) => !attr.name.trim() || attr.variants.some((v) => !v.trim())
@@ -182,18 +183,23 @@ const AddProducts = ({ onClose }) => {
   };
 
   const handleSubmit = () => {
-    console.log("Form Data:", formData);
+    const {
+      name,
+      category,
+      price,
+      description,
+      featuredImage,
+      additionalImages,
+      attributes,
+    } = formData;
 
-    // Array to hold missing fields
     const missingFields = [];
+    if (!name) missingFields.push("Product Name");
+    if (!category) missingFields.push("Category");
+    if (!price) missingFields.push("Price");
+    if (!description) missingFields.push("Description");
+    if (!featuredImage) missingFields.push("Featured Image");
 
-    if (!formData.name) missingFields.push("Product Name");
-    if (!formData.category) missingFields.push("Category");
-    if (!formData.price) missingFields.push("Price");
-    if (!formData.description) missingFields.push("Description");
-    if (!formData.featuredImage) missingFields.push("Featured Image");
-
-    // If there are any missing fields, show a toast and return
     if (missingFields.length > 0) {
       toast({
         title: "Missing Fields",
@@ -208,19 +214,32 @@ const AddProducts = ({ onClose }) => {
     }
 
     setIsLoading(true);
+    //formdata for submission
+    const submissionData = new FormData();
+    submissionData.append("name", name);
+    submissionData.append("category", category);
+    submissionData.append("price", price);
+    submissionData.append("description", description);
+    submissionData.append("featuredImage", featuredImage);
+    additionalImages.forEach((file) => {
+      submissionData.append(`additionalImages`, file);
+    });
+
+    // Append attributes
+    submissionData.append("attributes", JSON.stringify(attributes));
 
     axios
-      .post(`${BASE_URL}/products`, formData, {
+      .post(`${BASE_URL}/products`, submissionData, {
         headers: {
           Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
         },
       })
       .then((response) => {
-        console.log("Product Uploaded:", response);
         setIsLoading(false);
         toast({
           title: "Product Uploaded",
-          description: "The product was successfully uploaded.",
+          description: response.data?.message,
           status: "success",
           duration: 3000,
           isClosable: true,
@@ -228,7 +247,7 @@ const AddProducts = ({ onClose }) => {
         onClose();
       })
       .catch((error) => {
-        console.log("Upload Error:", error);
+        console.error("Error response:", error.response);
         setIsLoading(false);
         toast({
           title: "Error",
@@ -256,7 +275,7 @@ const AddProducts = ({ onClose }) => {
           <div className="w-auto h-[320px] border border-black border-dashed rounded-[8px] flex justify-center items-center">
             {formData.featuredImage ? (
               <img
-                src={formData.featuredImage}
+                src={URL.createObjectURL(formData.featuredImage)}
                 className="w-full h-full object-cover"
                 alt="Featured"
               />
@@ -291,7 +310,7 @@ const AddProducts = ({ onClose }) => {
               {formData.additionalImages.map((imgSrc, index) => (
                 <div key={index} className="relative">
                   <img
-                    src={imgSrc}
+                    src={URL.createObjectURL(imgSrc)}
                     className="w-full h-[100px] object-cover"
                     alt={`Additional ${index + 1}`}
                   />
@@ -330,7 +349,7 @@ const AddProducts = ({ onClose }) => {
           <div className="z-50 flex flex-col gap-5">
             <label className="text-[16px] font-[500]">Category</label>
             <Select
-              onValueChange={handleSelectChange} // This directly passes the selected value
+              onValueChange={handleSelectChange}
               name="category"
             >
               <SelectTrigger className="w-full h-[55px] z-50 relative">
@@ -340,7 +359,7 @@ const AddProducts = ({ onClose }) => {
                 {categoriesData?.map((data) => (
                   <SelectItem
                     value={data._id}
-                    key={data._id} // Ensure a key is provided to avoid warnings
+                    key={data._id} 
                   >
                     {data.name}
                   </SelectItem>
@@ -412,7 +431,7 @@ const AddProducts = ({ onClose }) => {
             <label className="text-[16px] font-[500]">Product Price</label>
             <Input
               className="h-[55px]"
-              placeholder="Dr Martens Loafers"
+              placeholder="#5000"
               value={formData.price}
               name="price"
               onChange={handleChange}
@@ -432,7 +451,7 @@ const AddProducts = ({ onClose }) => {
               onClick={handleSubmit}
               className="rounded-[4px] w-full lg:w-fit h-[55px]"
             >
-              Upload Products
+              {isLoading ? <ClipLoader color="white" /> : "Upload Products"}
             </Button>
           </div>
         </div>
