@@ -18,10 +18,11 @@ import { useState } from "react";
 import { FaPlus, FaTrash } from "react-icons/fa";
 import Cookies from "js-cookie";
 import { ClipLoader } from "react-spinners";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const AddProducts = ({ onClose }) => {
   const toast = useToast();
-  const router = useRouter();
+  const queryClient = useQueryClient();
   const token = Cookies.get("token");
   const { data } = useFetchItems({ url: `${BASE_URL}/categories` });
   const categoriesData = data?.data;
@@ -182,82 +183,100 @@ const AddProducts = ({ onClose }) => {
     }));
   };
 
-  const handleSubmit = () => {
-    const {
-      name,
-      category,
-      price,
-      description,
-      featuredImage,
-      additionalImages,
-      attributes,
-    } = formData;
-
-    const missingFields = [];
-    if (!name) missingFields.push("Product Name");
-    if (!category) missingFields.push("Category");
-    if (!price) missingFields.push("Price");
-    if (!description) missingFields.push("Description");
-    if (!featuredImage) missingFields.push("Featured Image");
-
-    if (missingFields.length > 0) {
+  const mutation = useMutation({
+    mutationFn: async (submissionData) => {
+      try {
+        const response = await axios.post(
+          `${BASE_URL}/products`,
+          submissionData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        return response.data;
+      } catch (error) {
+        throw new Error("Something went wrong!", error?.response?.data);
+      }
+    },
+    onSuccess: (response) => {
+      queryClient.invalidateQueries([`${BASE_URL}/products/user`]);
       toast({
-        title: "Missing Fields",
-        description: `Please fill in the following: ${missingFields.join(
-          ", "
-        )}.`,
+        title: "Product Uploaded",
+        description: response.data?.message,
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: "There was an error uploading the product.",
         status: "error",
         duration: 3000,
         isClosable: true,
       });
-      return;
-    }
+    },
+  });
 
-    setIsLoading(true);
-    //formdata for submission
-    const submissionData = new FormData();
-    submissionData.append("name", name);
-    submissionData.append("category", category);
-    submissionData.append("price", price);
-    submissionData.append("description", description);
-    submissionData.append("featuredImage", featuredImage);
-    additionalImages.forEach((file) => {
-      submissionData.append(`additionalImages`, file);
+ const handleSubmit = async () => {
+  setIsLoading(true);
+
+  // Validation
+  const {
+    name,
+    category,
+    price,
+    description,
+    featuredImage,
+    additionalImages,
+    attributes,
+  } = formData;
+
+  const missingFields = [];
+  if (!name) missingFields.push("Product Name");
+  if (!category) missingFields.push("Category");
+  if (!price) missingFields.push("Price");
+  if (!description) missingFields.push("Description");
+  if (!featuredImage) missingFields.push("Featured Image");
+
+  if (missingFields.length > 0) {
+    toast({
+      title: "Missing Fields",
+      description: `Please fill in the following: ${missingFields.join(", ")}.`,
+      status: "error",
+      duration: 3000,
+      isClosable: true,
     });
+    setIsLoading(false);  
+    return;
+  }
 
-    // Append attributes
-    submissionData.append("attributes", JSON.stringify(attributes));
+  // Prepare formData for submission
+  const submissionData = new FormData();
+  submissionData.append("name", name);
+  submissionData.append("category", category);
+  submissionData.append("price", price);
+  submissionData.append("description", description);
+  submissionData.append("featuredImage", featuredImage);
+  additionalImages.forEach((file) => {
+    submissionData.append("additionalImages", file);
+  });
+  submissionData.append("attributes", JSON.stringify(attributes));
 
-    axios
-      .post(`${BASE_URL}/products`, submissionData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
-        },
-      })
-      .then((response) => {
-        setIsLoading(false);
-        toast({
-          title: "Product Uploaded",
-          description: response.data?.message,
-          status: "success",
-          duration: 3000,
-          isClosable: true,
-        });
-        onClose();
-      })
-      .catch((error) => {
-        console.error("Error response:", error.response);
-        setIsLoading(false);
-        toast({
-          title: "Error",
-          description: "There was an error uploading the product.",
-          status: "error",
-          duration: 3000,
-          isClosable: true,
-        });
-      });
-  };
+  try {
+    await mutation.mutateAsync(submissionData); 
+    onClose();
+  } catch (error) {
+    console.error("Something went wrong:", error);
+  } finally {
+    setIsLoading(false); 
+  }
+};
+
 
   return (
     <main className="p-3 lg:p-5 w-full mt-10">
@@ -348,19 +367,13 @@ const AddProducts = ({ onClose }) => {
           </div>
           <div className="z-50 flex flex-col gap-5">
             <label className="text-[16px] font-[500]">Category</label>
-            <Select
-              onValueChange={handleSelectChange}
-              name="category"
-            >
+            <Select onValueChange={handleSelectChange} name="category">
               <SelectTrigger className="w-full h-[55px] z-50 relative">
                 <SelectValue placeholder="Select Category" />
               </SelectTrigger>
               <SelectContent className="z-[10000]" portal>
                 {categoriesData?.map((data) => (
-                  <SelectItem
-                    value={data._id}
-                    key={data._id} 
-                  >
+                  <SelectItem value={data._id} key={data._id}>
                     {data.name}
                   </SelectItem>
                 ))}
