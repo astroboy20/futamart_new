@@ -91,14 +91,14 @@ const Header = () => {
           </div>
         </div>
       </div>
-      <div className="hidden lg:flex">
+      <div className="hidden lg:flex lg:w-1/6">
         <Link href="/">
           <div className="flex items-center gap-2.5">
             <Logo_X /> <Logo />
           </div>
         </Link>
       </div>
-      <div className="flex items-center flex-grow lg:justify-center w-full gap-5">
+      <div className="flex items-center flex-grow lg:justify-center w-full lg:w-4/6 gap-5 lg:px-10">
         <div className="w-full lg:w-full flex items-center shadow-[2px_2px_4px_0_rgba(0,0,0,0.1)] bg-[#f2f3f4] rounded-[2px] px-4 py-1">
           <div>
             <SearchIcon />
@@ -110,16 +110,16 @@ const Header = () => {
         </div>
       </div>
       <div
-        className="hidden lg:flex gap-[10px] cursor-pointer items-center relative"
+        className="hidden lg:flex gap-[10px] cursor-pointer items-center relative lg:w-1/6 justify-center"
         onClick={handlePersonIconClick}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         ref={dropdownRef}
       >
-        <PersonIcon/>
+        <PersonIcon />
         <Link href="/cart">
-        <CartIcon />
-      </Link>
+          <CartIcon />
+        </Link>
         {dropdownVisible && (
           <div className="absolute top-full right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50">
             {!isAuthenticated ? (
@@ -138,7 +138,7 @@ const Header = () => {
                 </Link>
               </div>
             ) : (
-              <div className="py-2"> 
+              <div className="py-2">
                 <Link
                   href="/profile"
                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
