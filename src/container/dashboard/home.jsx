@@ -30,6 +30,7 @@ const metrics = [
     rate: "0.8% increase",
     count: "428",
     color: "#FFE5CA",
+    text_color: "#994E00",
     description: "1 hour ago",
   },
   {
@@ -37,13 +38,15 @@ const metrics = [
     rate: "2% increase",
     count: "123",
     color: "#E0EED4",
+    text_color: "#5E8B37",
     description: "1 hour ago",
   },
   {
     title: "Catalogue",
     rate: "0.4% decrease",
     count: "186",
-    color: "#BD8B00",
+    color: "#FFEDBB",
+    text_color: "#BD8B00",
     description: "2 hours ago",
   },
 ];
@@ -51,11 +54,8 @@ const metrics = [
 const notifications = notification.slice(0, 2);
 
 const Home = () => {
- 
-
   return (
     <main className="flex flex-col gap-5 lg:gap-10 mt-[100px] lg:mt-0">
-     
       <div className="flex justify-between items-center lg:items-start">
         <div className="w-[80%] lg:w-[70%] h-fit px-3 py-1 border-2 shadow-[2px_2px_4px_0_rgba(0,0,0,0.12)] rounded flex items-center gap-5">
           <SearchIcon />
@@ -68,9 +68,7 @@ const Home = () => {
         <div className="flex items-center gap-5">
           <NotificationIconX />
           <Link href="/dashboard/products">
-            <Button className="hidden lg:block" >
-              View products
-            </Button>
+            <Button className="hidden lg:block">View products</Button>
           </Link>
         </div>
       </div>
@@ -88,10 +86,12 @@ const Home = () => {
               </h3>
               <div className="flex justify-between items-center mt-auto  font-[500]">
                 <p
-                  className={`text-[8px] bg-[${data.color}] px-2 py-1 lg:py-2 lg:px-4 rounded-full`}
+                  style={{ backgroundColor: data.color, color:data.text_color }}
+                  className="text-[8px] px-2 py-1 lg:py-2 lg:px-4 rounded-full"
                 >
                   {data.rate}
                 </p>
+
                 <p className="text-[20px] lg:text-[40px] ">{data.count}</p>
               </div>
             </Card>
