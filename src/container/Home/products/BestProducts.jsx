@@ -52,7 +52,7 @@ const BestProducts = () => {
             <div className="px-3 pt-[.5em] flex flex-col gap-2">
               <div className="flex items-center justify-between">
                 <Link href={`/products/${singleProduct.slug}`}>
-                  <p className="capitalize font-semibold text-xs lg:text-lg w-[98px] h-[12px] leading-[12.19px] sm:w-[215px] sm:h-[22px] sm:text-[18px] sm:leading-[21.94px] truncate">
+                  <p className="capitalize font-semibold text-sm lg:text-lg w-[98px] h-[12px] leading-[12.19px] sm:w-[215px] sm:h-[22px] sm:text-[18px] sm:leading-[21.94px] truncate">
                     {singleProduct.name}
                   </p>
                 </Link>
@@ -77,7 +77,7 @@ const BestProducts = () => {
               </span>
               <AddToCart
                 id={singleProduct._id}
-                className="bg-[#000000] w-1/2 p-1 py-2 text-[10px] leading-[9.75px] sm:text-[14px] sm:leading-[17.07px] text-white rounded-sm border-none"
+                className="bg-[#000000] w-1/2 min-w-[70px] p-1 py-2 text-[10px] leading-[9.75px] sm:text-[14px] sm:leading-[17.07px] text-white rounded-sm border-none"
               >
                 Add to cart
               </AddToCart>
