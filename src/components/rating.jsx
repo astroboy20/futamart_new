@@ -23,8 +23,8 @@ const StarRating = ({ rating, width, height }) => {
       ) : null}
       <polygon
         points="20,1 25,14 39,14 27,22 32,35 20,27 8,35 13,22 1,14 15,14"
-        fill={filled || isHalf ? "gold" : "none"}
-        stroke="gold"
+        fill={filled || isHalf ? "#FFAD33" : "none"}
+        stroke="#FFAD33"
         strokeWidth="1"
         clipPath={isHalf ? `url(#halfStarClip-${key})` : ""}
       />
