@@ -30,7 +30,7 @@ const BestProducts = () => {
         <h1 className="text-[20px] lg:text-[35px] font-[600]">
           Best Selling Products
         </h1>
-        <p className="flex items-center gap-3 text-[10px] lg:text-[20px]">
+        <p className="flex items-center gap-3 text-xs lg:text-[20px]">
           View all
           <Next_Icon />
         </p>
@@ -49,26 +49,35 @@ const BestProducts = () => {
                 alt={singleProduct.name}
               />
             </Link>
-            <div className="px-3 pt-[.5em] flex flex-col gap-[.5em]">
+            <div className="px-3 pt-[.5em] flex flex-col gap-2">
               <div className="flex items-center justify-between">
                 <Link href={`/products/${singleProduct.slug}`}>
-                  <p className="capitalize font-semibold text-[10px] w-[98px] h-[12px] leading-[12.19px] sm:w-[215px] sm:h-[22px] sm:text-[18px] sm:leading-[21.94px] truncate">
+                  <p className="capitalize font-semibold text-sm lg:text-lg w-[98px] h-[12px] leading-[12.19px] sm:w-[215px] sm:h-[22px] sm:text-[18px] sm:leading-[21.94px] truncate">
                     {singleProduct.name}
                   </p>
                 </Link>
                 <Fav />
               </div>
-              <p className="text-[#888282] text-[8px] leading-[9.75px] w-[70px] h-[10px] sm:w-[105px] sm:h-[20px] sm:text-[16px] sm:leading-[19.5px] truncate">
+              <p className="text-[#888282] text-[10px] lg:text-base leading-[9.75px] w-[70px] h-[10px] sm:w-[105px] sm:h-[20px] sm:text-[16px] sm:leading-[19.5px] truncate font-semibold">
                 &#8358;{singleProduct.price}
               </p>
-              <StarRating
-                rating={singleProduct.averageRating || 5}
-                width={10}
-                height={10}
-              />
+              <span className="lg:hidden">
+                <StarRating
+                  rating={singleProduct.averageRating || 5}
+                  width={10}
+                  height={10}
+                />
+              </span>
+              <span className="hidden lg:flex">
+                <StarRating
+                  rating={singleProduct.averageRating || 5}
+                  width={20}
+                  height={20}
+                />
+              </span>
               <AddToCart
                 id={singleProduct._id}
-                className="bg-black w-[64px] h-[20px] text-[8px] leading-[9.75px] sm:w-[132px] sm:h-[36px] sm:text-[14px] sm:leading-[17.07px] text-white rounded-sm border-none"
+                className="bg-[#000000] w-1/2 min-w-[70px] p-1 py-2 text-[10px] leading-[9.75px] sm:text-[14px] sm:leading-[17.07px] text-white rounded-sm border-none"
               >
                 Add to cart
               </AddToCart>
