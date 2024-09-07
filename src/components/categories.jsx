@@ -37,8 +37,8 @@ const Categories = () => {
                 }}
                 className={
                   pathname !== `/${category.slug}`
-                    ? "py-2 px-4 w-max font-semibold capitalize rounded-md border text-[12px] leading-[15.06px] sm:leading-[25.1px] border-black sm:text-[20px] hover:cursor-pointer hover:bg-black hover:text-white"
-                    : "py-2 px-4 w-max font-semibold capitalize rounded-md border text-[12px] leading-[15.06px] sm:leading-[25.1px] border-black sm:text-[20px] hover:cursor-pointer bg-black text-white"
+                    ? "py-4 px-6 w-max font-medium capitalize rounded-md border text-[12px] leading-[15.06px] sm:leading-[25.1px] border-black sm:text-[20px] hover:cursor-pointer hover:bg-black hover:text-white"
+                    : "py-4 px-6 w-max font-medium capitalize rounded-md border text-[12px] leading-[15.06px] sm:leading-[25.1px] border-black sm:text-[20px] hover:cursor-pointer bg-black text-white"
                 }
               >
                 {category.name}
