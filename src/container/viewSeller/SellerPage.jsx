@@ -25,7 +25,7 @@ export default async function Page({ params }) {
   }
 
   const data = await fetchBusinessData(collectionName);
-console.log(data.business);
+  console.log(data.business);
 
   const products = data.product || [];
 
@@ -43,6 +43,7 @@ console.log(data.business);
             data.business.business_email || "N/A"
           }`}
         />
+        <hr className="py-4" />
 
         <div className="py-3 sm:py-3 sm:px-0 grid grid-cols-2 gap-[15px] md:grid-cols-2 lg:grid-cols-4">
           {products.length > 0 ? (
@@ -52,8 +53,9 @@ console.log(data.business);
                 product={{
                   slug: product.slug,
                   image: product.featuredImage,
+                  rating: product.averageRating,
                   name: product.name,
-                  price: `$${product.price || "0.00"}`,
+                  price: `${product.price || "0.00"}`,
                 }}
               />
             ))
