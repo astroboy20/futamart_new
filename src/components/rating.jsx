@@ -1,11 +1,6 @@
 import React from "react";
 
 const StarRating = ({ rating, width, height }) => {
-  const fullStars = Math.floor(rating);
-  const halfStar = rating - fullStars >= 0.5 ? 1 : 0;
-  const emptyStars = 5 - fullStars - halfStar;
-  const clipWidth = halfStar ? (rating - fullStars) * 100 : 0;
-
   const renderStar = (key, filled = false, isHalf = false) => (
     <svg
       key={key}
@@ -31,11 +26,24 @@ const StarRating = ({ rating, width, height }) => {
     </svg>
   );
 
+  if (rating === 0) {
+    return (
+      <div style={{ display: "flex", alignItems: "center" }}>
+        {Array.from({ length: 5 }).map((_, i) => renderStar(i))}
+      </div>
+    );
+  }
+
+  const fullStars = Math.floor(rating);
+  const halfStar = rating - fullStars >= 0.5 ? 1 : 0;
+  let emptyStars = Math.max(0, 5 - fullStars - halfStar);
+  const clipWidth = halfStar ? (rating - fullStars) * 100 : 0;
+
   return (
     <div style={{ display: "flex", alignItems: "center" }}>
-      {[...Array(fullStars)]?.map((_, i) => renderStar(i, true))}
+      {Array.from({ length: fullStars }).map((_, i) => renderStar(i, true))}
       {halfStar ? renderStar(fullStars, false, true) : null}
-      {[...Array(emptyStars)]?.map((_, i) =>
+      {Array.from({ length: emptyStars }).map((_, i) =>
         renderStar(fullStars + halfStar + i)
       )}
     </div>

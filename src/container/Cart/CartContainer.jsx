@@ -79,8 +79,8 @@ const CartContainer = () => {
           />
           <p className="font-bold pt-10 text-[21px]"> Your cart is empty</p>
           <p className="text-gray-500 mb-20 px-4 font-semibold text-base sm:text-sm">
-            Looks like you have not added anything yet to your cart. Go
-            ahead and explore top categories
+            Looks like you have not added anything yet to your cart. Go ahead
+            and explore top categories
           </p>
 
           {/* <Link href="/" className="font-bold underline">
@@ -102,12 +102,15 @@ const CartContainer = () => {
           {cart?.data?.items.map((item) => {
             return (
               <div
-                className="bg-[#F2F3F4] rounded-[4px] shadow-md flex items-center w-[100%] h-[140px] sm:h-[240px]"
+                className="bg-[#F2F3F4] rounded-[4px] shadow-md flex items-center w-[100%] p-4"
                 key={item?.product?._id}
               >
-                <Link href={`/products/${item.product.slug}`}>
+                <Link
+                  href={`/products/${item.product.slug}`}
+                  className="w-1/3 flex justify-center items-center"
+                >
                   <img
-                    className="min-w-[140px] max-w-[140px] h-[140px] object-cover sm:min-w-[240px] sm:max-w-[240px] sm:h-[240px]"
+                    className="object-cover max-w-[60%]"
                     src={item?.product?.featuredImage}
                     alt=""
                   />
@@ -117,7 +120,10 @@ const CartContainer = () => {
                     <p className="text-[8px] text-[#888282] leading-[9.75px] font-medium sm:text-[14px] sm:leading-[17.07px]">
                       {item?.product?.category?.name}
                     </p>
-                    <span onClick={() => handleDelete(item?.product?._id)}>
+                    <span
+                      className="cursor-pointer"
+                      onClick={() => handleDelete(item?.product?._id)}
+                    >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         height="24px"
@@ -138,7 +144,7 @@ const CartContainer = () => {
                     &#8358;{item?.product?.price}
                   </p>
                   <div className="flex justify-between items-center">
-                    <button className="bg-[#000000] text-[#FFFFFF] font-normal rounded-[2px] text-[8px] leading-[9.75px] py-[4px] px-[10px] sm:py-[16px] sm:px-[10px] sm:text-[16px] sm:leading-[19.5px] ">
+                    <button className="bg-black p-2 px-4 text-white rounded-md text-xs lg:text-base">
                       Chat with seller
                     </button>
                     <div className="flex items-center gap-1">

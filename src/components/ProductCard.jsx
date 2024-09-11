@@ -27,21 +27,13 @@ const ProductCard = ({ product }) => {
           <Fav />
         </div>
         <p className="text-[#888282] text-[10px] lg:text-base leading-[9.75px] w-[70px] h-[10px] sm:w-[105px] sm:h-[20px] sm:text-[16px] sm:leading-[19.5px] truncate font-semibold">
-          {product.price}
+          &#x20A6;{product.price ? Number(product.price).toLocaleString() : ""}
         </p>
         <span className="lg:hidden">
-          <StarRating
-            rating={product.averageRating || 5}
-            width={10}
-            height={10}
-          />
+          <StarRating rating={product.rating} width={10} height={10} />
         </span>
         <span className="hidden lg:flex">
-          <StarRating
-            rating={product.averageRating || 5}
-            width={20}
-            height={20}
-          />
+          <StarRating rating={product.rating} width={20} height={20} />
         </span>
         <AddToCart
           id={product.id}
