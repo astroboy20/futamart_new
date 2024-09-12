@@ -56,7 +56,7 @@ const Products = () => {
                   Name
                 </TableHead>
                 <TableHead className="text-white">
-                  Image <span className="lg:hidden flex text-white">& Image</span>
+                  Name <span className="lg:hidden flex text-white">& Photo</span>
                 </TableHead>
                 <TableHead className="text-white">Categories</TableHead>
                 <TableHead className="text-white">Price</TableHead>
@@ -87,7 +87,7 @@ const Products = () => {
                   </TableRow>
                 ))
               ) : products.length === 0 ? (
-                <div className="text-center">No product found!</div>
+                <div className="text-center m-auto py-10 w-full flex justify-center">No product found!</div>
               ) : (
                 products.map((data) => (
                   <TableRow key={data.id}>
