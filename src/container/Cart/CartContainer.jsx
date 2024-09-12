@@ -148,11 +148,7 @@ router.push(`/user/chat/${user}`)
                     &#8358;{item?.product?.price}
                   </p>
                   <div className="flex justify-between items-center">
-<<<<<<< HEAD
                     <button onClick={()=>handleClick(item?.product?.user)} className="bg-[#000000] text-[#FFFFFF] font-normal rounded-[2px] text-[8px] leading-[9.75px] py-[4px] px-[10px] sm:py-[16px] sm:px-[10px] sm:text-[16px] sm:leading-[19.5px] ">
-=======
-                    <button className="bg-black p-2 px-4 text-white rounded-md text-xs lg:text-base">
->>>>>>> f58a607c272001ad3377b65206b4b8e12631f6f0
                       Chat with seller
                     </button>
                     <div className="flex items-center gap-1">
