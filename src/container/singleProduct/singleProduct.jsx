@@ -28,15 +28,29 @@ const SingleProduct = ({ getSingleProduct }) => {
   const reviews = getSingleProduct?.data?.reviews?.reviews || [];
 
   return (
-    <div className="px-3 flex gap-4 flex-col lg:flex-row lg:items-center h-full py-5">
-      <img
-        className="w-[395px] h-[391px] object-contain bg-white lg:w-[600px] lg:h-[600px]"
-        src={getSingleProduct?.data?.product?.featuredImage}
-        alt=""
-      />
+    <div className="px-3 flex gap-6 flex-col lg:flex-row lg:items-center h-full py-5">
+      <div className="flex flex-col gap-4 lg:w-1/2 w-full">
+        <img
+          className="object-contain bg-white w-[70%] mx-auto"
+          src={getSingleProduct?.data?.product?.featuredImage}
+          alt=""
+        />
+        <div className="flex flex-row gap-1 h-[100px] w-[70%] mx-auto">
+          {getSingleProduct?.data?.product?.additionalImages?.map(
+            (image, index) => (
+              <img
+                key={index}
+                className="object-contain bg-white"
+                src={image}
+                alt=""
+              />
+            )
+          )}
+        </div>
+      </div>
       <div className="flex flex-col gap-4 lg:gap-8 flex-grow">
         <div className="flex items-center gap-2">
-          <p className="w-[95%] text-balance text-[18px] leading-[21.9px] font-semibold lg:text-[32px] lg:leading-[39.01px]">
+          <p className="w-[95%] text-balance text-lg leading-[21.9px] font-semibold lg:text-[32px] lg:leading-[39.01px]">
             {getSingleProduct?.data?.product?.name}
           </p>
           <span className="w-[5%]">
@@ -65,12 +79,18 @@ const SingleProduct = ({ getSingleProduct }) => {
             {getSingleProduct?.data?.product?.description}
           </p>
           <p className="text-[12px] leading-[14.63px] font-semibold text-[#888282] sm:text-[16px] sm:leading-[19.5px]">
-            Size: {getSingleProduct?.data.product?.size || "Size"}
+            {getSingleProduct?.data?.product?.attributes?.map((attribute) => (
+              <div key={attribute._id} className="flex flex-col gap-2 sm:gap-4">
+                <p className="text-[12px] leading-[14.63px] font-semibold text-[#888282] sm:text-[16px] sm:leading-[19.5px]">
+                  {attribute.name}: {attribute.variants.join(", ")}
+                </p>
+              </div>
+            ))}
           </p>
         </div>
         <div className="flex flex-col gap-2 sm:gap-4">
           <p className="text-[16px] font-semibold leading-[19.5px] sm:text-[18px] sm:leading-[21.94px]">
-            &#8358;{getSingleProduct?.data?.product?.price}
+            &#8358;{getSingleProduct?.data?.product?.price.toLocaleString()}
           </p>
           <div className="relative flex items-center gap-2 sm:gap-4">
             <StarRating
