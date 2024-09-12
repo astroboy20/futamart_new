@@ -1,4 +1,3 @@
-"use client";
 import React, { useState } from "react";
 import { FiSend } from "react-icons/fi";
 import axios from "axios";
@@ -8,32 +7,29 @@ import { NotificationIconX } from "@/assets";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
-const Chats = () => {
-  const token = Cookies.get("token");
-  const [message, setMessage] = useState("");
-  const [sending, setSending] = useState(false);
-
+const Chats = ({ id }) => {
+  const { data: messages, mutate: updateMessages } = useFetchItems({
+    url: `${process.env.NEXT_PUBLIC_API_URL}/chat/${id}`,
+  });
   const { data: userData } = useFetchItems({
     url: `${process.env.NEXT_PUBLIC_API_URL}/chats`,
   });
-
-  const [selectedUser, setSelectedUser] = useState(null);
-
   const { data: user } = useFetchItems({
     url: `${process.env.NEXT_PUBLIC_API_URL}/user`,
   });
 
-  const { data: messages, mutate: updateMessages } = useFetchItems({
-    url: selectedUser
-      ? `${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser._id}`
-      : null,
-    enabled: !!selectedUser,
-  });
+  const token = Cookies.get("token");
+  const [isChat, setIsChat] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [message, setMessage] = useState("");
+  const [sending, setSending] = useState(false);
 
+  // Assuming userData returns an object with a property '_id' as the current user ID
   const currentUserId = user?.data?._id;
 
   const handleClick = (user) => {
-    setSelectedUser(user); 
+    setSelectedUser(user);
+    setIsChat(true);
   };
 
   const handleSendMessage = async () => {
@@ -42,8 +38,8 @@ const Chats = () => {
     setSending(true);
     try {
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser._id}`, 
-        { message },
+        `${process.env.NEXT_PUBLIC_API_URL}/chat/${id}`,
+        { message: message },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -53,7 +49,7 @@ const Chats = () => {
 
       if (response.status === 200) {
         setMessage("");
-        updateMessages(); 
+        updateMessages();
       }
     } catch (error) {
       console.error("Error sending message:", error);
@@ -63,7 +59,7 @@ const Chats = () => {
   };
 
   return (
-    <div className="flex flex-col gap-10">
+    <div className="flex flex-col gap-10 p-[6%]">
       <div className="flex justify-between items-center">
         <h1 className="text-[24px] font-[600] underline">Chat</h1>
         <div className="flex items-center gap-5">
@@ -87,7 +83,7 @@ const Chats = () => {
               <div
                 key={user._id}
                 className="flex justify-between items-center py-4 border-b cursor-pointer hover:bg-gray-100"
-                onClick={() => handleClick(user)}
+                onClick={() => handleClick(user?.userInfo?.firstname)}
               >
                 <p>{user?.userInfo?.firstname}</p>
               </div>
@@ -96,12 +92,12 @@ const Chats = () => {
         </div>
 
         {/* Chat Window Section */}
-        {selectedUser && (
+        {isChat && (
           <div className="w-full lg:w-[60%] h-[500px] p-4 rounded-lg flex flex-col justify-between">
             {/* Chat Header */}
             <div className="bg-white p-4 rounded-t-lg shadow-md flex justify-between items-center rounded-[16px]">
               <h2 className="text-[20px] font-bold">
-              {user?.userInfo?.firstname}
+                {selectedUser?.businessName || "Chat"}
               </h2>
             </div>
 
@@ -136,7 +132,6 @@ const Chats = () => {
               </div>
             </div>
 
-            {/* Message Input Section */}
             <div className="bg-white p-4 rounded-b-lg shadow-md flex items-center gap-3">
               <input
                 type="text"
