@@ -68,6 +68,9 @@ const Chats = () => {
         queryKey: [
           `${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser._id}`,
         ],
+        queryKey: [
+          `${process.env.NEXT_PUBLIC_API_URL}/chats`,
+        ],
       });
       setMessage("");
     },
@@ -99,7 +102,7 @@ const Chats = () => {
       </div>
 
       <div className="flex flex-col lg:flex-row lg:justify-between w-full h-full">
-        \
+        
         {(!selectedUser || isDesktop) && (
           <div className="w-full lg:w-[30%]">
             <div className="flex justify-between items-center text-[18px] font-medium">
