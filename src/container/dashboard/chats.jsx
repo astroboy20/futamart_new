@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { FiSend } from "react-icons/fi";
 import axios from "axios";
 import Cookies from "js-cookie";
@@ -7,54 +7,77 @@ import { useFetchItems } from "@/hooks/useFetchItems";
 import { NotificationIconX } from "@/assets";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const Chats = () => {
+  const queryClient = useQueryClient();
   const token = Cookies.get("token");
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
 
   const { data: userData } = useFetchItems({
     url: `${process.env.NEXT_PUBLIC_API_URL}/chats`,
   });
 
-  const [selectedUser, setSelectedUser] = useState(null);
-
   const { data: user } = useFetchItems({
     url: `${process.env.NEXT_PUBLIC_API_URL}/user`,
   });
 
-  const { data: messages, mutate: updateMessages } = useFetchItems({
+  const { data: messages } = useFetchItems({
     url: selectedUser
       ? `${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser._id}`
       : null,
     enabled: !!selectedUser,
   });
 
-  const currentUserId = user?.data?._id;
+  // Ref for the messages container
+  const messagesEndRef = useRef(null);
+
+  // Scroll to the latest message when the messages data changes
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
 
   const handleClick = (user) => {
-    setSelectedUser(user); 
+    setSelectedUser(user);
   };
+
+  const sendMessageMutation = useMutation({
+    mutationFn: async () => {
+      try {
+        const response = await axios.post(
+          `${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser._id}`,
+          { message },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        return response.data;
+      } catch (error) {
+        throw new Error("Something went wrong!");
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [
+          `${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser._id}`,
+        ],
+      });
+      setMessage(""); // Reset message input after sending
+    },
+  });
 
   const handleSendMessage = async () => {
     if (!message.trim()) return;
 
     setSending(true);
     try {
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser._id}`, 
-        { message },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (response.status === 200) {
-        setMessage("");
-        updateMessages(); 
-      }
+      await sendMessageMutation.mutateAsync();
     } catch (error) {
       console.error("Error sending message:", error);
     } finally {
@@ -65,7 +88,7 @@ const Chats = () => {
   return (
     <div className="flex flex-col gap-10">
       <div className="flex justify-between items-center">
-        <h1 className="text-[24px] font-[600] underline">Chat</h1>
+        <h1 className="text-[24px] font-semibold underline">Chat</h1>
         <div className="flex items-center gap-5">
           <NotificationIconX />
           <Link href="/dashboard/products">
@@ -74,10 +97,10 @@ const Chats = () => {
         </div>
       </div>
 
-      <div className="flex flex-col lg:flex-row lg:justify-between w-full">
+      <div className="flex flex-col lg:flex-row lg:justify-between w-full h-full">
         {/* Chat List Section */}
         <div className="w-full lg:w-[30%]">
-          <div className="flex justify-between items-center text-[18px] font-[500]">
+          <div className="flex justify-between items-center text-[18px] font-medium">
             <p>All Chats ({userData?.data?.length})</p>
             <p className="hidden lg:flex">Oldest</p>
           </div>
@@ -97,57 +120,58 @@ const Chats = () => {
 
         {/* Chat Window Section */}
         {selectedUser && (
-          <div className="w-full lg:w-[60%] h-[500px] p-4 rounded-lg flex flex-col justify-between">
+          <div className="w-full lg:w-[60%] flex flex-col h-[400px]  bg-[url('/images/products/chat-bg.png')] bg-cover bg-no-repeat rounded-lg shadow-lg">
             {/* Chat Header */}
-            <div className="bg-white p-4 rounded-t-lg shadow-md flex justify-between items-center rounded-[16px]">
+            <div className="bg-white p-4 m-2 shadow-md sticky top-0 z-10 rounded-t-lg flex justify-between items-center">
               <h2 className="text-[20px] font-bold">
-              {user?.userInfo?.firstname}
+                {selectedUser?.userInfo?.firstname}{" "}
+                {selectedUser?.userInfo?.lastname}
               </h2>
             </div>
 
             {/* Messages Area */}
-            <div className="flex-grow bg-[url('/images/products/chat-bg.png')] bg-cover bg-no-repeat p-4 overflow-y-auto">
+            <div className="flex-grow overflow-y-auto p-4">
               <div className="flex flex-col gap-4">
-                {messages?.data?.messages?.map((msg) => (
+                {messages?.data?.conversation?.messages?.map((msg) => (
                   <div
                     key={msg._id}
                     className={`flex ${
-                      msg.senderId === currentUserId
-                        ? "justify-end" // Outgoing messages (right-aligned)
-                        : "justify-start" // Incoming messages (left-aligned)
+                      msg?.senderId === user?.data?._id ? "ml-auto" : "mr-auto"
                     }`}
                   >
-                    <div className="flex flex-col w-full">
+                    <div className="flex flex-col max-w-full">
                       <div
-                        className={`p-3 rounded-lg max-w-fit ${
-                          msg.senderId === currentUserId
-                            ? "bg-blue-500 text-white" // Outgoing message style
-                            : "bg-gray-200 text-black" // Incoming message style
+                        className={`p-3 rounded-lg max-w-full ${
+                          msg.senderId === user?.data?._id
+                            ? "bg-black text-white ml-auto"
+                            : "bg-white text-black mr-auto"
                         }`}
                       >
                         <p>{msg.message}</p>
                       </div>
-                      <span className="text-xs text-gray-400">
+                      <span className="text-xs text-gray-400 mt-1">
                         {new Date(msg.createdAt).toLocaleTimeString()}
                       </span>
                     </div>
                   </div>
                 ))}
+
+                <div ref={messagesEndRef} />
               </div>
             </div>
 
             {/* Message Input Section */}
-            <div className="bg-white p-4 rounded-b-lg shadow-md flex items-center gap-3">
+            <div className="bg-white p-3 shadow-md flex items-center gap-3 sticky bottom-0 z-10">
               <input
                 type="text"
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder="Type a message..."
-                className="flex-grow border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring focus:ring-purple-300"
+                className="flex-grow border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring focus:ring-black"
                 disabled={sending}
               />
               <button
-                className="text-purple-500"
+                className="texxt-black"
                 onClick={handleSendMessage}
                 disabled={sending}
               >
