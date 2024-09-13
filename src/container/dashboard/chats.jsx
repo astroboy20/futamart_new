@@ -8,13 +8,18 @@ import { NotificationIconX } from "@/assets";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useTimestamp } from "@/hooks/useTimeStamp";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { IoIosArrowBack } from "react-icons/io";
 
 const Chats = () => {
   const queryClient = useQueryClient();
+  const isDesktop = useMediaQuery("(min-width: 1024px)");
   const token = Cookies.get("token");
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
+  const messagesEndRef = useRef(null);
 
   const { data: userData } = useFetchItems({
     url: `${process.env.NEXT_PUBLIC_API_URL}/chats`,
@@ -31,10 +36,6 @@ const Chats = () => {
     enabled: !!selectedUser,
   });
 
-  // Ref for the messages container
-  const messagesEndRef = useRef(null);
-
-  // Scroll to the latest message when the messages data changes
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
@@ -68,7 +69,7 @@ const Chats = () => {
           `${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser._id}`,
         ],
       });
-      setMessage(""); // Reset message input after sending
+      setMessage("");
     },
   });
 
@@ -98,38 +99,62 @@ const Chats = () => {
       </div>
 
       <div className="flex flex-col lg:flex-row lg:justify-between w-full h-full">
-        {/* Chat List Section */}
-        <div className="w-full lg:w-[30%]">
-          <div className="flex justify-between items-center text-[18px] font-medium">
-            <p>All Chats ({userData?.data?.length})</p>
-            <p className="hidden lg:flex">Oldest</p>
-          </div>
+        \
+        {(!selectedUser || isDesktop) && (
+          <div className="w-full lg:w-[30%]">
+            <div className="flex justify-between items-center text-[18px] font-medium">
+              <p>
+                All Chats
+                <span className="text-[#51A40A]">
+                  {" "}
+                  ({userData?.data?.length})
+                </span>
+              </p>
+              <p className="hidden lg:flex">Oldest</p>
+            </div>
 
-          <div>
-            {userData?.data?.map((user) => (
-              <div
-                key={user._id}
-                className="flex justify-between items-center py-4 border-b cursor-pointer hover:bg-gray-100"
-                onClick={() => handleClick(user)}
-              >
-                <p>{user?.userInfo?.firstname}</p>
-              </div>
-            ))}
-          </div>
-        </div>
+            <div>
+              {userData?.data?.map((user) => (
+                <div
+                  key={user._id}
+                  className="flex justify-between items-center py-4 border-b cursor-pointer hover:bg-gray-100"
+                  onClick={() => handleClick(user)}
+                >
+                  <div className="flex flex-col gap-2">
+                    <p className="text-[14px] font-[500]">
+                      {user?.userInfo?.firstname} {user?.userInfo?.lastname}
+                    </p>
+                    <p className="text-gray-600 text-[12px] font-[500]">
+                      {user?.lastMessage?.message}
+                    </p>
+                  </div>
 
-        {/* Chat Window Section */}
+                  <p className="text-[#51A40A] text-[10px] font-[600]">
+                    {useTimestamp({ timestamp: user?.lastMessage?.createdAt })}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
         {selectedUser && (
-          <div className="w-full lg:w-[60%] flex flex-col h-[400px]  bg-[url('/images/products/chat-bg.png')] bg-cover bg-no-repeat rounded-lg shadow-lg">
-            {/* Chat Header */}
+          <div
+            className={`w-full lg:w-[60%] flex flex-col  h-[400px] bg-[url('/images/products/chat-bg.png')] bg-cover bg-no-repeat rounded-lg shadow-lg relative ${
+              !isDesktop ? "fixed top-0 left-0 w-full h-full z-50" : ""
+            }`}
+          >
             <div className="bg-white p-4 m-2 shadow-md sticky top-0 z-10 rounded-t-lg flex justify-between items-center">
-              <h2 className="text-[20px] font-bold">
+              <h2 className="text-[14px] font-[500] flex gap-2 items-center">
+                {!isDesktop && (
+                  <button onClick={() => setSelectedUser(null)}>
+                    <IoIosArrowBack />
+                  </button>
+                )}
                 {selectedUser?.userInfo?.firstname}{" "}
                 {selectedUser?.userInfo?.lastname}
               </h2>
             </div>
 
-            {/* Messages Area */}
             <div className="flex-grow overflow-y-auto p-4">
               <div className="flex flex-col gap-4">
                 {messages?.data?.conversation?.messages?.map((msg) => (
@@ -141,15 +166,15 @@ const Chats = () => {
                   >
                     <div className="flex flex-col max-w-full">
                       <div
-                        className={`p-3 rounded-lg max-w-full ${
+                        className={`p-3 text-[12px] rounded-lg max-w-full ${
                           msg.senderId === user?.data?._id
                             ? "bg-black text-white ml-auto"
-                            : "bg-white text-black mr-auto"
+                            : "bg-white text-black mr-auto shadow-md border border-gray-200"
                         }`}
                       >
                         <p>{msg.message}</p>
                       </div>
-                      <span className="text-xs text-gray-400 mt-1">
+                      <span className="text-[10px] font-[500] mt-1">
                         {new Date(msg.createdAt).toLocaleTimeString()}
                       </span>
                     </div>
@@ -170,11 +195,7 @@ const Chats = () => {
                 className="flex-grow border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring focus:ring-black"
                 disabled={sending}
               />
-              <button
-                className="texxt-black"
-                onClick={handleSendMessage}
-                disabled={sending}
-              >
+              <button onClick={handleSendMessage} disabled={sending}>
                 <FiSend size={24} />
               </button>
             </div>
