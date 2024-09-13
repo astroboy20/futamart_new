@@ -61,13 +61,12 @@ const Chats = ({ id }) => {
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: [`${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser._id}`],
-        queryKey: [`${process.env.NEXT_PUBLIC_API_URL}/chats`],
-      });
+      queryClient.invalidateQueries([`${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser._id}`]);
+      queryClient.invalidateQueries([`${process.env.NEXT_PUBLIC_API_URL}/chats`]);
       setMessage("");
     },
   });
+  
 
   const handleSendMessage = async () => {
     if (!message.trim()) return;
