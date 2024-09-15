@@ -6,7 +6,9 @@ import { BASE_URL, useFetchItems } from "@/hooks/useFetchItems";
 import { Loading } from "@/components/loading";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@chakra-ui/react";
+import { useRouter } from "next/navigation";
 const CartContainer = () => {
+  const router = useRouter()
   const token = Cookies.get("token");
   const queryClient = useQueryClient();
   const toast = useToast();
@@ -91,7 +93,9 @@ const CartContainer = () => {
         </div>
       </div>
     );
-
+const handleClick = (user)=>{
+router.push(`/user/chat/${user}`)
+}
   return (
     <div className="w-[100%] mt-3 mb-10 lg:my-10 px-[6%]  mx-[auto]">
       <div>
@@ -144,7 +148,7 @@ const CartContainer = () => {
                     &#8358;{item?.product?.price}
                   </p>
                   <div className="flex justify-between items-center">
-                    <button className="bg-black p-2 px-4 text-white rounded-md text-xs lg:text-base">
+                    <button onClick={()=>handleClick(item?.product?.user)} className="bg-[#000000] text-[#FFFFFF] font-normal rounded-[2px] text-[8px] leading-[9.75px] py-[4px] px-[10px] sm:py-[16px] sm:px-[10px] sm:text-[16px] sm:leading-[19.5px] ">
                       Chat with seller
                     </button>
                     <div className="flex items-center gap-1">
