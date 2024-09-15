@@ -1,4 +1,3 @@
-"use client";
 import React, { useState, useEffect, useRef } from "react";
 import { FiSend } from "react-icons/fi";
 import axios from "axios";
@@ -9,17 +8,17 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTimestamp } from "@/hooks/useTimeStamp";
-import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { IoIosArrowBack } from "react-icons/io";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 
-const Chats = () => {
+const Chats = ({ id }) => {
   const queryClient = useQueryClient();
-  const isDesktop = useMediaQuery("(min-width: 1024px)");
   const token = Cookies.get("token");
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const messagesEndRef = useRef(null);
+  const isDesktop = useMediaQuery("(min-width: 1024px)");
 
   const { data: userData } = useFetchItems({
     url: `${process.env.NEXT_PUBLIC_API_URL}/chats`,
@@ -30,9 +29,7 @@ const Chats = () => {
   });
 
   const { data: messages } = useFetchItems({
-    url: selectedUser
-      ? `${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser._id}`
-      : null,
+    url: selectedUser ? `${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser._id}` : null,
     enabled: !!selectedUser,
   });
 
@@ -45,7 +42,7 @@ const Chats = () => {
   const handleClick = (user) => {
     setSelectedUser(user);
   };
-  
+
   const sendMessageMutation = useMutation({
     mutationFn: async () => {
       try {
@@ -85,7 +82,7 @@ const Chats = () => {
   };
 
   return (
-    <div className="flex flex-col gap-10">
+    <div className="flex flex-col gap-10 p-[6%]">
       <div className="flex justify-between items-center">
         <h1 className="text-[24px] font-semibold underline">Chat</h1>
         <div className="flex items-center gap-5">
@@ -97,16 +94,13 @@ const Chats = () => {
       </div>
 
       <div className="flex flex-col lg:flex-row lg:justify-between w-full h-full">
-        
+        {/* Chat List Section */}
         {(!selectedUser || isDesktop) && (
           <div className="w-full lg:w-[30%]">
             <div className="flex justify-between items-center text-[18px] font-medium">
               <p>
                 All Chats
-                <span className="text-[#51A40A]">
-                  {" "}
-                  ({userData?.data?.length})
-                </span>
+                <span className="text-[#51A40A]"> ({userData?.data?.length})</span>
               </p>
               <p className="hidden lg:flex">Oldest</p>
             </div>
@@ -135,9 +129,11 @@ const Chats = () => {
             </div>
           </div>
         )}
+
+        {/* Chat Window Section */}
         {selectedUser && (
           <div
-            className={`w-full lg:w-[60%] flex flex-col  h-[400px] bg-[url('/images/products/chat-bg.png')] bg-cover bg-no-repeat rounded-lg shadow-lg relative ${
+            className={`w-full lg:w-[60%] flex flex-col h-[400px] bg-[url('/images/products/chat-bg.png')] bg-cover bg-no-repeat rounded-lg shadow-lg relative ${
               !isDesktop ? "fixed top-0 left-0 w-full h-full z-50" : ""
             }`}
           >
@@ -148,8 +144,7 @@ const Chats = () => {
                     <IoIosArrowBack />
                   </button>
                 )}
-                {selectedUser?.userInfo?.firstname}{" "}
-                {selectedUser?.userInfo?.lastname}
+                {selectedUser?.userInfo?.firstname} {selectedUser?.userInfo?.lastname}
               </h2>
             </div>
 
@@ -158,9 +153,7 @@ const Chats = () => {
                 {messages?.data?.conversation?.messages?.map((msg) => (
                   <div
                     key={msg._id}
-                    className={`flex ${
-                      msg?.senderId === user?.data?._id ? "ml-auto" : "mr-auto"
-                    }`}
+                    className={`flex ${msg?.senderId === user?.data?._id ? "ml-auto" : "mr-auto"}`}
                   >
                     <div className="flex flex-col max-w-full">
                       <div
