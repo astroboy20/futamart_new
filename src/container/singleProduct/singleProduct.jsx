@@ -31,16 +31,16 @@ const SingleProduct = ({ getSingleProduct }) => {
     <div className="px-3 flex gap-6 flex-col lg:flex-row lg:items-center h-full py-5">
       <div className="flex flex-col gap-4 lg:w-1/2 w-full">
         <img
-          className="object-contain bg-white w-[70%] mx-auto"
+          className="object-contain bg-white min-w-[70%] mx-auto"
           src={getSingleProduct?.data?.product?.featuredImage}
           alt=""
         />
-        <div className="flex flex-row gap-1 h-[100px] w-[70%] mx-auto">
+        <div className="flex flex-row gap-1 h-[100px] max-w-[70%] mx-auto overflow-scroll items-center justify-center">
           {getSingleProduct?.data?.product?.additionalImages?.map(
             (image, index) => (
               <img
                 key={index}
-                className="object-contain bg-white"
+                className="bg-white w-[80px]"
                 src={image}
                 alt=""
               />
@@ -48,7 +48,7 @@ const SingleProduct = ({ getSingleProduct }) => {
           )}
         </div>
       </div>
-      <div className="flex flex-col gap-4 lg:gap-8 flex-grow">
+      <div className="flex flex-col lg:w-1/2 gap-4 lg:gap-8 flex-grow">
         <div className="flex items-center gap-2">
           <p className="w-[95%] text-balance text-lg leading-[21.9px] font-semibold lg:text-[32px] lg:leading-[39.01px]">
             {getSingleProduct?.data?.product?.name}
