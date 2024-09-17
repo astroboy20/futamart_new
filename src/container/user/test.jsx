@@ -20,7 +20,7 @@ const Chats = ({ id, name, price }) => {
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
-  const [isFirstChat, setIsFirstChat] = useState(true); // Track if it's the first chat
+  const [isFirstChat, setIsFirstChat] = useState(true);
   const messagesEndRef = useRef(null);
   const isDesktop = useMediaQuery("(min-width: 1024px)");
 
@@ -33,10 +33,8 @@ const Chats = ({ id, name, price }) => {
   });
 
   const { data: messages } = useFetchItems({
-    url: selectedUser
-      ? `${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser._id}`
-      : null,
-    enabled: !!selectedUser,
+    url: id ? `${process.env.NEXT_PUBLIC_API_URL}/chat/${id}` : null,
+    enabled: !!id,
   });
 
   const { socket } = useWebsocket("wss://futamart-backend.onrender.com");
@@ -47,40 +45,60 @@ const Chats = ({ id, name, price }) => {
     }
   }, [messages]);
 
+  //     if (socket) {
+  //       socket.onopen = () => {
+  //         console.log("WebSocket connected");
+  //       };
+
+  //       socket.onmessage = (event) => {
+  //         const newMessage = JSON.parse(event.data);
+  //         console.log("New message received:", newMessage);
+  //         if (messagesEndRef.current) {
+  //           messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+  //         }
+  //       };
+
+  //       socket.onclose = () => {
+  //         console.log("WebSocket disconnected");
+  //       };
+
+  //       socket.onerror = (error) => {
+  //         console.error("WebSocket error:", error);
+  //       };
+  //     }
+  //   }, [socket]);
+
   useEffect(() => {
-    if (socket) {
-      socket.onopen = () => {
-        console.log("WebSocket connected");
+    if (id && isFirstChat) {
+      const sendInitialMessage = async () => {
+        try {
+          const payload = { message: `${name}\n${price}` };
+          await axios.post(
+            `${process.env.NEXT_PUBLIC_API_URL}/chat/${id}`,
+            payload,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+
+          setIsFirstChat(false);
+        } catch (error) {
+          console.error("Error sending initial message:", error);
+        }
       };
 
-      socket.onmessage = (event) => {
-        const newMessage = JSON.parse(event.data);
-        console.log("New message received:", newMessage);
-      };
-
-      socket.onclose = () => {
-        console.log("WebSocket disconnected");
-      };
-
-      socket.onerror = (error) => {
-        console.error("WebSocket error:", error);
-      };
+      sendInitialMessage();
     }
-  }, [socket]);
-
-  const handleClick = (user) => {
-    setSelectedUser(user);
-  };
+  }, [id, isFirstChat, name, price, socket, token, user?.data?._id]);
 
   const sendMessageMutation = useMutation({
     mutationFn: async () => {
       try {
-        const payload = isFirstChat
-          ? { message: `${name}/n${price}` } // Send name and price on first chat
-          : { message: message }; // Regular message on subsequent chats
-
+        const payload = { message: message };
         const response = await axios.post(
-          `${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser._id}`,
+          `${process.env.NEXT_PUBLIC_API_URL}/chat/${id}`,
           payload,
           {
             headers: {
@@ -95,13 +113,9 @@ const Chats = ({ id, name, price }) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries([
-        `${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser._id}`,
-      ]);
-      queryClient.invalidateQueries([
-        `${process.env.NEXT_PUBLIC_API_URL}/chats`,
+        `${process.env.NEXT_PUBLIC_API_URL}/chat/${id}`,
       ]);
       setMessage("");
-      setIsFirstChat(false); 
     },
   });
 
@@ -111,14 +125,6 @@ const Chats = ({ id, name, price }) => {
     setSending(true);
     try {
       await sendMessageMutation.mutateAsync();
-      if (socket) {
-        const socketMessage = isFirstChat
-          ? { message, name, price, userId: user.data._id }
-          : { message, userId: user.data._id };
-
-        socket.send(JSON.stringify(socketMessage));
-        console.log("Message sent:", socketMessage);
-      }
     } catch (error) {
       console.error("Error sending message:", error);
     } finally {
@@ -139,45 +145,43 @@ const Chats = ({ id, name, price }) => {
       </div>
 
       <div className="flex flex-col lg:flex-row lg:justify-between w-full h-full">
-        {(!selectedUser || isDesktop) && (
-          <div className="w-full lg:w-[30%]">
-            <div className="flex justify-between items-center text-[18px] font-medium">
-              <p>
-                All Chats
-                <span className="text-[#51A40A]">
-                  {" "}
-                  ({userData?.data?.length})
-                </span>
-              </p>
-              <p className="hidden lg:flex">Oldest</p>
-            </div>
+        <div className="w-full lg:w-[30%]">
+          <div className="flex justify-between items-center text-[18px] font-medium">
+            <p>
+              All Chats
+              <span className="text-[#51A40A]">
+                {" "}
+                ({userData?.data?.length})
+              </span>
+            </p>
+            <p className="hidden lg:flex">Oldest</p>
+          </div>
 
-            <div>
-              {userData?.data?.map((user) => (
-                <div
-                  key={user._id}
-                  className="flex justify-between items-center py-4 border-b cursor-pointer hover:bg-gray-100"
-                  onClick={() => handleClick(user)}
-                >
-                  <div className="flex flex-col gap-2">
-                    <p className="text-[14px] font-[500]">
-                      {user?.userInfo?.firstname} {user?.userInfo?.lastname}
-                    </p>
-                    <p className="text-gray-600 text-[12px] font-[500]">
-                      {user?.lastMessage?.message}
-                    </p>
-                  </div>
-
-                  <p className="text-[#51A40A] text-[10px] font-[600]">
-                    {useTimestamp({ timestamp: user?.lastMessage?.createdAt })}
+          <div>
+            {userData?.data?.map((user) => (
+              <div
+                key={user._id}
+                className="flex justify-between items-center py-4 border-b cursor-pointer hover:bg-gray-100"
+                onClick={() => handleClick(user)}
+              >
+                <div className="flex flex-col gap-2">
+                  <p className="text-[14px] font-[500]">
+                    {user?.userInfo?.firstname} {user?.userInfo?.lastname}
+                  </p>
+                  <p className="text-gray-600 text-[12px] font-[500]">
+                    {user?.lastMessage?.message}
                   </p>
                 </div>
-              ))}
-            </div>
-          </div>
-        )}
 
-        {selectedUser && (
+                <p className="text-[#51A40A] text-[10px] font-[600]">
+                  {useTimestamp({ timestamp: user?.lastMessage?.createdAt })}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {id && (
           <div
             className={`w-full lg:w-[60%] flex flex-col ${
               !isDesktop ? "h-[80dvh]" : "h-[400px]"
@@ -231,12 +235,17 @@ const Chats = ({ id, name, price }) => {
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder="Type a message..."
-                className="flex-grow border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring focus:ring-black"
-                disabled={sending}
+                className="w-full p-2 border border-gray-300 rounded-lg"
               />
-              <button onClick={handleSendMessage} disabled={sending}>
-                <FiSend size={20} />
-              </button>
+              <Button
+                onClick={handleSendMessage}
+                disabled={sending}
+                className={`bg-[#51A40A] text-white ${
+                  sending ? "opacity-50 cursor-not-allowed" : ""
+                }`}
+              >
+                <FiSend />
+              </Button>
             </div>
           </div>
         )}

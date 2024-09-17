@@ -1,12 +1,19 @@
-"use client"
+"use client";
 import { Chats } from "@/container/user/chats";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 
-export default function Page(){
-    const {id} = useParams()
-    return(
-        <div>
-            <Chats id={id}/>
-        </div>
-    )
+export default function Page() {
+  const params = useParams();
+  const searchParams = useSearchParams();
+
+  const { id } = params;
+  const name = searchParams.get("name");
+  const price = searchParams.get("price");
+
+//   console.log(id, name, price);
+  return (
+    <div>
+      <Chats id={id} name={name} price={price} />
+    </div>
+  );
 }
