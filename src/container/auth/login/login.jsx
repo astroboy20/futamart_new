@@ -64,7 +64,7 @@ const Login = () => {
         duration: 5000,
         isClosable: true,
       });
-      login(result.data?.token, result.data?.redirectUrl);
+      login(result.data?.token);
     } catch (error) {
       console.log(error);
       setLoading(false);
