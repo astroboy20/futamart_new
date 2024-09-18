@@ -55,30 +55,34 @@ const Chats = ({ id, name, price }) => {
         const data = JSON.parse(event.data);
         if (data.event === 'newMessage') {
           const newMessage = data.data;
-          console.log('New message received:', newMessage);
           
-          // Only update the messages if the new message belongs to the current chat
-          if (newMessage.senderId === selectedUser?._id || newMessage.receiverId === selectedUser?._id) {
-            queryClient.setQueryData(
-              [`${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser?._id}`],
-              (oldData) => {
-                if (!oldData) return oldData;
-                return {
-                  ...oldData,
-                  data: {
-                    ...oldData.data,
-                    conversation: {
-                      ...oldData.data.conversation,
-                      messages: [...oldData.data.conversation.messages, newMessage],
+          // Only process the message if the current user is the receiver
+          if (newMessage.receiverId === user?.data?._id) {
+            console.log('New message received:', newMessage);
+            
+            // Update the messages if the new message belongs to the current chat
+            if (newMessage.senderId === selectedUser?._id) {
+              queryClient.setQueryData(
+                [`${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser?._id}`],
+                (oldData) => {
+                  if (!oldData) return oldData;
+                  return {
+                    ...oldData,
+                    data: {
+                      ...oldData.data,
+                      conversation: {
+                        ...oldData.data.conversation,
+                        messages: [...oldData.data.conversation.messages, newMessage],
+                      },
                     },
-                  },
-                };
-              }
-            );
-          }
+                  };
+                }
+              );
+            }
 
-          // Invalidate the chats list query to update the last message
-          queryClient.invalidateQueries([`${process.env.NEXT_PUBLIC_API_URL}/chats`]);
+            // Invalidate the chats list query to update the last message
+            queryClient.invalidateQueries([`${process.env.NEXT_PUBLIC_API_URL}/chats`]);
+          }
         }
       };
 
@@ -88,7 +92,7 @@ const Chats = ({ id, name, price }) => {
         socket.removeEventListener('message', handleNewMessage);
       };
     }
-  }, [socket, queryClient, selectedUser]);
+  }, [socket, queryClient, selectedUser, user?.data?._id]);
   
   useEffect(() => {
     if (messagesEndRef.current) {
