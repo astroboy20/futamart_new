@@ -57,23 +57,25 @@ const Chats = ({ id, name, price }) => {
           const newMessage = data.data;
           console.log('New message received:', newMessage);
           
-          // Update the messages for the current chat
-          queryClient.setQueryData(
-            [`${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser?._id}`],
-            (oldData) => {
-              if (!oldData) return oldData;
-              return {
-                ...oldData,
-                data: {
-                  ...oldData.data,
-                  conversation: {
-                    ...oldData.data.conversation,
-                    messages: [...oldData.data.conversation.messages, newMessage],
+          // Only update the messages if the new message belongs to the current chat
+          if (newMessage.senderId === selectedUser?._id || newMessage.receiverId === selectedUser?._id) {
+            queryClient.setQueryData(
+              [`${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser?._id}`],
+              (oldData) => {
+                if (!oldData) return oldData;
+                return {
+                  ...oldData,
+                  data: {
+                    ...oldData.data,
+                    conversation: {
+                      ...oldData.data.conversation,
+                      messages: [...oldData.data.conversation.messages, newMessage],
+                    },
                   },
-                },
-              };
-            }
-          );
+                };
+              }
+            );
+          }
 
           // Invalidate the chats list query to update the last message
           queryClient.invalidateQueries([`${process.env.NEXT_PUBLIC_API_URL}/chats`]);
