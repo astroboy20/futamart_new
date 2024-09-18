@@ -11,6 +11,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTimestamp } from "@/hooks/useTimeStamp";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { IoIosArrowBack } from "react-icons/io";
+import { useWebsocket } from "@/hooks/useWebsocket";
 
 const Chats = () => {
   const queryClient = useQueryClient();
@@ -31,10 +32,16 @@ const Chats = () => {
 
   const { data: messages } = useFetchItems({
     url: selectedUser
-      ? `${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser._id}`
+      ? `${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser?._id}`
       : null,
     enabled: !!selectedUser,
   });
+
+  const { socket, error, connected, onlineUsers } = useWebsocket(
+    `ws://futamart-backend.onrender.com/?userId=${selectedUser?._id}`
+  );
+  
+
 
   useEffect(() => {
     if (messagesEndRef.current) {
@@ -45,7 +52,7 @@ const Chats = () => {
   const handleClick = (user) => {
     setSelectedUser(user);
   };
-  
+
   const sendMessageMutation = useMutation({
     mutationFn: async () => {
       try {
@@ -64,12 +71,15 @@ const Chats = () => {
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries([`${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser._id}`]);
-      queryClient.invalidateQueries([`${process.env.NEXT_PUBLIC_API_URL}/chats`]);
+      queryClient.invalidateQueries([
+        `${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser._id}`,
+      ]);
+      queryClient.invalidateQueries([
+        `${process.env.NEXT_PUBLIC_API_URL}/chats`,
+      ]);
       setMessage("");
     },
   });
-  
 
   const handleSendMessage = async () => {
     if (!message.trim()) return;
@@ -97,7 +107,6 @@ const Chats = () => {
       </div>
 
       <div className="flex flex-col lg:flex-row lg:justify-between w-full h-full">
-        
         {(!selectedUser || isDesktop) && (
           <div className="w-full lg:w-[30%]">
             <div className="flex justify-between items-center text-[18px] font-medium">
@@ -137,9 +146,9 @@ const Chats = () => {
         )}
         {selectedUser && (
           <div
-            className={`w-full lg:w-[60%] flex flex-col  h-[400px] bg-[url('/images/products/chat-bg.png')] bg-cover bg-no-repeat rounded-lg shadow-lg relative ${
-              !isDesktop ? "fixed top-0 left-0 w-full h-full z-50" : ""
-            }`}
+            className={`w-full lg:w-[60%] flex flex-col ${
+              !isDesktop ? "h-[85dvh]" : "h-[400px]"
+            }  bg-[url('/images/products/chat-bg.png')] bg-cover bg-no-repeat rounded-lg shadow-lg `}
           >
             <div className="bg-white p-4 m-2 shadow-md sticky top-0 z-10 rounded-t-lg flex justify-between items-center">
               <h2 className="text-[14px] font-[500] flex gap-2 items-center">
@@ -184,7 +193,7 @@ const Chats = () => {
             </div>
 
             {/* Message Input Section */}
-            <div className="bg-white p-3 shadow-md flex items-center gap-3 sticky bottom-0 z-10">
+            <div className="bg-white p-3 shadow-md flex items-center gap-3  z-10">
               <input
                 type="text"
                 value={message}
