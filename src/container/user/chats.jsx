@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { FiSend } from "react-icons/fi";
 import axios from "axios";
 import Cookies from "js-cookie";
@@ -49,6 +49,20 @@ const Chats = ({ id, name, price }) => {
     }
   }, [onlineUsers]);
   
+  useEffect(() => {
+    if (socket) {
+      socket.on('message', (newMessage) => {
+        queryClient.invalidateQueries([
+          `${process.env.NEXT_PUBLIC_API_URL}/chat/${id}`,
+        ]);
+      });
+    }
+    return () => {
+      if (socket) {
+        socket.off('message');
+      }
+    };
+  }, [socket, queryClient, id]);
   
   useEffect(() => {
     if (messagesEndRef.current) {
@@ -84,11 +98,11 @@ const Chats = ({ id, name, price }) => {
 
       sendInitialMessage();
     }
-  }, [id, isFirstChat, name, price, token, user?.data?._id]);
+  }, [id, isFirstChat, name, price, token, user?.data?._id, queryClient]);
 
-  const handleClick = (user) => {
+  const handleClick = useCallback((user) => {
     setSelectedUser(user);
-  };
+  }, []);
 
   const sendMessageMutation = useMutation({
     mutationFn: async () => {
@@ -119,7 +133,7 @@ const Chats = ({ id, name, price }) => {
     },
   });
 
-  const handleSendMessage = async () => {
+  const handleSendMessage = useCallback(async () => {
     if (!message.trim()) return;
 
     setSending(true);
@@ -130,7 +144,7 @@ const Chats = ({ id, name, price }) => {
     } finally {
       setSending(false);
     }
-  };
+  }, [message, sendMessageMutation]);
 
   return (
     <div className="flex flex-col gap-10 p-[6%]">
