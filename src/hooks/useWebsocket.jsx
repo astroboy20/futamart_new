@@ -1,66 +1,40 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 
-export const useWebsocket = (url) => {
+export function useWebsocket(url) {
   const [socket, setSocket] = useState(null);
-  const [error, setError] = useState(null);
   const [connected, setConnected] = useState(false);
+  const [error, setError] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
 
-  const connect = useCallback(() => {
+  useEffect(() => {
     const ws = new WebSocket(url);
 
     ws.onopen = () => {
-      console.log("WebSocket connected");
       setConnected(true);
-      setError(null);
+      setSocket(ws);
     };
 
-    ws.onclose = (event) => {
-      console.log("WebSocket disconnected", event);
+    ws.onclose = () => {
       setConnected(false);
-      setTimeout(connect, 3000);
+    };
+
+    ws.onerror = (err) => {
+      setError(err);
     };
 
     ws.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
-        console.log("Message received:", data);
-        if (data.type === 'onlineUsers') {
-          setOnlineUsers(data.users);
-        }
-        // Handle other message types as needed
-      } catch (error) {
-        console.error("Error parsing WebSocket message:", error);
+      const data = JSON.parse(event.data);
+      if (data.event === 'getOnlineUsers') {
+        setOnlineUsers(data.users);
       }
     };
-
-    ws.onerror = (event) => {
-      console.error("WebSocket error:", event);
-      setError(event);
-    };
-
-    setSocket(ws);
-  }, [url]);
-
-  useEffect(() => {
-    connect();
 
     return () => {
-      if (socket && socket.readyState === WebSocket.OPEN) {
-        socket.close();
-      }
+      ws.close();
     };
-  }, [connect]);
+  }, [url]);
 
-  const sendMessage = useCallback((message) => {
-    if (socket && socket.readyState === WebSocket.OPEN) {
-      socket.send(JSON.stringify(message));
-    } else {
-      console.error("WebSocket is not connected");
-    }
-  }, [socket]);
-
-  return { socket, error, connected, onlineUsers, sendMessage };
-};
+  return { socket, error, connected, onlineUsers };
+}
