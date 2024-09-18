@@ -51,18 +51,19 @@ const Chats = ({ id, name, price }) => {
   
   useEffect(() => {
     if (socket) {
-      socket.on('message', (newMessage) => {
+      socket.on('newMessage', (data) => {
+        const newMessage = data.data;
         queryClient.invalidateQueries([
-          `${process.env.NEXT_PUBLIC_API_URL}/chat/${id}`,
+          `${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser?._id}`,
         ]);
       });
     }
     return () => {
       if (socket) {
-        socket.off('message');
+        socket.off('newMessage');
       }
     };
-  }, [socket, queryClient, id]);
+  }, [socket, queryClient, selectedUser]);
   
   useEffect(() => {
     if (messagesEndRef.current) {
