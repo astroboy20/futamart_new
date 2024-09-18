@@ -55,6 +55,7 @@ const Chats = ({ id, name, price }) => {
         const data = JSON.parse(event.data);
         if (data.event === 'newMessage') {
           const newMessage = data.data;
+          console.log('New message received:', newMessage); // Added this line
           queryClient.invalidateQueries([
             `${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser?._id}`,
           ]);
