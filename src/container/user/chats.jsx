@@ -50,17 +50,18 @@ const Chats = ({ id, name, price }) => {
   }, [onlineUsers]);
   
   useEffect(() => {
-    if (socket && socket.readyState === WebSocket.OPEN) {
-      const handleNewMessage = (event) => {
+  if (socket && socket.readyState === WebSocket.OPEN) {
+    const handleNewMessage = (event) => {
+      try {
         const data = JSON.parse(event.data);
+        console.log("Message received from server:", data); // Log full message
         if (data.event === 'newMessage') {
           const newMessage = data.data;
-          
-          // Only process the message if the current user is the receiver
+          console.log('Processing new message:', newMessage);
+
           if (newMessage.receiverId === user?.data?._id) {
-            console.log('New message received:', newMessage);
+            console.log('New message for this user:', newMessage);
             
-            // Update the messages if the new message belongs to the current chat
             if (newMessage.senderId === selectedUser?._id) {
               queryClient.setQueryData(
                 [`${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser?._id}`],
@@ -80,19 +81,21 @@ const Chats = ({ id, name, price }) => {
               );
             }
 
-            // Invalidate the chats list query to update the last message
             queryClient.invalidateQueries([`${process.env.NEXT_PUBLIC_API_URL}/chats`]);
           }
         }
-      };
+      } catch (err) {
+        console.error("Error processing WebSocket message:", err);
+      }
+    };
 
-      socket.addEventListener('message', handleNewMessage);
+    socket.addEventListener('message', handleNewMessage);
 
-      return () => {
-        socket.removeEventListener('message', handleNewMessage);
-      };
-    }
-  }, [socket, queryClient, selectedUser, user?.data?._id]);
+    return () => {
+      socket.removeEventListener('message', handleNewMessage);
+    };
+  }
+}, [socket, queryClient, selectedUser, user?.data?._id]);
   
   useEffect(() => {
     if (messagesEndRef.current) {
