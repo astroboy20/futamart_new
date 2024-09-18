@@ -1,10 +1,13 @@
+"useClient";
 import { Fav } from "@/assets";
 import { AddToCart } from "@/components/addToCart";
 import { StarRating } from "@/components/rating";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { useState, useRef, useEffect } from "react";
 
 const SingleProduct = ({ getSingleProduct }) => {
+  const router = useRouter();
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -24,6 +27,13 @@ const SingleProduct = ({ getSingleProduct }) => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  const handleClick = (userId, name, price) => {
+    const url = `/user/chat/${userId}?name=${encodeURIComponent(
+      name
+    )}&price=${encodeURIComponent(price)}`;
+    router.push(url);
+  };
 
   const reviews = getSingleProduct?.data?.reviews?.reviews || [];
 
@@ -177,7 +187,16 @@ const SingleProduct = ({ getSingleProduct }) => {
           >
             Add to cart
           </AddToCart>
-          <button className="bg-[#000000] text-[#FFFFFF] border border-[#000000] py-[10px] px-[24px] font-semibold text-[12px] leading-[14.63px] rounded-[4px] flex-grow sm:p-[24px] sm:text-[24px] sm:leading-[29.26px] sm:w-full">
+          <button
+            onClick={() =>
+              handleClick(
+                getSingleProduct?.data?.product?.user,
+                getSingleProduct?.data?.product?.name,
+                getSingleProduct?.data?.product?.price
+              )
+            }
+            className="bg-[#000000] text-[#FFFFFF] border border-[#000000] py-[10px] px-[24px] font-semibold text-[12px] leading-[14.63px] rounded-[4px] flex-grow sm:p-[24px] sm:text-[24px] sm:leading-[29.26px] sm:w-full"
+          >
             Chat with seller
           </button>
         </div>
