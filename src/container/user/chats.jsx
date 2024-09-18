@@ -20,7 +20,7 @@ const Chats = ({ id, name, price }) => {
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
-  const [isFirstChat, setIsFirstChat] = useState(true); // Track if it's the first chat
+  const [isFirstChat, setIsFirstChat] = useState(true);
   const messagesEndRef = useRef(null);
   const isDesktop = useMediaQuery("(min-width: 1024px)");
 
@@ -39,8 +39,17 @@ const Chats = ({ id, name, price }) => {
     enabled: !!selectedUser,
   });
 
-  const { socket } = useWebsocket("wss://futamart-backend.onrender.com");
-
+  const { socket, error, connected, onlineUsers } = useWebsocket(
+    `ws://futamart-backend.onrender.com/?userId=${id}`
+  );
+  
+  useEffect(() => {
+    if (onlineUsers.length > 0) {
+      console.log("Online users:", onlineUsers);
+    }
+  }, [onlineUsers]);
+  
+  
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
@@ -48,25 +57,34 @@ const Chats = ({ id, name, price }) => {
   }, [messages]);
 
   useEffect(() => {
-    if (socket) {
-      socket.onopen = () => {
-        console.log("WebSocket connected");
+    if (id && isFirstChat) {
+      const sendInitialMessage = async () => {
+        try {
+          const payload = { message: `${name}\n${price}` };
+          await axios.post(
+            `${process.env.NEXT_PUBLIC_API_URL}/chat/${id}`,
+            payload,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          queryClient.invalidateQueries([
+            `${process.env.NEXT_PUBLIC_API_URL}/chat/${id}`,
+          ]);
+          queryClient.invalidateQueries([
+            `${process.env.NEXT_PUBLIC_API_URL}/chats`,
+          ]);
+          setIsFirstChat(false);
+        } catch (error) {
+          console.error("Error sending initial message:", error);
+        }
       };
 
-      socket.onmessage = (event) => {
-        const newMessage = JSON.parse(event.data);
-        console.log("New message received:", newMessage);
-      };
-
-      socket.onclose = () => {
-        console.log("WebSocket disconnected");
-      };
-
-      socket.onerror = (error) => {
-        console.error("WebSocket error:", error);
-      };
+      sendInitialMessage();
     }
-  }, [socket]);
+  }, [id, isFirstChat, name, price, token, user?.data?._id]);
 
   const handleClick = (user) => {
     setSelectedUser(user);
@@ -75,12 +93,9 @@ const Chats = ({ id, name, price }) => {
   const sendMessageMutation = useMutation({
     mutationFn: async () => {
       try {
-        const payload = isFirstChat
-          ? { message: `${name}/n${price}` } // Send name and price on first chat
-          : { message: message }; // Regular message on subsequent chats
-
+        const payload = { message: message };
         const response = await axios.post(
-          `${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser._id}`,
+          `${process.env.NEXT_PUBLIC_API_URL}/chat/${id}`,
           payload,
           {
             headers: {
@@ -95,13 +110,12 @@ const Chats = ({ id, name, price }) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries([
-        `${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser._id}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/chat/${id}`,
       ]);
       queryClient.invalidateQueries([
         `${process.env.NEXT_PUBLIC_API_URL}/chats`,
       ]);
       setMessage("");
-      setIsFirstChat(false); 
     },
   });
 
@@ -111,14 +125,6 @@ const Chats = ({ id, name, price }) => {
     setSending(true);
     try {
       await sendMessageMutation.mutateAsync();
-      if (socket) {
-        const socketMessage = isFirstChat
-          ? { message, name, price, userId: user.data._id }
-          : { message, userId: user.data._id };
-
-        socket.send(JSON.stringify(socketMessage));
-        console.log("Message sent:", socketMessage);
-      }
     } catch (error) {
       console.error("Error sending message:", error);
     } finally {
