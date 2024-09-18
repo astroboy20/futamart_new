@@ -50,19 +50,23 @@ const Chats = ({ id, name, price }) => {
   }, [onlineUsers]);
   
   useEffect(() => {
-    if (socket) {
-      socket.on('newMessage', (data) => {
-        const newMessage = data.data;
-        queryClient.invalidateQueries([
-          `${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser?._id}`,
-        ]);
-      });
+    if (socket && socket.readyState === WebSocket.OPEN) {
+      const handleNewMessage = (event) => {
+        const data = JSON.parse(event.data);
+        if (data.event === 'newMessage') {
+          const newMessage = data.data;
+          queryClient.invalidateQueries([
+            `${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser?._id}`,
+          ]);
+        }
+      };
+
+      socket.addEventListener('message', handleNewMessage);
+
+      return () => {
+        socket.removeEventListener('message', handleNewMessage);
+      };
     }
-    return () => {
-      if (socket) {
-        socket.off('newMessage');
-      }
-    };
   }, [socket, queryClient, selectedUser]);
   
   useEffect(() => {
