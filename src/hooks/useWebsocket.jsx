@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 export const useWebsocket = (url) => {
   const [socket, setSocket] = useState(null);
@@ -8,29 +8,29 @@ export const useWebsocket = (url) => {
   const [connected, setConnected] = useState(false);
   const [onlineUsers, setOnlineUsers] = useState([]);
 
-  useEffect(() => {
+  const connect = useCallback(() => {
     const ws = new WebSocket(url);
 
-    ws.onopen = (user) => {
-      console.log("WebSocket connected", user);
+    ws.onopen = () => {
+      console.log("WebSocket connected");
       setConnected(true);
-      if (user) {
-        setOnlineUsers(user);
-      }
+      setError(null);
     };
-    console.log(onlineUsers);
-    ws.onclose = () => {
-      console.log("WebSocket disconnected");
+
+    ws.onclose = (event) => {
+      console.log("WebSocket disconnected", event);
       setConnected(false);
-      setTimeout(() => {
-        setSocket(new WebSocket(url));
-      }, 3000);
+      setTimeout(connect, 3000);
     };
 
     ws.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
         console.log("Message received:", data);
+        if (data.type === 'onlineUsers') {
+          setOnlineUsers(data.users);
+        }
+        // Handle other message types as needed
       } catch (error) {
         console.error("Error parsing WebSocket message:", error);
       }
@@ -42,13 +42,25 @@ export const useWebsocket = (url) => {
     };
 
     setSocket(ws);
-
-    return () => {
-      if (ws.readyState === WebSocket.OPEN) {
-        ws.close();
-      }
-    };
   }, [url]);
 
-  return { socket, error, connected, onlineUsers };
+  useEffect(() => {
+    connect();
+
+    return () => {
+      if (socket && socket.readyState === WebSocket.OPEN) {
+        socket.close();
+      }
+    };
+  }, [connect]);
+
+  const sendMessage = useCallback((message) => {
+    if (socket && socket.readyState === WebSocket.OPEN) {
+      socket.send(JSON.stringify(message));
+    } else {
+      console.error("WebSocket is not connected");
+    }
+  }, [socket]);
+
+  return { socket, error, connected, onlineUsers, sendMessage };
 };
