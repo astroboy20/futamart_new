@@ -38,7 +38,7 @@ const Chats = () => {
   });
 
   const { socket, error, connected, onlineUsers } = useWebsocket(
-    `ws://futamart-backend.onrender.com/?userId=${selectedUser?._id}`
+    `wss://futamart-backend.onrender.com/?userId=${selectedUser?._id}`
   );
   
 
