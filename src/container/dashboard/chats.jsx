@@ -38,8 +38,63 @@ const Chats = () => {
   });
 
   const { socket, error, connected, onlineUsers } = useWebsocket(
-    `wss://futamart-backend.onrender.com/?userId=${selectedUser?._id}`
+    `wss://futamart-backend.onrender.com/?userId=${user?.data?._id}` // Use logged-in user ID
   );
+  
+  // Effect for handling WebSocket incoming messages
+  useEffect(() => {
+    if (socket && socket.readyState === WebSocket.OPEN) {
+      const handleNewMessage = (event) => {
+        const data = JSON.parse(event.data);
+        
+        // Log the incoming message for debugging
+        console.log("WebSocket message received:", data);
+  
+        if (data.event === "newMessage") {
+          const newMessage = data.data;
+  
+          // Ensure the message is for the current user
+          if (newMessage.receiverId === user?.data?._id) {
+            console.log("New message belongs to the current user:", newMessage);
+  
+            // If the message is for the currently selected chat, update the UI
+            if (
+              newMessage.senderId === selectedUser?._id || 
+              newMessage.receiverId === selectedUser?._id
+            ) {
+              queryClient.setQueryData(
+                [`${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser?._id}`],
+                (oldData) => {
+                  if (!oldData) return oldData;
+                  return {
+                    ...oldData,
+                    data: {
+                      ...oldData.data,
+                      conversation: {
+                        ...oldData.data.conversation,
+                        messages: [...oldData.data.conversation.messages, newMessage], // Append new message
+                      },
+                    },
+                  };
+                }
+              );
+            }
+  
+            // Invalidate the chat list query to update the last message preview
+            queryClient.invalidateQueries([`${process.env.NEXT_PUBLIC_API_URL}/chats`]);
+          }
+        }
+      };
+  
+      socket.addEventListener("message", handleNewMessage);
+  
+      return () => {
+        socket.removeEventListener("message", handleNewMessage);
+      };
+    }
+  }, [socket, queryClient, selectedUser, user?.data?._id]);
+  
+  
   
 
 
