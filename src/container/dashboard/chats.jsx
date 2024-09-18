@@ -41,6 +41,12 @@ const Chats = () => {
     `wss://futamart-backend.onrender.com/?userId=${user?.data?._id}` // Use logged-in user ID
   );
   
+  useEffect(() => {
+    if (onlineUsers.length > 0) {
+      console.log("Online users:", onlineUsers);
+    }
+  }, [onlineUsers]);
+
   // Effect for handling WebSocket incoming messages
   useEffect(() => {
     if (socket && socket.readyState === WebSocket.OPEN) {
@@ -59,8 +65,7 @@ const Chats = () => {
   
             // If the message is for the currently selected chat, update the UI
             if (
-              newMessage.senderId === selectedUser?._id || 
-              newMessage.receiverId === selectedUser?._id
+              newMessage.senderId === selectedUser?._id
             ) {
               queryClient.setQueryData(
                 [`${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser?._id}`],
@@ -136,7 +141,7 @@ const Chats = () => {
     },
   });
 
-  const handleSendMessage = async () => {
+  const handleSendMessage = useCallback(async () => {
     if (!message.trim()) return;
 
     setSending(true);
@@ -147,7 +152,7 @@ const Chats = () => {
     } finally {
       setSending(false);
     }
-  };
+  }, [message, sendMessageMutation]);
 
   return (
     <div className="flex flex-col gap-10">
@@ -269,3 +274,4 @@ const Chats = () => {
 };
 
 export { Chats };
+
