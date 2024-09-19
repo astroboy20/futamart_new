@@ -23,6 +23,7 @@ import { chartConfig, chartData, notification } from "@/providers/data";
 import { ModalContainer } from "@/components/modal";
 import { useState } from "react";
 import Link from "next/link";
+import { BASE_URL, useFetchItems } from "@/hooks/useFetchItems";
 
 const metrics = [
   {
@@ -53,7 +54,10 @@ const metrics = [
 
 const notifications = notification.slice(0, 2);
 
+
 const Home = () => {
+  const {data:overview} = useFetchItems({url:`${BASE_URL}/dashboard/seller/overview`})
+console.log(overview)
   return (
     <main className="flex flex-col gap-5 lg:gap-10 mt-[100px] lg:mt-0">
       <div className="flex justify-between items-center lg:items-start">
@@ -86,7 +90,7 @@ const Home = () => {
               </h3>
               <div className="flex justify-between items-center mt-auto  font-[500]">
                 <p
-                  style={{ backgroundColor: data.color, color:data.text_color }}
+                  // style={{ backgroundColor: data.color, color:data.text_color }}
                   className="text-[8px] px-2 py-1 lg:py-2 lg:px-4 rounded-full"
                 >
                   {data.rate}
