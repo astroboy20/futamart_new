@@ -1,9 +1,12 @@
 import { Products } from "@/container/dashboard/products";
-
+import { ProtectedRoute } from "@/context/ProtectedRoute";
 export default function Page() {
   return (
     <div>
-      <Products />
+      <ProtectedRoute>
+        {" "}
+        <Products />
+      </ProtectedRoute>
     </div>
   );
 }

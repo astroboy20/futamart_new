@@ -1,6 +1,7 @@
 
 import { DashboardSidebar } from "@/components/dashboardSidebar";
 import { DashboardHeader } from "@/components/headers/dashboardHeader";
+import { BASE_URL, useFetchItems } from "@/hooks/useFetchItems";
 
 
 export const metadata = {
@@ -9,7 +10,9 @@ export const metadata = {
 };
 
 export default function DashboardLayout({ children }) {
-  
+
+
+
   return (
     <>
       <main className="flex lg:bg-black lg:p-5 w-full h-[100vh] overflow-hidden">

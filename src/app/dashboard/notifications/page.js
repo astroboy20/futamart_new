@@ -1,9 +1,11 @@
 import { Notification } from "@/container/dashboard/notification";
-
+import { ProtectedRoute } from "@/context/ProtectedRoute";
 export default function Page() {
   return (
     <div>
-      <Notification />
+      <ProtectedRoute>
+        <Notification />
+      </ProtectedRoute>
     </div>
   );
 }
