@@ -8,9 +8,9 @@ import {
   ModalCloseButton,
   Button,
 } from "@chakra-ui/react";
-import { AddProducts } from "@/container/dashboard/addProducts";
+import { AddProducts } from "@/container/dashboard/products/addProducts";
 
-const ModalContainer = ({ isOpen, onClose }) => {
+const ModalContainer = ({ isOpen, onClose,children }) => {
   console.log("tpe:", isOpen, !isOpen);
   if (!isOpen) return null;
   return (
@@ -28,7 +28,7 @@ const ModalContainer = ({ isOpen, onClose }) => {
       >
         <ModalCloseButton />
         <ModalBody>
-          <AddProducts onClose={onClose}/>
+         {children}
         </ModalBody>
       </ModalContent>
     </Modal>
