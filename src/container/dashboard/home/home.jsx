@@ -24,40 +24,17 @@ import { ModalContainer } from "@/components/modal";
 import { useState } from "react";
 import Link from "next/link";
 import { BASE_URL, useFetchItems } from "@/hooks/useFetchItems";
-
-const metrics = [
-  {
-    title: "Profile Views",
-    rate: "0.8% increase",
-    count: "428",
-    color: "#FFE5CA",
-    text_color: "#994E00",
-    description: "1 hour ago",
-  },
-  {
-    title: "Favourites",
-    rate: "2% increase",
-    count: "123",
-    color: "#E0EED4",
-    text_color: "#5E8B37",
-    description: "1 hour ago",
-  },
-  {
-    title: "Catalogue",
-    rate: "0.4% decrease",
-    count: "186",
-    color: "#FFEDBB",
-    text_color: "#BD8B00",
-    description: "2 hours ago",
-  },
-];
+import { OverviewCard } from "./overviewCard";
 
 const notifications = notification.slice(0, 2);
 
 
 const Home = () => {
-  const {data:overview} = useFetchItems({url:`${BASE_URL}/dashboard/seller/overview`})
-console.log(overview)
+  const { data: overviewData } = useFetchItems({
+    url: `${BASE_URL}/dashboard/seller/overview`,
+  });
+  // console.log(overview?.data.catalouge);
+  const overview = overviewData?.data;
   return (
     <main className="flex flex-col gap-5 lg:gap-10 mt-[100px] lg:mt-0">
       <div className="flex justify-between items-center lg:items-start">
@@ -80,26 +57,24 @@ console.log(overview)
       <div className="flex flex-col gap-5">
         <h1 className="text-[20px] font-[500]">This month</h1>{" "}
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-5">
-          {metrics.map((data, index) => (
-            <Card
-              key={index}
-              className="rounded-[8px] px-5 py-2 h-[85px]  lg:h-[140px] flex flex-col shadow-[2px_2px_4px_0_rgba(0,0,0,0.1)] border-[#0000004D]"
-            >
-              <h3 className="text-[14px] lg:text-[20px] font-[500]">
-                {data.title}
-              </h3>
-              <div className="flex justify-between items-center mt-auto  font-[500]">
-                <p
-                  // style={{ backgroundColor: data.color, color:data.text_color }}
-                  className="text-[8px] px-2 py-1 lg:py-2 lg:px-4 rounded-full"
-                >
-                  {data.rate}
-                </p>
-
-                <p className="text-[20px] lg:text-[40px] ">{data.count}</p>
-              </div>
-            </Card>
-          ))}
+          <OverviewCard
+            name={"Profile Views"}
+            value={overview?.profileViews}
+            bg={"#FFE5CA"}
+            text_color={"#994E00"}
+          />
+          <OverviewCard
+            name={"Favourites"}
+            value={overview?.favourites}
+            bg={"#E0EED4"}
+            text_color={"#5E8B37"}
+          />
+          <OverviewCard
+            name={"Catalogue"}
+            value={overview?.catalouge}
+            bg={"#FFEDBB"}
+            text_color={"#BD8B00"}
+          />
         </div>
       </div>
 
@@ -111,7 +86,9 @@ console.log(overview)
                 {" "}
                 Profile Views
               </p>
-              <p className="text-[14px] lg:text-[24px] font-[700]">288</p>
+              <p className="text-[14px] lg:text-[24px] font-[700]">
+                {overview?.viewsStats?.totalViewsThisWeek}
+              </p>
             </div>
             <p className="text-[14px] font-[400] lg:text-[16px] lg:font-[500]">
               This week
@@ -128,7 +105,7 @@ console.log(overview)
             >
               <CartesianGrid vertical={false} />
               <XAxis
-                dataKey="month"
+                dataKey="day"
                 tickLine={false}
                 tickMargin={10}
                 axisLine={false}
@@ -140,7 +117,7 @@ console.log(overview)
               />
               <Bar
                 barSize={40}
-                dataKey="desktop"
+                dataKey="value"
                 fill="var(--color-desktop)"
                 radius={8}
               >
