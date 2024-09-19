@@ -1,10 +1,13 @@
-"use client"
+"use client";
 import { Home } from "@/container/dashboard/home";
+import { ProtectedRoute } from "@/context/ProtectedRoute";
 
 export default function Page() {
   return (
     <main>
-      <Home />
+      <ProtectedRoute>
+        <Home />
+      </ProtectedRoute>
     </main>
   );
 }
