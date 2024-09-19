@@ -150,13 +150,13 @@ export const notification = [
 ];
 
 export const chartData = [
-  { month: "Mon", desktop: 186, mobile: 80 },
-  { month: "Tue", desktop: 305, mobile: 200 },
-  { month: "Wed", desktop: 237, mobile: 120 },
-  { month: "Thur", desktop: 73, mobile: 190 },
-  { month: "Fri", desktop: 209, mobile: 130 },
-  { month: "Sat", desktop: 214, mobile: 140 },
-  { month: "Sun", desktop: 214, mobile: 140 },
+  { day: "Mon", value: 186, mobile: 80 },
+  { day: "Tue", value: 305, mobile: 200 },
+  { day: "Wed", value: 237, mobile: 120 },
+  { day: "Thur", value: 73, mobile: 190 },
+  { day: "Fri", value: 209, mobile: 130 },
+  { day: "Sat", value: 214, mobile: 140 },
+  { day: "Sun", value: 214, mobile: 140 },
 ];
 
 export const chartConfig = {
@@ -189,3 +189,30 @@ export const progressBarSizes = [
   },
 ];
 
+
+const metrics = [
+  {
+    title: "Profile Views",
+    rate: "0.8% increase",
+    count: "428",
+    color: "#FFE5CA",
+    text_color: "#994E00",
+    description: "1 hour ago",
+  },
+  {
+    title: "Favourites",
+    rate: "2% increase",
+    count: "123",
+    color: "#E0EED4",
+    text_color: "#5E8B37",
+    description: "1 hour ago",
+  },
+  {
+    title: "Catalogue",
+    rate: "0.4% decrease",
+    count: "186",
+    color: "#FFEDBB",
+    text_color: "#BD8B00",
+    description: "2 hours ago",
+  },
+];
