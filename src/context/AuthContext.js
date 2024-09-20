@@ -10,7 +10,7 @@ export const AuthProvider = ({ children }) => {
   const router = useRouter();
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-//   const [isLoading, setIsLoading] = useState(false);
+  //   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const token = Cookies.get("token");
@@ -19,7 +19,6 @@ export const AuthProvider = ({ children }) => {
     } else {
       setIsLoading(false);
     }
-
   }, []);
 
   const fetchUser = async (token) => {
@@ -33,6 +32,9 @@ export const AuthProvider = ({ children }) => {
       setUser(data);
     } catch (error) {
       console.error("Failed to fetch user:", error);
+      if (error?.response?.status === 401 && error?.response?.staus === 403) {
+        router.push("/login");
+      }
     } finally {
       setIsLoading(false);
     }
