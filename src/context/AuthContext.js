@@ -32,7 +32,7 @@ export const AuthProvider = ({ children }) => {
       setUser(data);
     } catch (error) {
       console.error("Failed to fetch user:", error);
-      if (error?.response?.status === 401 && error?.response?.staus === 403) {
+      if (error?.response?.status === 401 || error?.response?.staus === 403) {
         router.push("/login");
       }
     } finally {

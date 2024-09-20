@@ -9,8 +9,7 @@ import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 const Settings = () => {
   const isDesktop = useMediaQuery("(min-width: 1024px)");
-  const [selected, setSelected] = useState("profile");
-
+  const [selected, setSelected] = useState(isDesktop ? "profile" : null);
   const handleSelected = (value) => {
     setSelected(value);
   };
@@ -30,7 +29,7 @@ const Settings = () => {
       </div>
 
       <div className="flex justify-between">
-        {isDesktop && (
+        {isDesktop || selected === null ? (
           <aside className="flex flex-col gap-6">
             {sideData.map((data) => (
               <p
@@ -38,7 +37,7 @@ const Settings = () => {
                 onClick={() => handleSelected(data.value)}
                 className={`cursor-pointer  ${
                   selected === data.value
-                    ? "border border-black p-2 rounded bg-gray-200"
+                    ? "border border-black p-2 rounded "
                     : ""
                 }`}
               >
@@ -46,38 +45,41 @@ const Settings = () => {
               </p>
             ))}
           </aside>
+        ) : null}
+
+        {selected !== null && (
+          <aside
+            className={`rounded-[4px] bg-white drop-shadow-[4px_4px_4px_0_rgba(0,0,0,0.25)] h-fit ${
+              !isDesktop ? " w-[100%]" : " w-[70%]"
+            } p-5 `}
+          >
+            {selected === "profile" && (
+              <div>
+                <Profile setSelected={setSelected} />
+              </div>
+            )}
+            {selected === "password" && (
+              <div>
+                <PasswordSettings setSelected={setSelected} />
+              </div>
+            )}
+            {selected === "manage" && (
+              <div>
+                <Notifications setSelected={setSelected} />
+              </div>
+            )}
+            {selected === "terms" && (
+              <div>
+                <TermsofService setSelected={setSelected} />
+              </div>
+            )}
+            {selected === "privacy" && (
+              <div>
+                <PrivacyPolicies setSelected={setSelected} />
+              </div>
+            )}
+          </aside>
         )}
-        <aside
-          className={`rounded-[4px] bg-white drop-shadow-[4px_4px_4px_0_rgba(0,0,0,0.25)] h-fit ${
-            !isDesktop ? " w-[100%]" : " w-[70%]"
-          } p-5 `}
-        >
-          {selected === "profile" && (
-            <div>
-              <Profile setSelected={setSelected} />
-            </div>
-          )}
-          {selected === "password" && (
-            <div>
-              <PasswordSettings />
-            </div>
-          )}
-          {selected === "manage" && (
-            <div>
-              <Notifications />
-            </div>
-          )}
-          {selected === "terms" && (
-            <div>
-              <TermsofService />
-            </div>
-          )}
-          {selected === "privacy" && (
-            <div>
-              <PrivacyPolicies />
-            </div>
-          )}
-        </aside>
       </div>
     </main>
   );
