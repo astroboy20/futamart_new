@@ -20,8 +20,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { chartConfig, chartData, notification } from "@/providers/data";
-import { ModalContainer } from "@/components/modal";
-import { useState } from "react";
 import Link from "next/link";
 import { BASE_URL, useFetchItems } from "@/hooks/useFetchItems";
 import { OverviewCard } from "./overviewCard";
