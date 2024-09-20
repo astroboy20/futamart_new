@@ -25,16 +25,23 @@ import { useState } from "react";
 import Link from "next/link";
 import { BASE_URL, useFetchItems } from "@/hooks/useFetchItems";
 import { OverviewCard } from "./overviewCard";
+import { ClipLoader } from "react-spinners";
 
 const notifications = notification.slice(0, 2);
 
-
 const Home = () => {
-  const { data: overviewData } = useFetchItems({
+  const { data: overviewData, isLoading } = useFetchItems({
     url: `${BASE_URL}/dashboard/seller/overview`,
   });
-  // console.log(overview?.data.catalouge);
+
   const overview = overviewData?.data;
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-[100vh]">
+        <ClipLoader color="black" />
+      </div>
+    );
+  }
   return (
     <main className="flex flex-col gap-5 lg:gap-10 mt-[100px] lg:mt-0">
       <div className="flex justify-between items-center lg:items-start">
@@ -98,7 +105,7 @@ const Home = () => {
           <ChartContainer config={chartConfig}>
             <BarChart
               accessibilityLayer
-              data={chartData}
+              data={overview?.viewsStats?.dailyViews}
               margin={{
                 top: 20,
               }}
@@ -117,7 +124,7 @@ const Home = () => {
               />
               <Bar
                 barSize={40}
-                dataKey="value"
+                dataKey="viewCount"
                 fill="var(--color-desktop)"
                 radius={8}
               >
