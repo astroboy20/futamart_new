@@ -20,7 +20,7 @@ import Cookies from "js-cookie";
 import { ClipLoader } from "react-spinners";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-const AddProducts = ({ onClose }) => {
+const UpdateProducts = ({ onClose }) => {
   const toast = useToast();
   const queryClient = useQueryClient();
   const token = Cookies.get("token");
@@ -205,7 +205,7 @@ const AddProducts = ({ onClose }) => {
       queryClient.invalidateQueries([`${BASE_URL}/products/user`]);
       toast({
         title: "Product Uploaded",
-        description: response?.message,
+        description: response.data?.message,
         status: "success",
         duration: 3000,
         isClosable: true,
@@ -473,4 +473,4 @@ const AddProducts = ({ onClose }) => {
   );
 };
 
-export { AddProducts };
+export { UpdateProducts };

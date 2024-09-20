@@ -45,10 +45,11 @@ const Products = () => {
         },
       });
     },
-    onSuccess: () => {
+    onSuccess: (response) => {
       toast({
         title: "Product deleted",
-        description: "Product has been successfully deleted.",
+        description:
+          "Product has been successfully deleted." || response?.message,
         status: "success",
       });
       queryClient.invalidateQueries([`${BASE_URL}/products/user`]);
@@ -62,41 +63,41 @@ const Products = () => {
     },
   });
 
-  const editProductMutation = useMutation({
-    mutationFn: async (product) => {
-      await axios.put(`${BASE_URL}/product/${product.id}`, product);
-    },
-    onSuccess: () => {
-      toast({
-        title: "Product updated",
-        description: "Product has been successfully updated.",
-        status: "success",
-      });
-      queryClient.invalidateQueries([`${BASE_URL}/products/user`]);
-    },
-    onError: () => {
-      toast({
-        title: "Error",
-        description: "Failed to update product.",
-        status: "error",
-      });
-    },
-  });
-
   const handleDelete = (id) => {
     deleteProductMutation.mutateAsync(id);
   };
 
-  const handleEdit = (id) => {
-    const updatedProduct = {
-      id,
-      name: "Updated Product Name",
-      category: "Updated Category",
-      price: 2000,
-    };
-    editProductMutation.mutateAsync(updatedProduct);
-  };
-  console.log(products);
+  // const editProductMutation = useMutation({
+  //   mutationFn: async (product) => {
+  //     await axios.put(`${BASE_URL}/product/${product.id}`, product);
+  //   },
+  //   onSuccess: () => {
+  //     toast({
+  //       title: "Product updated",
+  //       description: "Product has been successfully updated.",
+  //       status: "success",
+  //     });
+  //     queryClient.invalidateQueries([`${BASE_URL}/products/user`]);
+  //   },
+  //   onError: () => {
+  //     toast({
+  //       title: "Error",
+  //       description: "Failed to update product.",
+  //       status: "error",
+  //     });
+  //   },
+  // });
+
+  // const handleEdit = (id) => {
+  //   const updatedProduct = {
+  //     id,
+  //     name: "Updated Product Name",
+  //     category: "Updated Category",
+  //     price: 2000,
+  //   };
+  //   editProductMutation.mutateAsync(updatedProduct);
+  // };
+  // console.log(products);
   return (
     <main className="flex flex-col gap-5 lg:gap-10 mt-[100px] lg:mt-0">
       <ModalContainer isOpen={showModal} onClose={setShowModal}>
@@ -186,7 +187,7 @@ const Products = () => {
                     <div className="flex my-12 lg:my-0 ">
                       <TableCell
                         className="flex items-center gap-2 text-[#00000066] cursor-pointer"
-                        onClick={() => handleEdit(data.id)}
+                        // onClick={() => handleEdit(data._id)}
                       >
                         <EditIcon /> Edit
                       </TableCell>
