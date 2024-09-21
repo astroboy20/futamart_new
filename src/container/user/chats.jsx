@@ -40,7 +40,7 @@ const Chats = ({ id, name, price }) => {
   });
 
 const { socket, error, connected, onlineUsers } = useWebsocket(
-  user?.data?._id ? `wss://api.futamart.com/?userId=${user?.data?._id}` : null // Only initialize if userId is available
+   `wss://api.futamart.com/?userId=${user?.data?._id}`
 );
   
   useEffect(() => {
