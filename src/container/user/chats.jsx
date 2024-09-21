@@ -39,15 +39,22 @@ const Chats = ({ id, name, price }) => {
     enabled: !!selectedUser,
   });
 
-const { socket, error, connected, onlineUsers } = useWebsocket(
-   `wss://api.futamart.com/?userId=${user?.data?._id}`
-);
-  
+const userId = user?.data?._id;
+  const { socket, error, connected, onlineUsers } = useWebsocket(
+    userId ? `wss://api.futamart.com/?userId=${userId}` : null
+  );
+
   useEffect(() => {
     if (onlineUsers.length > 0) {
       console.log("Online users:", onlineUsers);
     }
   }, [onlineUsers]);
+
+  useEffect(() => {
+    if (userId) {
+      console.log("Connecting to WebSocket with userId:", userId);
+    }
+  }, [userId]);
   
   useEffect(() => {
   if (socket && socket.readyState === WebSocket.OPEN) {
