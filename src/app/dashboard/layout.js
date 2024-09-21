@@ -1,8 +1,7 @@
-
 import { DashboardSidebar } from "@/components/dashboardSidebar";
 import { DashboardHeader } from "@/components/headers/dashboardHeader";
+import { ProtectedRoute } from "@/context/ProtectedRoute";
 import { BASE_URL, useFetchItems } from "@/hooks/useFetchItems";
-
 
 export const metadata = {
   title: "Futamart | Dashboard",
@@ -10,16 +9,13 @@ export const metadata = {
 };
 
 export default function DashboardLayout({ children }) {
-
-
-
   return (
     <>
       <main className="flex lg:bg-black lg:p-5 w-full h-[100vh] overflow-hidden">
         <DashboardSidebar />
         <main className="p-5 w-[100%] bg-[#F2F3F4] rounded-[16px] lg:px-10 lg:py-10 overflow-y-scroll no-scrollbar">
-          <DashboardHeader  />
-          {children}
+          <DashboardHeader />
+          <ProtectedRoute>{children}</ProtectedRoute>
         </main>
       </main>
     </>

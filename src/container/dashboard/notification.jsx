@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { notification } from "@/providers/data";
 import Image from "next/image";
 import Link from "next/link";
+import { FaRegShareSquare } from "react-icons/fa";
 
 const Notification = () => {
   return (
@@ -10,7 +11,7 @@ const Notification = () => {
       <div className="flex justify-between ">
         <h1 className="text-[24px] font-[600] underline">Notification</h1>
         <div className="flex items-center gap-5">
-          <NotificationIconX />
+          <FaRegShareSquare size={24} />
           <Link href="/dashboard/products">
             <Button className="hidden lg:block">View products</Button>
           </Link>

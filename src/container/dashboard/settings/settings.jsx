@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { PrivacyPolicies } from "./privacy";
 import { TermsofService } from "./termsofService";
-import { Notifications } from "./notifications";
+import { Subscription } from "./subscription";
 import { PasswordSettings } from "./passwordSettings";
 import { Profile } from "./profile";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
@@ -17,7 +17,7 @@ const Settings = () => {
   const sideData = [
     { id: 1, name: "Profile", value: "profile" },
     { id: 2, name: "Password settings", value: "password" },
-    { id: 3, name: "Manage notifications", value: "manage" },
+    { id: 3, name: "Manage subscription", value: "manage" },
     { id: 4, name: "Terms of service", value: "terms" },
     { id: 5, name: "Privacy policies", value: "privacy" },
   ];
@@ -65,7 +65,7 @@ const Settings = () => {
             )}
             {selected === "manage" && (
               <div>
-                <Notifications setSelected={setSelected} />
+                <Subscription setSelected={setSelected} />
               </div>
             )}
             {selected === "terms" && (
