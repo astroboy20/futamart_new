@@ -37,9 +37,9 @@ const Chats = () => {
     enabled: !!selectedUser,
   });
 
-  const { socket, error, connected, onlineUsers } = useWebsocket(
-    `wss://api.futamart.com/?userId=${user?.data?._id}` // Use logged-in user ID
-  );
+const { socket, error, connected, onlineUsers } = useWebsocket(
+  user?.data?._id ? `wss://api.futamart.com/?userId=${user?.data?._id}` : null // Only initialize if userId is available
+);
 
   useEffect(() => {
     if (onlineUsers.length > 0) {
