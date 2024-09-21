@@ -9,6 +9,8 @@ export function useWebsocket(url) {
   const [onlineUsers, setOnlineUsers] = useState([]);
 
   useEffect(() => {
+    if (!url) return; // Exit if URL is not provided
+
     const ws = new WebSocket(url);
 
     ws.onopen = () => {
@@ -18,6 +20,7 @@ export function useWebsocket(url) {
 
     ws.onclose = () => {
       setConnected(false);
+      setSocket(null); // Clear the socket on close
     };
 
     ws.onerror = (err) => {
@@ -25,9 +28,13 @@ export function useWebsocket(url) {
     };
 
     ws.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      if (data.event === 'getOnlineUsers') {
-        setOnlineUsers(data.users);
+      try {
+        const data = JSON.parse(event.data);
+        if (data.event === 'getOnlineUsers') {
+          setOnlineUsers(data.users);
+        }
+      } catch (e) {
+        console.error("Failed to parse message:", e);
       }
     };
 
