@@ -38,7 +38,6 @@ const Chats = () => {
   });
 
   const { socket, error, connected, onlineUsers } = useWebsocket(
-    console.log(user);
     `wss://api.futamart.com/?userId=${user?.data?._id}` // Use logged-in user ID
   );
 
@@ -53,7 +52,7 @@ const Chats = () => {
     if (socket && socket.readyState === WebSocket.OPEN) {
       const handleNewMessage = (event) => {
         const data = JSON.parse(event.data);
-
+        console.log(user);
         // Log the incoming message for debugging
         console.log("WebSocket message received:", data);
 
