@@ -39,7 +39,7 @@ const Chats = ({ id, name, price }) => {
     enabled: !!selectedUser,
   });
 
-const userId = user?.data?._id;
+  const userId = user?.data?._id;
   const { socket, error, connected, onlineUsers } = useWebsocket(
     userId ? `wss://api.futamart.com/?userId=${userId}` : null
   );
@@ -55,55 +55,62 @@ const userId = user?.data?._id;
       console.log("Connecting to WebSocket with userId:", userId);
     }
   }, [userId]);
-  
+
   useEffect(() => {
-  if (socket && socket.readyState === WebSocket.OPEN) {
-    const handleNewMessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
-        console.log("Message received from server:", data); // Log full message
-        if (data.event === 'newMessage') {
-          const newMessage = data.data;
-          console.log('Processing new message:', newMessage);
+    if (socket && socket.readyState === WebSocket.OPEN) {
+      const handleNewMessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          console.log("Message received from server:", data); // Log full message
+          if (data.event === "newMessage") {
+            const newMessage = data.data;
+            console.log("Processing new message:", newMessage);
 
-          if (newMessage.receiverId === user?.data?._id) {
-            console.log('New message for this user:', newMessage);
-            
-            if (newMessage.senderId === selectedUser?._id) {
-              queryClient.setQueryData(
-                [`${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser?._id}`],
-                (oldData) => {
-                  if (!oldData) return oldData;
-                  return {
-                    ...oldData,
-                    data: {
-                      ...oldData.data,
-                      conversation: {
-                        ...oldData.data.conversation,
-                        messages: [...oldData.data.conversation.messages, newMessage],
+            if (newMessage.receiverId === user?.data?._id) {
+              console.log("New message for this user:", newMessage);
+
+              if (newMessage.senderId === selectedUser?._id) {
+                queryClient.setQueryData(
+                  [
+                    `${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser?._id}`,
+                  ],
+                  (oldData) => {
+                    if (!oldData) return oldData;
+                    return {
+                      ...oldData,
+                      data: {
+                        ...oldData.data,
+                        conversation: {
+                          ...oldData.data.conversation,
+                          messages: [
+                            ...oldData.data.conversation.messages,
+                            newMessage,
+                          ],
+                        },
                       },
-                    },
-                  };
-                }
-              );
+                    };
+                  }
+                );
+              }
+
+              queryClient.invalidateQueries([
+                `${process.env.NEXT_PUBLIC_API_URL}/chats`,
+              ]);
             }
-
-            queryClient.invalidateQueries([`${process.env.NEXT_PUBLIC_API_URL}/chats`]);
           }
+        } catch (err) {
+          console.error("Error processing WebSocket message:", err);
         }
-      } catch (err) {
-        console.error("Error processing WebSocket message:", err);
-      }
-    };
+      };
 
-    socket.addEventListener('message', handleNewMessage);
+      socket.addEventListener("message", handleNewMessage);
 
-    return () => {
-      socket.removeEventListener('message', handleNewMessage);
-    };
-  }
-}, [socket, queryClient, selectedUser, user?.data?._id]);
-  
+      return () => {
+        socket.removeEventListener("message", handleNewMessage);
+      };
+    }
+  }, [socket, queryClient, selectedUser, user?.data?._id]);
+
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
@@ -114,6 +121,12 @@ const userId = user?.data?._id;
     if (id && isFirstChat) {
       const sendInitialMessage = async () => {
         try {
+          const messageSent = localStorage.getItem(`initialMessageSent_${id}`);
+          if (messageSent) {
+            setIsFirstChat(false);
+            return;
+          }
+
           const payload = { message: `${name}\n${price}` };
           await axios.post(
             `${process.env.NEXT_PUBLIC_API_URL}/chat/${id}`,
@@ -130,6 +143,7 @@ const userId = user?.data?._id;
           queryClient.invalidateQueries([
             `${process.env.NEXT_PUBLIC_API_URL}/chats`,
           ]);
+          localStorage.setItem(`initialMessageSent_${id}`, "true");
           setIsFirstChat(false);
         } catch (error) {
           console.error("Error sending initial message:", error);
@@ -306,3 +320,4 @@ const userId = user?.data?._id;
 };
 
 export { Chats };
+
