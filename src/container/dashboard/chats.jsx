@@ -38,6 +38,7 @@ const Chats = () => {
   });
 
   const { socket, error, connected, onlineUsers } = useWebsocket(
+    console.log(user);
     `wss://api.futamart.com/?userId=${user?.data?._id}` // Use logged-in user ID
   );
 
