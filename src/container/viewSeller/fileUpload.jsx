@@ -5,14 +5,14 @@ import axios from "axios";
 import { useState } from "react";
 import Cookies from "js-cookie";
 import { ClipLoader } from "react-spinners";
-import {  ModalContainer } from "@/components/modal";
+import { ModalContainer } from "@/components/modal";
 import { useRouter } from "next/navigation";
 
 const FileUpload = ({ nextStep }) => {
-  const router = useRouter()
-  const toast = useToast()
+  const router = useRouter();
+  const toast = useToast();
   const [isChecked, setIsChecked] = useState(false);
-  const [showModal, setShowModal] = useState(false)
+  const [showModal, setShowModal] = useState(false);
   const [files, setFiles] = useState({
     Credentials: {
       front_side: null,
@@ -27,7 +27,7 @@ const FileUpload = ({ nextStep }) => {
     front_side: false,
     back_side: false,
   });
-  
+
   const [isLoading, setIsLoading] = useState(false);
 
   const token = Cookies.get("token");
@@ -109,13 +109,14 @@ const FileUpload = ({ nextStep }) => {
       );
       toast({
         title: "Registration Successful",
-        description: response?.data?.message || "Business registered successfully.",
+        description:
+          response?.data?.message || "Business registered successfully.",
         status: "success",
         duration: 5000,
         isClosable: true,
       });
       console.log(response?.data?.message);
-      router.push("/dashboard")
+      router.push("/dashboard");
     } catch (error) {
       console.error("Error during registration:", error);
       toast({
@@ -130,9 +131,9 @@ const FileUpload = ({ nextStep }) => {
     }
   };
 
-  const handleClose = ()=>{
-    setShowModal(false)
-  }
+  const handleClose = () => {
+    setShowModal(false);
+  };
 
   return (
     <div className="flex flex-col gap-8">
@@ -262,7 +263,7 @@ const FileUpload = ({ nextStep }) => {
         )}
       </Button>
 
-      <ModalContainer isOpen={showModal} onClose={handleClose}/>
+      <ModalContainer isOpen={showModal} onClose={handleClose} />
     </div>
   );
 };

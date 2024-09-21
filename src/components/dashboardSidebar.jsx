@@ -9,13 +9,17 @@ import {
   ProductIcon,
   SettingIcon,
 } from "@/assets";
+import { useAuth } from "@/context/AuthContext";
+import { BASE_URL, useFetchItems } from "@/hooks/useFetchItems";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
 
-const DashboardSidebar = ({ children }) => {
+const DashboardSidebar = () => {
   const pathname = usePathname();
+  // const {user} = useAuth()
+  // console.log(user)
   return (
     <div className="hidden lg:w-[40%] h-[100vh] pr-5 lg:flex flex-col gap-10 overflow-hidden ">
       <Logo_White />
