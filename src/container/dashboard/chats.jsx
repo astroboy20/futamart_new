@@ -22,22 +22,14 @@ const Chats = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const messagesEndRef = useRef(null);
 
-  const { data: userData } = useFetchItems({
-    url: `${process.env.NEXT_PUBLIC_API_URL}/chats`,
-  });
-
-  const { data: user } = useFetchItems({
-    url: `${process.env.NEXT_PUBLIC_API_URL}/user`,
-  });
-
+  const { data: userData } = useFetchItems({ url: `${process.env.NEXT_PUBLIC_API_URL}/chats` });
+  const { data: user } = useFetchItems({ url: `${process.env.NEXT_PUBLIC_API_URL}/user` });
   const { data: messages } = useFetchItems({
-    url: selectedUser
-      ? `${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser?._id}`
-      : null,
+    url: selectedUser ? `${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser?._id}` : null,
     enabled: !!selectedUser,
   });
 
-const userId = user?.data?._id;
+  const userId = user?.data?._id;
   const { socket, error, connected, onlineUsers } = useWebsocket(
     userId ? `wss://api.futamart.com/?userId=${userId}` : null
   );
@@ -54,27 +46,22 @@ const userId = user?.data?._id;
     }
   }, [userId]);
 
-  // Effect for handling WebSocket incoming messages
   useEffect(() => {
-    if (socket && socket.readyState === WebSocket.OPEN) {
+    if (socket) {
       const handleNewMessage = (event) => {
         const data = JSON.parse(event.data);
-        // Log the incoming message for debugging
-        console.log("WebSocket message received:", data);
+        console.log("WebSocket message received:", data); // Log incoming message
 
         if (data.event === "newMessage") {
           const newMessage = data.data;
+          console.log("New message data:", newMessage);
 
-          // Ensure the message is for the current user
-          if (newMessage.receiverId === user?.data?._id) {
-            console.log("New message belongs to the current user:", newMessage);
+          if (newMessage.receiverId === userId) {
+            console.log("Message for current user:", newMessage);
 
-            // If the message is for the currently selected chat, update the UI
             if (newMessage.senderId === selectedUser?._id) {
               queryClient.setQueryData(
-                [
-                  `${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser?._id}`,
-                ],
+                [`${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser?._id}`],
                 (oldData) => {
                   if (!oldData) return oldData;
                   return {
@@ -83,10 +70,7 @@ const userId = user?.data?._id;
                       ...oldData.data,
                       conversation: {
                         ...oldData.data.conversation,
-                        messages: [
-                          ...oldData.data.conversation.messages,
-                          newMessage,
-                        ], // Append new message
+                        messages: [...oldData.data.conversation.messages, newMessage],
                       },
                     },
                   };
@@ -94,10 +78,7 @@ const userId = user?.data?._id;
               );
             }
 
-            // Invalidate the chat list query to update the last message preview
-            queryClient.invalidateQueries([
-              `${process.env.NEXT_PUBLIC_API_URL}/chats`,
-            ]);
+            queryClient.invalidateQueries([`${process.env.NEXT_PUBLIC_API_URL}/chats`]);
           }
         }
       };
@@ -108,7 +89,7 @@ const userId = user?.data?._id;
         socket.removeEventListener("message", handleNewMessage);
       };
     }
-  }, [socket, queryClient, selectedUser, user?.data?._id]);
+  }, [socket, queryClient, selectedUser, userId]);
 
   useEffect(() => {
     if (messagesEndRef.current) {
@@ -122,28 +103,16 @@ const userId = user?.data?._id;
 
   const sendMessageMutation = useMutation({
     mutationFn: async () => {
-      try {
-        const response = await axios.post(
-          `${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser._id}`,
-          { message },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        return response.data;
-      } catch (error) {
-        throw new Error("Something went wrong!");
-      }
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser._id}`,
+        { message },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      return response.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries([
-        `${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser._id}`,
-      ]);
-      queryClient.invalidateQueries([
-        `${process.env.NEXT_PUBLIC_API_URL}/chats`,
-      ]);
+      queryClient.invalidateQueries([`${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser._id}`]);
+      queryClient.invalidateQueries([`${process.env.NEXT_PUBLIC_API_URL}/chats`]);
       setMessage("");
     },
   });
