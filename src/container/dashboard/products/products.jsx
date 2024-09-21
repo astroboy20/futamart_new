@@ -1,5 +1,5 @@
 "use client";
-import { AddIcon, EditIcon, NotificationIconX, SearchIcon } from "@/assets";
+import { AddIcon, EditIcon, SearchIcon } from "@/assets";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -22,6 +22,7 @@ import axios from "axios";
 import { useToast } from "@chakra-ui/react";
 import Cookies from "js-cookie";
 import { AddProducts } from "./addProducts";
+import { ShareLinkButton } from "@/hooks/useShareLink";
 
 const Products = () => {
   const toast = useToast();
@@ -114,7 +115,7 @@ const Products = () => {
         </div>
 
         <div className="flex items-center gap-5">
-          <NotificationIconX />
+          <ShareLinkButton />
           <Button className="hidden lg:block" onClick={handleModal}>
             Add products
           </Button>

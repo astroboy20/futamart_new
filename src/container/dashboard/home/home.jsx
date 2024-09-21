@@ -13,26 +13,29 @@ import {
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { chartConfig, chartData, notification } from "@/providers/data";
+import { chartConfig, notification } from "@/providers/data";
 import Link from "next/link";
 import { BASE_URL, useFetchItems } from "@/hooks/useFetchItems";
 import { OverviewCard } from "./overviewCard";
 import { ClipLoader } from "react-spinners";
-
-const notifications = notification.slice(0, 2);
+import { ShareLinkButton } from "@/hooks/useShareLink";
 
 const Home = () => {
   const { data: overviewData, isLoading } = useFetchItems({
     url: `${BASE_URL}/dashboard/seller/overview`,
   });
+  const { data: notification } = useFetchItems({
+    url: `${BASE_URL}/notification/user`,
+  });
 
   const overview = overviewData?.data;
+  const notifications = notification?.data?.slice(0, 2);
+
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-[100vh]">
@@ -52,7 +55,8 @@ const Home = () => {
         </div>
 
         <div className="flex items-center gap-5">
-          <NotificationIconX />
+          <ShareLinkButton />
+
           <Link href="/dashboard/products">
             <Button className="hidden lg:block">View products</Button>
           </Link>
@@ -165,7 +169,25 @@ const Home = () => {
         <Card className="p-5 w-full lg:w-[30%] h-[180px] overflow-y-scroll no-scrollbar  shadow-[2px_2px_4px_0_rgba(0,0,0,0.1)] border-[#0000004D] rounded-[8px]">
           <h1 className="text-[20px] font-[500] ">Notifications</h1>{" "}
           <div className="flex flex-col gap-5">
-            {notifications.map((data) => (
+            {notification?.data?.length === 0 ? (
+              <p className="py-5">There is no notification at the moment</p>
+            ) : (
+              notifications?.map((data) => (
+                <div key={data.id} className="flex items-center gap-5">
+                  {/* <Image
+                  src={data.src}
+                  width={40}
+                  height={40}
+                  alt="notification-image"
+                /> */}
+                  {/* <p className="text-[14px]">
+                  {data.name} added{" "}
+                  <span className="underline">{data.item} </span>to cart
+                </p> */}
+                </div>
+              ))
+            )}
+            {/* {notifications.map((data) => (
               <div key={data.id} className="flex items-center gap-5">
                 <Image
                   src={data.src}
@@ -178,7 +200,7 @@ const Home = () => {
                   <span className="underline">{data.item} </span>to cart
                 </p>
               </div>
-            ))}
+            ))} */}
           </div>
         </Card>
         <Card className="hidden p-5 w-[70%] h-[180px] shadow-[2px_2px_4px_0_rgba(0,0,0,0.1)] border-[#0000004D] rounded-[8px] lg:flex flex-col gap-5 overflow-hidden">

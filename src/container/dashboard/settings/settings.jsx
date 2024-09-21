@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { PrivacyPolicies } from "./privacy";
 import { TermsofService } from "./termsofService";
-import { Subscription } from "./subscription";
+import { Subscription } from "./notifications";
 import { PasswordSettings } from "./passwordSettings";
 import { Profile } from "./profile";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
