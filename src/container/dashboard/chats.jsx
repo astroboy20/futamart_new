@@ -43,6 +43,7 @@ const Chats = () => {
 
   useEffect(() => {
     if (onlineUsers.length > 0) {
+      console.log(user);
       console.log("Online users:", onlineUsers);
     }
   }, [onlineUsers]);
@@ -52,7 +53,6 @@ const Chats = () => {
     if (socket && socket.readyState === WebSocket.OPEN) {
       const handleNewMessage = (event) => {
         const data = JSON.parse(event.data);
-        console.log(user);
         // Log the incoming message for debugging
         console.log("WebSocket message received:", data);
 
