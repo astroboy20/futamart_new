@@ -12,6 +12,8 @@ import { useTimestamp } from "@/hooks/useTimeStamp";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { IoIosArrowBack } from "react-icons/io";
 import { useWebsocket } from "@/hooks/useWebsocket";
+import Image from "next/image";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const Chats = () => {
   const queryClient = useQueryClient();
@@ -23,10 +25,16 @@ const Chats = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const messagesEndRef = useRef(null);
 
-  const { data: userData } = useFetchItems({ url: `${process.env.NEXT_PUBLIC_API_URL}/chats` });
-  const { data: user } = useFetchItems({ url: `${process.env.NEXT_PUBLIC_API_URL}/user` });
+  const { data: userData } = useFetchItems({
+    url: `${process.env.NEXT_PUBLIC_API_URL}/chats`,
+  });
+  const { data: user } = useFetchItems({
+    url: `${process.env.NEXT_PUBLIC_API_URL}/user`,
+  });
   const { data: messages } = useFetchItems({
-    url: selectedUser ? `${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser?._id}` : null,
+    url: selectedUser
+      ? `${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser?._id}`
+      : null,
     enabled: !!selectedUser,
   });
 
@@ -62,7 +70,9 @@ const Chats = () => {
 
             if (newMessage.senderId === selectedUser?._id) {
               queryClient.setQueryData(
-                [`${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser?._id}`],
+                [
+                  `${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser?._id}`,
+                ],
                 (oldData) => {
                   if (!oldData) return oldData;
                   return {
@@ -71,7 +81,10 @@ const Chats = () => {
                       ...oldData.data,
                       conversation: {
                         ...oldData.data.conversation,
-                        messages: [...oldData.data.conversation.messages, newMessage],
+                        messages: [
+                          ...oldData.data.conversation.messages,
+                          newMessage,
+                        ],
                       },
                     },
                   };
@@ -79,7 +92,9 @@ const Chats = () => {
               );
             }
 
-            queryClient.invalidateQueries([`${process.env.NEXT_PUBLIC_API_URL}/chats`]);
+            queryClient.invalidateQueries([
+              `${process.env.NEXT_PUBLIC_API_URL}/chats`,
+            ]);
           }
         }
       };
@@ -94,7 +109,10 @@ const Chats = () => {
 
   useEffect(() => {
     if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+      messagesEndRef.current.scroll({
+        top: messagesEndRef.current.scrollHeight,
+        behavior: "smooth",
+      });
     }
   }, [messages]);
 
@@ -112,70 +130,74 @@ const Chats = () => {
       return response.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries([`${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser._id}`]);
-      queryClient.invalidateQueries([`${process.env.NEXT_PUBLIC_API_URL}/chats`]);
+      queryClient.invalidateQueries([
+        `${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser._id}`,
+      ]);
+      queryClient.invalidateQueries([
+        `${process.env.NEXT_PUBLIC_API_URL}/chats`,
+      ]);
       setMessage("");
     },
   });
 
   const handleSendMessage = useCallback(async () => {
-  if (!message.trim()) return;
+    if (!message.trim()) return;
 
-  const newMessage = {
-    _id: Date.now().toString(), // Temporary ID
-    message,
-    senderId: user?.data?._id,
-    createdAt: new Date().toISOString(),
-  };
+    const newMessage = {
+      _id: Date.now().toString(), // Temporary ID
+      message,
+      senderId: user?.data?._id,
+      createdAt: new Date().toISOString(),
+    };
 
-  // Optimistically update the UI
-  queryClient.setQueryData(
-    [`${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser._id}`],
-    (oldData) => {
-      if (!oldData) return oldData;
-      return {
-        ...oldData,
-        data: {
-          ...oldData.data,
-          conversation: {
-            ...oldData.data.conversation,
-            messages: [...oldData.data.conversation.messages, newMessage],
+    // Optimistically update the UI
+    queryClient.setQueryData(
+      [`${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser._id}`],
+      (oldData) => {
+        if (!oldData) return oldData;
+        return {
+          ...oldData,
+          data: {
+            ...oldData.data,
+            conversation: {
+              ...oldData.data.conversation,
+              messages: [...oldData.data.conversation.messages, newMessage],
+            },
           },
-        },
-      };
-    }
-  );
+        };
+      }
+    );
 
-  setSending(true);
-  
-  // Clear the displayed message immediately
-  setDisplayedMessage(""); 
-  
-  try {
-    await sendMessageMutation.mutateAsync();
-  } catch (error) {
-    console.error("Error sending message:", error);
-    // Optionally, revert the optimistic update if needed
-  } finally {
-    setSending(false);
-  }
-}, [message, sendMessageMutation, queryClient, selectedUser, user]);
+    setSending(true);
+
+    // Clear the displayed message immediately
+    setDisplayedMessage("");
+
+    try {
+      await sendMessageMutation.mutateAsync();
+    } catch (error) {
+      console.error("Error sending message:", error);
+      // Optionally, revert the optimistic update if needed
+    } finally {
+      setSending(false);
+    }
+  }, [message, sendMessageMutation, queryClient, selectedUser, user]);
 
   const handleKeyPress = (e) => {
-  if (e.key === 'Enter' && !e.shiftKey) {
-    e.preventDefault(); // Prevent default behavior (like adding a new line)
-    handleSendMessage();
-  }
-};
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault(); // Prevent default behavior (like adding a new line)
+      handleSendMessage();
+    }
+  };
 
   const handleInputChange = (e) => {
-  setDisplayedMessage(e.target.value);
-  setMessage(e.target.value); // Keep the original message updated
-  
-  // Adjust the height based on content
-  e.target.style.height = 'auto'; // Reset height to auto to recalculate
-  e.target.style.height = `${e.target.scrollHeight}px`; // Set height to scrollHeight
-};
+    setDisplayedMessage(e.target.value);
+    setMessage(e.target.value); // Keep the original message updated
+
+    // Adjust the height based on content
+    e.target.style.height = "auto"; // Reset height to auto to recalculate
+    e.target.style.height = `${e.target.scrollHeight}px`; // Set height to scrollHeight
+  };
   return (
     <div className="flex flex-col gap-10">
       <div className="flex justify-between items-center">
@@ -229,22 +251,28 @@ const Chats = () => {
         {selectedUser && (
           <div
             className={`w-full lg:w-[60%] flex flex-col ${
-              !isDesktop ? "h-[85dvh]" : "h-[400px]"
-            }  bg-[url('/images/products/chat-bg.png')] bg-cover bg-no-repeat rounded-lg shadow-lg `}
+              !isDesktop
+                ? "h-[100dvh] absolute inset-0 z-50 bg-white"
+                : "h-[400px] "
+            }  bg-[url('/images/products/chat-bg.png')] bg-cover bg-no-repeat lg:rounded-lg shadow-lg `}
           >
-            <div className="bg-white p-4 m-2 shadow-md sticky top-0 z-10 rounded-t-lg flex justify-between items-center">
+            <div className="bg-[#FFF8F8] p-2  lg:bg-white lg:p-4 lg:m-2 shadow-md sticky top-0 z-10 rounded-t-lg flex justify-between items-center">
               <h2 className="text-[14px] font-[500] flex gap-2 items-center">
                 {!isDesktop && (
                   <button onClick={() => setSelectedUser(null)}>
                     <IoIosArrowBack />
                   </button>
                 )}
+                <Avatar>
+                  <AvatarImage src="https://github.com/shadcn.png" />
+                  <AvatarFallback>CN</AvatarFallback>
+                </Avatar>
                 {selectedUser?.userInfo?.firstname}{" "}
                 {selectedUser?.userInfo?.lastname}
               </h2>
             </div>
 
-            <div className="flex-grow overflow-y-auto p-4">
+            <div className="flex-grow overflow-y-auto p-4" ref={messagesEndRef}>
               <div className="flex flex-col gap-4">
                 {messages?.data?.conversation?.messages?.map((msg) => (
                   <div
@@ -269,28 +297,31 @@ const Chats = () => {
                     </div>
                   </div>
                 ))}
-
-                <div ref={messagesEndRef} />
               </div>
+              {/* <div ref={messagesEndRef} /> */}
             </div>
 
             {/* Message Input Section */}
-            <div className="bg-white p-3 shadow-md flex items-center gap-3  z-10">
-             <textarea 
-  value={displayedMessage} 
-  onChange={handleInputChange}
-  onKeyPress={handleKeyPress} // Add the key press handler
-  placeholder="Type a message..."
-  className="flex-grow border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring focus:ring-black"
-  style={{ 
-    minHeight: '50px', // Set a minimum height
-    overflow: 'hidden', // Hide scrollbar
-    resize: 'none' // Prevent manual resizing
-  }}
-  disabled={sending}
-/>
-              <button onClick={handleSendMessage} disabled={sending}>
-                <FiSend size={24} />
+            <div className=" bg-white p-3 shadow-md flex items-center gap-3  z-10">
+              <textarea
+                value={displayedMessage}
+                onChange={handleInputChange}
+                onKeyPress={handleKeyPress} // Add the key press handler
+                placeholder="Type a message..."
+                className="flex-grow border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring focus:ring-black"
+                style={{
+                  minHeight: "50px", // Set a minimum height
+                  overflow: "hidden", // Hide scrollbar
+                  resize: "none", // Prevent manual resizing
+                }}
+                disabled={sending}
+              />
+              <button
+                className="bg-black text-white p-3 rounded w-fit"
+                onClick={handleSendMessage}
+                disabled={sending}
+              >
+                <FiSend size={24} color="white" />
               </button>
             </div>
           </div>
