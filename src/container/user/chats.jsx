@@ -19,6 +19,7 @@ const Chats = ({ id, name, price }) => {
   const token = Cookies.get("token");
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
+  const [displayedMessage, setDisplayedMessage] = useState(message);
   const [selectedUser, setSelectedUser] = useState(null);
   const [isFirstChat, setIsFirstChat] = useState(true);
   const messagesEndRef = useRef(null);
@@ -221,13 +222,10 @@ const Chats = ({ id, name, price }) => {
 
   // Keep the message input intact until the message is successfully sent
   setSending(true);
+  setDisplayedMessage("");
   try {
     const response = await sendMessageMutation.mutateAsync();
     console.log("Message sent successfully:", response);
-    
-    // Clear the input field after a successful send
-    setMessage("");
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   } catch (error) {
     console.error("Error sending message:", error);
 
@@ -354,11 +352,11 @@ const Chats = ({ id, name, price }) => {
             <div className="bg-white p-3 shadow-md flex items-center gap-3  z-10">
               <input
                 type="text"
-                value={message}
-                onChange={(e) => {
-                  console.log("Input changed:", e.target.value);
-                  setMessage(e.target.value);
-                }} // Ensure state updates on input change
+                value={displayedMessage}
+               onChange={(e) => {
+    setDisplayedMessage(e.target.value);
+    setMessage(e.target.value); // Keep the original message updated
+  }}
                 placeholder="Type a message..."
                 className="flex-grow border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring focus:ring-black"
                 disabled={sending}
