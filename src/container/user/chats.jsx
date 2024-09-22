@@ -113,9 +113,9 @@ const Chats = ({ id, name, price }) => {
 
   useEffect(() => {
     if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+      messagesEndRef.current.scrollIntoView();
     }
-  }, [messages]);
+  }, [selectedUser]);
 
   useEffect(() => {
     if (id && isFirstChat) {
@@ -188,14 +188,19 @@ const Chats = ({ id, name, price }) => {
   });
 
   const handleSendMessage = useCallback(async () => {
-    if (!message.trim()) return;
+    if (!message.trim()) {
+      console.log("Message is empty, not sending.");
+      return;
+    }
 
     const newMessage = {
       _id: Date.now().toString(), // Temporary ID
-      message: message,
+      message: message, // Use the current message state
       senderId: user?.data?._id,
       createdAt: new Date().toISOString(),
     };
+
+    console.log("Sending message:", newMessage);
 
     // Optimistically update the UI
     queryClient.setQueryData(
@@ -215,7 +220,7 @@ const Chats = ({ id, name, price }) => {
       }
     );
 
-    setMessage("");
+    setMessage(""); // Clear the input field
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
 
     setSending(true);
@@ -331,7 +336,10 @@ const Chats = ({ id, name, price }) => {
               <input
                 type="text"
                 value={message}
-                onChange={(e) => setMessage(e.target.value)}
+                onChange={(e) => {
+                  console.log("Input changed:", e.target.value);
+                  setMessage(e.target.value);
+                }} // Ensure state updates on input change
                 placeholder="Type a message..."
                 className="flex-grow border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring focus:ring-black"
                 disabled={sending}
@@ -348,3 +356,4 @@ const Chats = ({ id, name, price }) => {
 };
 
 export { Chats };
+
