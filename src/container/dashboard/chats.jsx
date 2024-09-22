@@ -144,12 +144,10 @@ const Chats = () => {
         };
       }
     );
-
-    setMessage("");
     setSending(true);
-
     try {
       await sendMessageMutation.mutateAsync();
+      setMessage("");
     } catch (error) {
       console.error("Error sending message:", error);
       // Optionally, remove the optimistically added message or show an error
