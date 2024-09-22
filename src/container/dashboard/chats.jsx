@@ -162,12 +162,20 @@ const Chats = () => {
 }, [message, sendMessageMutation, queryClient, selectedUser, user]);
 
   const handleKeyPress = (e) => {
-  if (e.key === 'Enter') {
+  if (e.key === 'Enter' && !e.shiftKey) {
     e.preventDefault(); // Prevent default behavior (like adding a new line)
     handleSendMessage();
   }
 };
 
+  const handleInputChange = (e) => {
+  setDisplayedMessage(e.target.value);
+  setMessage(e.target.value); // Keep the original message updated
+  
+  // Adjust the height based on content
+  e.target.style.height = 'auto'; // Reset height to auto to recalculate
+  e.target.style.height = `${e.target.scrollHeight}px`; // Set height to scrollHeight
+};
   return (
     <div className="flex flex-col gap-10">
       <div className="flex justify-between items-center">
@@ -268,18 +276,19 @@ const Chats = () => {
 
             {/* Message Input Section */}
             <div className="bg-white p-3 shadow-md flex items-center gap-3  z-10">
-              <input
-                type="text"
-               value={displayedMessage} 
-  onChange={(e) => {
-    setDisplayedMessage(e.target.value);
-    setMessage(e.target.value); // Keep the original message updated
-  }} 
-                onKeyPress={handleKeyPress}
-                placeholder="Type a message..."
-                className="flex-grow border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring focus:ring-black"
-                disabled={sending}
-              />
+             <textarea 
+  value={displayedMessage} 
+  onChange={handleInputChange}
+  onKeyPress={handleKeyPress} // Add the key press handler
+  placeholder="Type a message..."
+  className="flex-grow border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring focus:ring-black"
+  style={{ 
+    minHeight: '50px', // Set a minimum height
+    overflow: 'hidden', // Hide scrollbar
+    resize: 'none' // Prevent manual resizing
+  }}
+  disabled={sending}
+/>
               <button onClick={handleSendMessage} disabled={sending}>
                 <FiSend size={24} />
               </button>
