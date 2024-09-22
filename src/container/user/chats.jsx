@@ -251,7 +251,7 @@ const Chats = ({ id, name, price }) => {
 }, [message, sendMessageMutation, user?.data?._id, id, queryClient]);
 
   const handleKeyPress = (e) => {
-  if (e.key === 'Enter') {
+  if (e.key === 'Enter' && !e.shiftKey) {
     e.preventDefault(); // Prevent default behavior (like adding a new line)
     handleSendMessage();
   }
@@ -357,18 +357,17 @@ const Chats = ({ id, name, price }) => {
             </div>
 
             <div className="bg-white p-3 shadow-md flex items-center gap-3  z-10">
-              <input
-                type="text"
-                value={displayedMessage}
-               onChange={(e) => {
+              <textarea 
+  value={displayedMessage} 
+  onChange={(e) => {
     setDisplayedMessage(e.target.value);
     setMessage(e.target.value); // Keep the original message updated
-  }}
-                onKeyPress={handleKeyPress}
-                placeholder="Type a message..."
-                className="flex-grow border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring focus:ring-black"
-                disabled={sending}
-              />
+  }} 
+  onKeyPress={handleKeyPress} // Add the key press handler
+  placeholder="Type a message..."
+  className="flex-grow border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring focus:ring-black"
+  disabled={sending}
+/>
               <button onClick={handleSendMessage} disabled={sending}>
                 <FiSend size={20} />
               </button>
