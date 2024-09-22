@@ -18,6 +18,7 @@ const Chats = () => {
   const isDesktop = useMediaQuery("(min-width: 1024px)");
   const token = Cookies.get("token");
   const [message, setMessage] = useState("");
+  const [displayedMessage, setDisplayedMessage] = useState(message);
   const [sending, setSending] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const messagesEndRef = useRef(null);
@@ -118,43 +119,47 @@ const Chats = () => {
   });
 
   const handleSendMessage = useCallback(async () => {
-    if (!message.trim()) return;
+  if (!message.trim()) return;
 
-    const newMessage = {
-      _id: Date.now().toString(), // Temporary ID
-      message,
-      senderId: user?.data?._id,
-      createdAt: new Date().toISOString(),
-    };
+  const newMessage = {
+    _id: Date.now().toString(), // Temporary ID
+    message,
+    senderId: user?.data?._id,
+    createdAt: new Date().toISOString(),
+  };
 
-    // Optimistically update the UI
-    queryClient.setQueryData(
-      [`${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser._id}`],
-      (oldData) => {
-        if (!oldData) return oldData;
-        return {
-          ...oldData,
-          data: {
-            ...oldData.data,
-            conversation: {
-              ...oldData.data.conversation,
-              messages: [...oldData.data.conversation.messages, newMessage],
-            },
+  // Optimistically update the UI
+  queryClient.setQueryData(
+    [`${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser._id}`],
+    (oldData) => {
+      if (!oldData) return oldData;
+      return {
+        ...oldData,
+        data: {
+          ...oldData.data,
+          conversation: {
+            ...oldData.data.conversation,
+            messages: [...oldData.data.conversation.messages, newMessage],
           },
-        };
-      }
-    );
-    setSending(true);
-    try {
-      await sendMessageMutation.mutateAsync();
-      setMessage("");
-    } catch (error) {
-      console.error("Error sending message:", error);
-      // Optionally, remove the optimistically added message or show an error
-    } finally {
-      setSending(false);
+        },
+      };
     }
-  }, [message, sendMessageMutation, queryClient, selectedUser, user]);
+  );
+
+  setSending(true);
+  
+  // Clear the displayed message immediately
+  setDisplayedMessage(""); 
+  
+  try {
+    await sendMessageMutation.mutateAsync();
+  } catch (error) {
+    console.error("Error sending message:", error);
+    // Optionally, revert the optimistic update if needed
+  } finally {
+    setSending(false);
+  }
+}, [message, sendMessageMutation, queryClient, selectedUser, user]);
 
   return (
     <div className="flex flex-col gap-10">
@@ -258,8 +263,11 @@ const Chats = () => {
             <div className="bg-white p-3 shadow-md flex items-center gap-3  z-10">
               <input
                 type="text"
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
+               value={displayedMessage} 
+  onChange={(e) => {
+    setDisplayedMessage(e.target.value);
+    setMessage(e.target.value); // Keep the original message updated
+  }} 
                 placeholder="Type a message..."
                 className="flex-grow border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring focus:ring-black"
                 disabled={sending}
