@@ -114,9 +114,9 @@ const Chats = ({ id, name, price }) => {
 
   useEffect(() => {
     if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView();
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  }, [selectedUser]);
+  }, [messages]);
 
   useEffect(() => {
     if (id && isFirstChat) {
