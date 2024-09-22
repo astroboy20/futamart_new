@@ -120,15 +120,43 @@ const Chats = () => {
   const handleSendMessage = useCallback(async () => {
     if (!message.trim()) return;
 
+    const newMessage = {
+      _id: Date.now().toString(), // Temporary ID
+      message,
+      senderId: user?.data?._id,
+      createdAt: new Date().toISOString(),
+    };
+
+    // Optimistically update the UI
+    queryClient.setQueryData(
+      [`${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser._id}`],
+      (oldData) => {
+        if (!oldData) return oldData;
+        return {
+          ...oldData,
+          data: {
+            ...oldData.data,
+            conversation: {
+              ...oldData.data.conversation,
+              messages: [...oldData.data.conversation.messages, newMessage],
+            },
+          },
+        };
+      }
+    );
+
+    setMessage("");
     setSending(true);
+
     try {
       await sendMessageMutation.mutateAsync();
     } catch (error) {
       console.error("Error sending message:", error);
+      // Optionally, remove the optimistically added message or show an error
     } finally {
       setSending(false);
     }
-  }, [message, sendMessageMutation]);
+  }, [message, sendMessageMutation, queryClient, selectedUser, user]);
 
   return (
     <div className="flex flex-col gap-10">
