@@ -1,24 +1,34 @@
 "use client";
 
-import { useFetchItems } from "@/hooks/useFetchItems";
-import { useAuth } from "./AuthContext";
+import { BASE_URL, useFetchItems } from "@/hooks/useFetchItems";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-export const ProtectedRoute = ({ children } ) => {
-  const router = useRouter();  // Correct usage of useRouter
-  const { user } = useAuth();
+export const ProtectedRoute = ({ children }) => {
+  const router = useRouter();
+  const { data: user, isLoading, error } = useFetchItems({
+    url: `${BASE_URL}/user`,
+  });
+
   const role = user?.data?.role?.name;
 
   useEffect(() => {
-    if (role && role !== "seller") {
-      router.push("/seller");  // Redirect if the user is not a seller
+    if (!isLoading && role && role !== "seller") {
+      router.push("/seller"); 
     }
-  }, [role, router]);
+  }, [role, isLoading, router]);
 
-  if (role && role !== "seller") {
-    return null;  // Return null while redirecting
+  if (isLoading) {
+    return <div></div>;
   }
 
-  return <>{children}</>;  // Render the wrapped children if the role is "seller"
+  if (error) {
+    return <div>Error fetching user data.</div>; 
+  }
+
+  if (role && role !== "seller") {
+    return null; 
+  }
+
+  return <>{children}</>; 
 };

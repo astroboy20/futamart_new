@@ -7,8 +7,13 @@ import Cookies from "js-cookie";
 import { ClipLoader } from "react-spinners";
 import { ModalContainer } from "@/components/modal";
 import { useRouter } from "next/navigation";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { BASE_URL } from "@/hooks/useFetchItems";
 
 const FileUpload = ({ nextStep }) => {
+  const queryClient = useQueryClient();
+  const [isLoading, setIsLoading] = useState(false);
+  const token = Cookies.get("token");
   const router = useRouter();
   const toast = useToast();
   const [isChecked, setIsChecked] = useState(false);
@@ -27,11 +32,6 @@ const FileUpload = ({ nextStep }) => {
     front_side: false,
     back_side: false,
   });
-
-  const [isLoading, setIsLoading] = useState(false);
-
-  const token = Cookies.get("token");
-
   typeof window != "undefined" &&
     localStorage.setItem("files", JSON.stringify(files));
 
@@ -95,18 +95,26 @@ const FileUpload = ({ nextStep }) => {
     }
   };
 
-  const handleSubmit = async () => {
-    setIsLoading(true);
-    try {
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/business/register`,
-        data,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+  const formMutation = useMutation({
+    mutationFn: async () => {
+      try {
+        const response = await axios.post(
+          `${process.env.NEXT_PUBLIC_API_URL}/business/register`,
+          data,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        return response.data;
+      } catch (error) {
+        console.error("Error during registration:", error);
+      }
+    },
+    onSuccess: (response) => {
+      queryClient.invalidateQueries([`${BASE_URL}/user`]);
+      router.push("/dashboard");
       toast({
         title: "Registration Successful",
         description:
@@ -115,10 +123,8 @@ const FileUpload = ({ nextStep }) => {
         duration: 5000,
         isClosable: true,
       });
-      console.log(response?.data?.message);
-      router.push("/dashboard");
-    } catch (error) {
-      console.error("Error during registration:", error);
+    },
+    onError: () => {
       toast({
         title: "Registration Failed",
         description: "There was an error registering the business.",
@@ -126,6 +132,14 @@ const FileUpload = ({ nextStep }) => {
         duration: 5000,
         isClosable: true,
       });
+    },
+  });
+  const handleSubmit = async () => {
+    setIsLoading(true);
+    try {
+      await formMutation.mutateAsync();
+    } catch (error) {
+      console.error("Error during registration:", error);
     } finally {
       setIsLoading(false);
     }
@@ -256,11 +270,7 @@ const FileUpload = ({ nextStep }) => {
         type="submit"
         className="text-[15px] leading-[18.29px] w-full bg-[#000000] text-[#FFFFFF] p-3 rounded-md lg:text-[24px] lg:leading-[29.26px] h-[50px]"
       >
-        {isLoading ? (
-          <ClipLoader color="gray" size={20} />
-        ) : (
-          " Register business"
-        )}
+        {isLoading ? <ClipLoader color="white" /> : " Register business"}
       </Button>
 
       <ModalContainer isOpen={showModal} onClose={handleClose} />
