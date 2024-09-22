@@ -161,7 +161,7 @@ const Chats = ({ id, name, price }) => {
   const sendMessageMutation = useMutation({
     mutationFn: async () => {
       try {
-        const payload = { message: message };
+        const payload = { message }; // Only include the message field
         const response = await axios.post(
           `${process.env.NEXT_PUBLIC_API_URL}/chat/${id}`,
           payload,
@@ -195,7 +195,7 @@ const Chats = ({ id, name, price }) => {
 
     const newMessage = {
       _id: Date.now().toString(), // Temporary ID
-      message: message, // Use the current message state
+      message, // Use the current message state
       senderId: user?.data?._id,
       createdAt: new Date().toISOString(),
     };
@@ -225,9 +225,29 @@ const Chats = ({ id, name, price }) => {
 
     setSending(true);
     try {
-      await sendMessageMutation.mutateAsync();
+      const response = await sendMessageMutation.mutateAsync();
+      console.log("Message sent successfully:", response);
     } catch (error) {
       console.error("Error sending message:", error);
+      // Optionally, revert the optimistic update if the message sending fails
+      queryClient.setQueryData(
+        [`${process.env.NEXT_PUBLIC_API_URL}/chat/${id}`],
+        (oldData) => {
+          if (!oldData) return oldData;
+          return {
+            ...oldData,
+            data: {
+              ...oldData.data,
+              conversation: {
+                ...oldData.data.conversation,
+                messages: oldData.data.conversation.messages.filter(
+                  (msg) => msg._id !== newMessage._id
+                ),
+              },
+            },
+          };
+        }
+      );
     } finally {
       setSending(false);
     }
@@ -356,4 +376,3 @@ const Chats = ({ id, name, price }) => {
 };
 
 export { Chats };
-
