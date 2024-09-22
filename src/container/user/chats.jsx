@@ -190,6 +190,34 @@ const Chats = ({ id, name, price }) => {
   const handleSendMessage = useCallback(async () => {
     if (!message.trim()) return;
 
+    const newMessage = {
+      _id: Date.now().toString(), // Temporary ID
+      message: message,
+      senderId: user?.data?._id,
+      createdAt: new Date().toISOString(),
+    };
+
+    // Optimistically update the UI
+    queryClient.setQueryData(
+      [`${process.env.NEXT_PUBLIC_API_URL}/chat/${id}`],
+      (oldData) => {
+        if (!oldData) return oldData;
+        return {
+          ...oldData,
+          data: {
+            ...oldData.data,
+            conversation: {
+              ...oldData.data.conversation,
+              messages: [...oldData.data.conversation.messages, newMessage],
+            },
+          },
+        };
+      }
+    );
+
+    setMessage("");
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+
     setSending(true);
     try {
       await sendMessageMutation.mutateAsync();
@@ -198,7 +226,7 @@ const Chats = ({ id, name, price }) => {
     } finally {
       setSending(false);
     }
-  }, [message, sendMessageMutation]);
+  }, [message, sendMessageMutation, user?.data?._id, id, queryClient]);
 
   return (
     <div className="flex flex-col gap-10 p-[6%]">
@@ -320,4 +348,3 @@ const Chats = ({ id, name, price }) => {
 };
 
 export { Chats };
-
