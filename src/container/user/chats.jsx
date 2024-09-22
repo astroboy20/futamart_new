@@ -187,71 +187,70 @@ const Chats = ({ id, name, price }) => {
     },
   });
 
-  const handleSendMessage = useCallback(async () => {
-    if (!message.trim()) {
-      console.log("Message is empty, not sending.");
-      return;
-    }
+ const handleSendMessage = useCallback(async () => {
+  if (!message.trim()) {
+    console.log("Message is empty, not sending.");
+    return;
+  }
 
-    const newMessage = {
-      _id: Date.now().toString(), // Temporary ID
-      message, // Use the current message state
-      senderId: user?.data?._id,
-      createdAt: new Date().toISOString(),
+  const newMessage = {
+    _id: Date.now().toString(), // Temporary ID
+    message, // Use the current message state
+    senderId: user?.data?._id,
+    createdAt: new Date().toISOString(),
+  };
+
+  console.log("Sending message:", newMessage);
+
+  // Optimistically update the UI
+  const updateChatData = (oldData) => {
+    if (!oldData) return oldData;
+    return {
+      ...oldData,
+      data: {
+        ...oldData.data,
+        conversation: {
+          ...oldData.data.conversation,
+          messages: [...oldData.data.conversation.messages, newMessage],
+        },
+      },
     };
+  };
 
-    console.log("Sending message:", newMessage);
+  queryClient.setQueryData([`${process.env.NEXT_PUBLIC_API_URL}/chat/${id}`], updateChatData);
 
-    // Optimistically update the UI
-    queryClient.setQueryData(
-      [`${process.env.NEXT_PUBLIC_API_URL}/chat/${id}`],
-      (oldData) => {
-        if (!oldData) return oldData;
-        return {
-          ...oldData,
-          data: {
-            ...oldData.data,
-            conversation: {
-              ...oldData.data.conversation,
-              messages: [...oldData.data.conversation.messages, newMessage],
-            },
-          },
-        };
-      }
-    );
-
-    setMessage(""); // Clear the input field
+  // Keep the message input intact until the message is successfully sent
+  setSending(true);
+  try {
+    const response = await sendMessageMutation.mutateAsync();
+    console.log("Message sent successfully:", response);
+    
+    // Clear the input field after a successful send
+    setMessage("");
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  } catch (error) {
+    console.error("Error sending message:", error);
 
-    setSending(true);
-    try {
-      const response = await sendMessageMutation.mutateAsync();
-      console.log("Message sent successfully:", response);
-    } catch (error) {
-      console.error("Error sending message:", error);
-      // Optionally, revert the optimistic update if the message sending fails
-      queryClient.setQueryData(
-        [`${process.env.NEXT_PUBLIC_API_URL}/chat/${id}`],
-        (oldData) => {
-          if (!oldData) return oldData;
-          return {
-            ...oldData,
-            data: {
-              ...oldData.data,
-              conversation: {
-                ...oldData.data.conversation,
-                messages: oldData.data.conversation.messages.filter(
-                  (msg) => msg._id !== newMessage._id
-                ),
-              },
-            },
-          };
-        }
-      );
-    } finally {
-      setSending(false);
-    }
-  }, [message, sendMessageMutation, user?.data?._id, id, queryClient]);
+    // Optionally, revert the optimistic update if sending fails
+    queryClient.setQueryData([`${process.env.NEXT_PUBLIC_API_URL}/chat/${id}`], (oldData) => {
+      if (!oldData) return oldData;
+      return {
+        ...oldData,
+        data: {
+          ...oldData.data,
+          conversation: {
+            ...oldData.data.conversation,
+            messages: oldData.data.conversation.messages.filter(
+              (msg) => msg._id !== newMessage._id
+            ),
+          },
+        },
+      };
+    });
+  } finally {
+    setSending(false);
+  }
+}, [message, sendMessageMutation, user?.data?._id, id, queryClient]);
 
   return (
     <div className="flex flex-col gap-10 p-[6%]">
