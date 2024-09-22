@@ -250,6 +250,13 @@ const Chats = ({ id, name, price }) => {
   }
 }, [message, sendMessageMutation, user?.data?._id, id, queryClient]);
 
+  const handleKeyPress = (e) => {
+  if (e.key === 'Enter') {
+    e.preventDefault(); // Prevent default behavior (like adding a new line)
+    handleSendMessage();
+  }
+};
+
   return (
     <div className="flex flex-col gap-10 p-[6%]">
       <div className="flex justify-between items-center">
@@ -357,6 +364,7 @@ const Chats = ({ id, name, price }) => {
     setDisplayedMessage(e.target.value);
     setMessage(e.target.value); // Keep the original message updated
   }}
+                onKeyPress={handleKeyPress}
                 placeholder="Type a message..."
                 className="flex-grow border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring focus:ring-black"
                 disabled={sending}
