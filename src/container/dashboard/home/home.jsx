@@ -68,18 +68,21 @@ const Home = () => {
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-5">
           <OverviewCard
             name={"Profile Views"}
+            percentage={overview?.profileViews.percentageIncrease}
             value={overview?.profileViews.count}
             bg={"#FFE5CA"}
             text_color={"#994E00"}
           />
           <OverviewCard
             name={"Favourites"}
+            percentage={overview?.favourites.percentageIncrease}
             value={overview?.favourites.count}
             bg={"#E0EED4"}
             text_color={"#5E8B37"}
           />
           <OverviewCard
             name={"Catalogue"}
+            percentage={overview?.catalouge.percentageIncrease}
             value={overview?.catalouge.count}
             bg={"#FFEDBB"}
             text_color={"#BD8B00"}
