@@ -24,6 +24,7 @@ const Chats = ({ id, name, price }) => {
   const [isFirstChat, setIsFirstChat] = useState(true);
   const messagesEndRef = useRef(null);
   const isDesktop = useMediaQuery("(min-width: 1024px)");
+  const [failedMessages, setFailedMessages] = useState([]); // State to store failed messages
 
   const { data: userData } = useFetchItems({
     url: `${process.env.NEXT_PUBLIC_API_URL}/chats`,
@@ -188,49 +189,26 @@ const Chats = ({ id, name, price }) => {
     },
   });
 
- const handleSendMessage = useCallback(async () => {
-  if (!message.trim()) {
-    console.log("Message is empty, not sending.");
-    return;
-  }
+  const handleSendMessage = useCallback(async (retryMessage = null) => {
+    const messageToSend = retryMessage || message;
 
-  const newMessage = {
-    _id: Date.now().toString(), // Temporary ID
-    message, // Use the current message state
-    senderId: user?.data?._id,
-    createdAt: new Date().toISOString(),
-  };
+    if (!messageToSend.trim()) {
+      console.log("Message is empty, not sending.");
+      return;
+    }
 
-  console.log("Sending message:", newMessage);
-
-  // Optimistically update the UI
-  const updateChatData = (oldData) => {
-    if (!oldData) return oldData;
-    return {
-      ...oldData,
-      data: {
-        ...oldData.data,
-        conversation: {
-          ...oldData.data.conversation,
-          messages: [...oldData.data.conversation.messages, newMessage],
-        },
-      },
+    const newMessage = {
+      _id: Date.now().toString(), // Temporary ID
+      message: messageToSend, // Use the current message state or retry message
+      senderId: user?.data?._id,
+      createdAt: new Date().toISOString(),
+      status: 'sending', // Add status to track message state
     };
-  };
 
-  queryClient.setQueryData([`${process.env.NEXT_PUBLIC_API_URL}/chat/${id}`], updateChatData);
+    console.log("Sending message:", newMessage);
 
-  // Keep the message input intact until the message is successfully sent
-  setSending(true);
-  setDisplayedMessage("");
-  try {
-    const response = await sendMessageMutation.mutateAsync();
-    console.log("Message sent successfully:", response);
-  } catch (error) {
-    console.error("Error sending message:", error);
-
-    // Optionally, revert the optimistic update if sending fails
-    queryClient.setQueryData([`${process.env.NEXT_PUBLIC_API_URL}/chat/${id}`], (oldData) => {
+    // Optimistically update the UI
+    const updateChatData = (oldData) => {
       if (!oldData) return oldData;
       return {
         ...oldData,
@@ -238,33 +216,89 @@ const Chats = ({ id, name, price }) => {
           ...oldData.data,
           conversation: {
             ...oldData.data.conversation,
-            messages: oldData.data.conversation.messages.filter(
-              (msg) => msg._id !== newMessage._id
-            ),
+            messages: [...oldData.data.conversation.messages, newMessage],
           },
         },
       };
-    });
-  } finally {
-    setSending(false);
-  }
-}, [message, sendMessageMutation, user?.data?._id, id, queryClient]);
+    };
+
+    queryClient.setQueryData([`${process.env.NEXT_PUBLIC_API_URL}/chat/${id}`], updateChatData);
+
+    // Keep the message input intact until the message is successfully sent
+    setSending(true);
+    setDisplayedMessage("");
+    try {
+      const response = await sendMessageMutation.mutateAsync();
+      console.log("Message sent successfully:", response);
+      // Update message status to 'sent'
+      queryClient.setQueryData([`${process.env.NEXT_PUBLIC_API_URL}/chat/${id}`], (oldData) => {
+        if (!oldData) return oldData;
+        return {
+          ...oldData,
+          data: {
+            ...oldData.data,
+            conversation: {
+              ...oldData.data.conversation,
+              messages: oldData.data.conversation.messages.map((msg) =>
+                msg._id === newMessage._id ? { ...msg, status: 'sent' } : msg
+              ),
+            },
+          },
+        };
+      });
+      // Remove from failed messages if retry was successful
+      setFailedMessages((prev) => prev.filter((msg) => msg._id !== newMessage._id));
+    } catch (error) {
+      console.error("Error sending message:", error);
+      // Update message status to 'failed'
+      queryClient.setQueryData([`${process.env.NEXT_PUBLIC_API_URL}/chat/${id}`], (oldData) => {
+        if (!oldData) return oldData;
+        return {
+          ...oldData,
+          data: {
+            ...oldData.data,
+            conversation: {
+              ...oldData.data.conversation,
+              messages: oldData.data.conversation.messages.map((msg) =>
+                msg._id === newMessage._id ? { ...msg, status: 'failed' } : msg
+              ),
+            },
+          },
+        };
+      });
+      // Add to failed messages if not already present
+      setFailedMessages((prev) => {
+        if (!prev.find((msg) => msg._id === newMessage._id)) {
+          return [...prev, newMessage];
+        }
+        return prev;
+      });
+    } finally {
+      setSending(false);
+    }
+  }, [message, sendMessageMutation, user?.data?._id, id, queryClient]);
+
+  const retrySendMessage = async (failedMessage) => {
+    await handleSendMessage(failedMessage.message);
+  };
 
   const handleKeyPress = (e) => {
-  if (e.key === 'Enter' && !e.shiftKey) {
-    e.preventDefault(); // Prevent default behavior (like adding a new line)
-    handleSendMessage();
-  }
-};
-// Automatically resize the textarea
-const handleInputChange = (e) => {
-  setDisplayedMessage(e.target.value);
-  setMessage(e.target.value); // Keep the original message updated
-  
-  // Adjust the height based on content
-  e.target.style.height = 'auto'; // Reset height to auto to recalculate
-  e.target.style.height = `${e.target.scrollHeight}px`; // Set height to scrollHeight
-};
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault(); // Prevent default behavior (like adding a new line)
+      handleSendMessage();
+    }
+  };
+
+  // Automatically resize the textarea
+  const handleInputChange = (e) => {
+    setDisplayedMessage(e.target.value);
+    setMessage(e.target.value); // Keep the original message updated
+    
+    // Adjust the height based on content
+    e.target.style.height = 'auto'; // Reset height to auto to recalculate
+    e.target.style.height = `${e.target.scrollHeight}px`; // Set height to scrollHeight
+  };
+
   return (
     <div className="flex flex-col gap-10 p-[6%]">
       <div className="flex justify-between items-center">
@@ -352,6 +386,11 @@ const handleInputChange = (e) => {
                         }`}
                       >
                         <p>{msg.message}</p>
+                        {msg.status === 'failed' && (
+                          <div className="text-red-500 text-[10px] mt-1 cursor-pointer" onClick={() => retrySendMessage(msg)}>
+                            Message failed to send. Tap to retry.
+                          </div>
+                        )}
                       </div>
                       <span className="text-[10px] font-[500] mt-1">
                         {new Date(msg.createdAt).toLocaleTimeString()}
@@ -365,19 +404,19 @@ const handleInputChange = (e) => {
             </div>
 
             <div className="bg-white p-3 shadow-md flex items-center gap-3  z-10">
-            <textarea 
-  value={displayedMessage} 
-  onChange={handleInputChange} 
-  onKeyPress={handleKeyPress} // Add the key press handler
-  placeholder="Type a message..."
-  className="flex-grow border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring focus:ring-black"
-  style={{ 
-    minHeight: '50px', // Set a minimum height
-    overflow: 'hidden', // Hide scrollbar
-    resize: 'none' // Prevent manual resizing
-  }}
-  disabled={sending}
-/>
+              <textarea
+                value={displayedMessage}
+                onChange={handleInputChange}
+                onKeyPress={handleKeyPress} // Add the key press handler
+                placeholder="Type a message..."
+                className="flex-grow border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring focus:ring-black"
+                style={{
+                  minHeight: "50px", // Set a minimum height
+                  overflow: "hidden", // Hide scrollbar
+                  resize: "none", // Prevent manual resizing
+                }}
+                disabled={sending}
+              />
               <button onClick={handleSendMessage} disabled={sending}>
                 <FiSend size={20} />
               </button>
