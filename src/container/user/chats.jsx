@@ -192,7 +192,8 @@ const Chats = ({ id, name, price }) => {
   const handleSendMessage = useCallback(async (retryMessage = null) => {
     const messageToSend = retryMessage || message;
 
-      if (typeof messageToSend !== 'string' || !messageToSend.trim()) {
+    // Ensure messageToSend is a string
+    if (typeof messageToSend !== 'string' || !messageToSend.trim()) {
       console.log("Message is empty or not a string, not sending.");
       return;
     }
@@ -297,6 +298,10 @@ const Chats = ({ id, name, price }) => {
     // Adjust the height based on content
     e.target.style.height = 'auto'; // Reset height to auto to recalculate
     e.target.style.height = `${e.target.scrollHeight}px`; // Set height to scrollHeight
+  };
+
+  const handleButtonClick = () => {
+    handleSendMessage();
   };
 
   return (
@@ -417,7 +422,7 @@ const Chats = ({ id, name, price }) => {
                 }}
                 disabled={sending}
               />
-              <button onClick={handleSendMessage} disabled={sending}>
+              <button onClick={handleButtonClick} disabled={sending}>
                 <FiSend size={20} />
               </button>
             </div>
