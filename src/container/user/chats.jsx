@@ -13,7 +13,6 @@ import { useTimestamp } from "@/hooks/useTimeStamp";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { IoIosArrowBack } from "react-icons/io";
 import { useWebsocket } from "@/hooks/useWebsocket";
-import Image from "next/image";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 
