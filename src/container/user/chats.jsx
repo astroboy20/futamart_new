@@ -192,8 +192,8 @@ const Chats = ({ id, name, price }) => {
   const handleSendMessage = useCallback(async (retryMessage = null) => {
     const messageToSend = retryMessage || message;
 
-    if (!messageToSend.trim()) {
-      console.log("Message is empty, not sending.");
+      if (typeof messageToSend !== 'string' || !messageToSend.trim()) {
+      console.log("Message is empty or not a string, not sending.");
       return;
     }
 
