@@ -13,6 +13,9 @@ import { useTimestamp } from "@/hooks/useTimeStamp";
 import { IoIosArrowBack } from "react-icons/io";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { useWebsocket } from "@/hooks/useWebsocket";
+import Image from "next/image";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
 
 const Chats = ({ id, name, price }) => {
   const queryClient = useQueryClient();
