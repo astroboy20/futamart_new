@@ -305,75 +305,77 @@ const Chats = ({ id, name, price }) => {
   };
 
   return (
-    <div className="flex flex-col gap-10 p-[6%]">
-      <div className="flex justify-between items-center">
-        <h1 className="text-[24px] font-semibold underline">Chat</h1>
-        <div className="flex items-center gap-5">
-          <NotificationIconX />
-          <Link href="/dashboard/products">
-            <Button className="hidden lg:block">View products</Button>
-          </Link>
+<div className="flex flex-col gap-10">
+  <div className="flex justify-between items-center">
+    <h1 className="text-[24px] font-semibold underline">Chat</h1>
+    <div className="flex items-center gap-5">
+      <NotificationIconX />
+      <Link href="/dashboard/products">
+        <Button className="hidden lg:block">View products</Button>
+      </Link>
+    </div>
+  </div>
+
+  <div className="flex flex-col lg:flex-row lg:justify-between w-full h-full">
+    {(!selectedUser || isDesktop) && (
+      <div className="w-full lg:w-[30%]">
+        <div className="flex justify-between items-center text-[18px] font-medium">
+          <p>
+            All Chats
+            <span className="text-[#51A40A]"> ({userData?.data?.length})</span>
+          </p>
+          <p className="hidden lg:flex">Oldest</p>
+        </div>
+
+        <div>
+          {userData?.data?.map((user) => (
+            <div
+              key={user._id}
+              className="flex justify-between items-center py-4 border-b cursor-pointer hover:bg-gray-100"
+              onClick={() => handleClick(user)}
+            >
+              <div className="flex flex-col gap-2">
+                <p className="text-[14px] font-[500]">
+                  {user?.userInfo?.firstname} {user?.userInfo?.lastname}
+                </p>
+                <p className="text-gray-600 text-[12px] font-[500]">
+                  {user?.lastMessage?.message}
+                </p>
+              </div>
+
+              <p className="text-[#51A40A] text-[10px] font-[600]">
+                {useTimestamp({ timestamp: user?.lastMessage?.createdAt })}
+              </p>
+            </div>
+          ))}
         </div>
       </div>
+    )}
+    {selectedUser && (
+      <div
+        className={`w-full lg:w-[60%] flex flex-col ${
+          !isDesktop
+            ? "h-[100dvh] absolute inset-0 z-50 bg-white"
+            : "h-[400px] "
+        }  bg-[url('/images/products/chat-bg.png')] bg-cover bg-no-repeat lg:rounded-lg shadow-lg `}
+      >
+        <div className="bg-[#FFF8F8] p-2  lg:bg-white lg:p-4 lg:m-2 shadow-md sticky top-0 z-10 rounded-t-lg flex justify-between items-center">
+          <h2 className="text-[14px] font-[500] flex gap-2 items-center">
+            {!isDesktop && (
+              <button onClick={() => setSelectedUser(null)}>
+                <IoIosArrowBack />
+              </button>
+            )}
+            <Avatar>
+              <AvatarImage src="https://github.com/shadcn.png" />
+              <AvatarFallback>CN</AvatarFallback>
+            </Avatar>
+            {selectedUser?.userInfo?.firstname}{" "}
+            {selectedUser?.userInfo?.lastname}
+          </h2>
+        </div>
 
-      <div className="flex flex-col lg:flex-row lg:justify-between w-full h-full">
-        {(!selectedUser || isDesktop) && (
-          <div className="w-full lg:w-[30%]">
-            <div className="flex justify-between items-center text-[18px] font-medium">
-              <p>
-                All Chats
-                <span className="text-[#51A40A]">
-                  {" "}
-                  ({userData?.data?.length})
-                </span>
-              </p>
-              <p className="hidden lg:flex">Oldest</p>
-            </div>
-
-            <div>
-              {userData?.data?.map((user) => (
-                <div
-                  key={user._id}
-                  className="flex justify-between items-center py-4 border-b cursor-pointer hover:bg-gray-100"
-                  onClick={() => handleClick(user)}
-                >
-                  <div className="flex flex-col gap-2">
-                    <p className="text-[14px] font-[500]">
-                      {user?.userInfo?.firstname} {user?.userInfo?.lastname}
-                    </p>
-                    <p className="text-gray-600 text-[12px] font-[500]">
-                      {user?.lastMessage?.message}
-                    </p>
-                  </div>
-
-                  <p className="text-[#51A40A] text-[10px] font-[600]">
-                    {useTimestamp({ timestamp: user?.lastMessage?.createdAt })}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {selectedUser && (
-          <div
-            className={`w-full lg:w-[60%] flex flex-col ${
-              !isDesktop ? "h-[80dvh]" : "h-[400px]"
-            }  bg-[url('/images/products/chat-bg.png')] bg-cover bg-no-repeat rounded-lg shadow-lg `}
-          >
-            <div className="bg-white p-4 m-2 shadow-md sticky top-0 z-10 rounded-t-lg flex justify-between items-center">
-              <h2 className="text-[14px] font-[500] flex gap-2 items-center">
-                {!isDesktop && (
-                  <button onClick={() => setSelectedUser(null)}>
-                    <IoIosArrowBack />
-                  </button>
-                )}
-                {selectedUser?.userInfo?.firstname}{" "}
-                {selectedUser?.userInfo?.lastname}
-              </h2>
-            </div>
-
-            <div className="flex-grow overflow-y-auto p-4">
+        <div className="flex-grow overflow-y-auto p-4">
               <div className="flex flex-col gap-4">
                 {messages?.data?.conversation?.messages?.map((msg) => (
                   <div
@@ -408,7 +410,9 @@ const Chats = ({ id, name, price }) => {
               </div>
             </div>
 
-            <div className="bg-white p-3 shadow-md flex items-center gap-3  z-10">
+        {/* Message Input Section */}
+        
+        <div className="bg-white p-3 shadow-md flex items-center gap-3  z-10">
               <textarea
                 value={displayedMessage}
                 onChange={handleInputChange}
@@ -426,10 +430,11 @@ const Chats = ({ id, name, price }) => {
                 <FiSend size={20} />
               </button>
             </div>
-          </div>
-        )}
       </div>
-    </div>
+    )}
+  </div>
+</div>;
+
   );
 };
 
