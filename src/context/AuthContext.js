@@ -31,7 +31,7 @@ export const AuthProvider = ({ children }) => {
       const data = await response.json();
       setUser(data);
     } catch (error) {
-      console.error("Failed to fetch user:", error);
+      console.error("Failed to fetch user:", error.response);
       if (error?.response?.status === 401 || error?.response?.status === 403) {
         router.push("/login");
       }
