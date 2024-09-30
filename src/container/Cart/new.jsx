@@ -16,8 +16,8 @@ const CartContainer = () => {
     isLoading,
     error,
   } = useFetchItems({ url: `${BASE_URL}/cart`, token });
-console.log("length",cart?.data?.items.length)
-console.log("length",0)
+  console.log("length", cart?.data?.items.length);
+  console.log("length", 0);
   const mutation = useMutation({
     mutationFn: async (id) => {
       const res = await fetch(`${BASE_URL}/cart/${id}`, {
@@ -64,7 +64,7 @@ console.log("length",0)
       </div>
     );
   if (error) return <div>{error.message}</div>;
-  if (cart?.data === null || cart?.data?.items?.length  === 0)
+  if (cart?.data === null || cart?.data?.items?.length === 0)
     return (
       <div className="text-center mb-5 h-[50dvh] flex items-center justify-center">
         <div>

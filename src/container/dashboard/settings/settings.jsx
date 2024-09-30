@@ -2,10 +2,10 @@
 import React, { useState } from "react";
 import { PrivacyPolicies } from "./privacy";
 import { TermsofService } from "./termsofService";
-import { Subscription } from "./notifications";
 import { PasswordSettings } from "./passwordSettings";
 import { Profile } from "./profile";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { Subscription } from "./subscription";
 
 const Settings = () => {
   const isDesktop = useMediaQuery("(min-width: 1024px)");
@@ -68,7 +68,7 @@ const Settings = () => {
                 <Subscription setSelected={setSelected} />
               </div>
             )}
-            {selected === "terms" && (
+            {selected === "terms"&& (
               <div>
                 <TermsofService setSelected={setSelected} />
               </div>

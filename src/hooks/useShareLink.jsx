@@ -39,9 +39,6 @@ const ShareLinkButton = () => {
             </span>
           </TooltipTrigger>
           <TooltipContent>
-            {/* <p>{user?.data?.email}</p> */}
-            https://futamart.vercel.app/seller/google
-            https://futamart.vercel.app/seller/google
             <p>{businessUrl}</p>
           </TooltipContent>
         </Tooltip>
