@@ -2,11 +2,16 @@
 import { Fav } from "@/assets";
 import { AddToCart } from "@/components/addToCart";
 import { StarRating } from "@/components/rating";
+import { BASE_URL } from "@/hooks/useFetchItems";
+import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState, useRef, useEffect } from "react";
+import Cookies from "js-cookie";
 
 const SingleProduct = ({ getSingleProduct }) => {
+  console.log(getSingleProduct);
+  const token = Cookies.get("token");
   const router = useRouter();
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -33,6 +38,25 @@ const SingleProduct = ({ getSingleProduct }) => {
       name
     )}&price=${encodeURIComponent(price)}`;
     router.push(url);
+  };
+
+  const handleTrackViews = (userId) => {
+    axios
+      .post(
+        `${BASE_URL}/view/${userId}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((response) => {
+        console.log("View tracked successfully", response.data);
+      })
+      .catch((error) => {
+        console.error("Error tracking views", error);
+      });
   };
 
   const reviews = getSingleProduct?.data?.reviews?.reviews || [];
@@ -79,7 +103,12 @@ const SingleProduct = ({ getSingleProduct }) => {
             </p>
           </div>
           <Link href={`/seller/${getSingleProduct?.data?.business?.slug}`}>
-            <span className="underline text-[10px] leading-[12.19px] font-medium sm:text-[12px] lg:leading-[14.63px]">
+            <span
+              onClick={() =>
+                handleTrackViews(getSingleProduct?.data?.business?._id)
+              }
+              className="underline text-[10px] leading-[12.19px] font-medium sm:text-[12px] lg:leading-[14.63px]"
+            >
               View Profile
             </span>
           </Link>
