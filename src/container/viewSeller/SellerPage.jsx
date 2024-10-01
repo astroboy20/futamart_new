@@ -4,7 +4,7 @@ import ProductCard from "@/components/ProductCard";
 import SellerProfile from "@/components/SellerProfile";
 const fetchBusinessData = async (collectionName) => {
   try {
-    const baseUrl = "https://futamart-backend.onrender.com";
+    const baseUrl = "https://api.futamart.com";
     const response = await fetch(`${baseUrl}/v1/business/${collectionName}`);
     if (!response.ok) {
       throw new Error("Network response was not ok");
