@@ -2,20 +2,31 @@ import AuthLayout from "@/components/authLayout";
 import { Footer } from "@/components/footer";
 import { Header } from "@/components/headers/header";
 import Favourite from "@/container/Favourite/Favourite";
+import { useState, useEffect } from "react";
+import { Typewriter } from "react-simple-typewriter";
+import { Logo_Black } from "@/assets";
 
 const Page = () => {
-  // Improved loading state handling
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    setTimeout(() => setIsLoading(false), 2000);
+
+    // Example of handling an error
+    // setError(new Error('Something went wrong'));
+  }, []);
+
   if (isLoading) {
     return (
       <div className="w-full h-[100dvh] flex items-center justify-center">
-        <LoadingComponent /> {/* Extracted loading component for clarity */}
+        <LoadingComponent />
       </div>
     );
   }
 
-  // Error handling
   if (error) {
-    return <ErrorComponent message={error.message} />; {/* Extracted error component */}
+    return <ErrorComponent message={error.message} />;
   }
 
   return (
@@ -27,7 +38,6 @@ const Page = () => {
   );
 };
 
-// New loading component
 const LoadingComponent = () => (
   <div className="flex flex-col text-center">
     <Logo_Black />
@@ -45,7 +55,6 @@ const LoadingComponent = () => (
   </div>
 );
 
-// New error component
 const ErrorComponent = ({ message }) => (
   <div className="text-red-500">{message}</div>
 );
