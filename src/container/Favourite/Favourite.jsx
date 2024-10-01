@@ -56,18 +56,22 @@ const Favourite = () => {
       </div>
 
       <div className="py-3 sm:py-3 sm:px-0 grid grid-cols-2 gap-[15px] md:grid-cols-2 lg:grid-cols-4">
-        {exploreProducts?.map((product) => ( 
-          <ProductCard
-            key={product._id}
-            product={{
-              slug: product.slug,
-              image: product.featuredImage,
-              rating: product.averageRating,
-              name: product.name,
-              price: `${product.price || "0.00"}`,
-            }}
-          />
-        ))}
+        {exploreProducts.length === 0 ? ( 
+          <div className="text-center">No favourite product added</div> 
+        ) : (
+          exploreProducts.map((product) => ( 
+            <ProductCard
+              key={product._id}
+              product={{
+                slug: product.slug,
+                image: product.featuredImage,
+                rating: product.averageRating,
+                name: product.name,
+                price: `${product.price || "0.00"}`,
+              }}
+            />
+          ))
+        )}
       </div>
     </div>
   );
