@@ -169,6 +169,9 @@ const Header = () => {
                 >
                   Settings
                 </Link>
+                <span className="block px-4 py-2 text-sm text-gray-400 cursor-not-allowed">
+                  Sell on FUTAMart
+                </span>
                 {isAuthenticated && (
                   <Link
                     href="/seller"
@@ -177,6 +180,7 @@ const Header = () => {
                     Sell on FUTAMart
                   </Link>
                 )}
+
                 <button
                   onClick={handleLogout}
                   className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
