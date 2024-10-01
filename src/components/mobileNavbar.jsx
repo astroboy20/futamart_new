@@ -62,7 +62,7 @@ const MobileNavbar = ({ handleShow }) => {
             <Link href={"/cart"} onClick={handleShow}>
               <p className="flex items-center gap-3">
                 <SmallCartIcon />
-                Cart
+                Chats
               </p>
             </Link>
             <Link href={"/"} onClick={handleShow}>
@@ -71,7 +71,7 @@ const MobileNavbar = ({ handleShow }) => {
                 User Account
               </p>
             </Link>
-            <Link href={"/"} onClick={handleShow}>
+            <Link href={"/favourite"} onClick={handleShow}>
               <p className="flex items-center gap-3">
                 <SmallFavouriteIcon />
                 Favourite

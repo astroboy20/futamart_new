@@ -57,7 +57,7 @@ const Favourite = () => {
 
       <div className="py-3 sm:py-3 sm:px-0 grid grid-cols-2 gap-[15px] md:grid-cols-2 lg:grid-cols-4">
         {exploreProducts.length === 0 ? ( 
-          <div className="text-center">No favourite product added</div> 
+          <div>No favourite product added</div> 
         ) : (
           exploreProducts.map((product) => ( 
             <ProductCard
