@@ -48,9 +48,7 @@ const Header = () => {
   };
 
   const handleMouseLeave = () => {
-    if (!dropdownVisible) {
-      setDropdownVisible(false);
-    }
+    setDropdownVisible(false);
   };
 
   const handleClickOutside = (event) => {
@@ -169,17 +167,16 @@ const Header = () => {
                 >
                   Settings
                 </Link>
-                <span className="block px-4 py-2 text-sm text-gray-400 cursor-not-allowed">
+                <Link
+                  href="/seller"
+                  className={`block px-4 py-2 text-sm ${
+                    isAuthenticated
+                      ? "text-gray-700 hover:bg-gray-100"
+                      : "text-gray-400 cursor-not-allowed"
+                  }`}
+                >
                   Sell on FUTAMart
-                </span>
-                {isAuthenticated && (
-                  <Link
-                    href="/seller"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  >
-                    Sell on FUTAMart
-                  </Link>
-                )}
+                </Link>
 
                 <button
                   onClick={handleLogout}
