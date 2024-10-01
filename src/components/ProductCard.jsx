@@ -3,8 +3,8 @@ import Link from "next/link";
 import React from "react";
 import { StarRating } from "./rating";
 import { AddToCart } from "./addToCart";
-import { Fav } from "@/assets";
 import { AddToFavourite } from "./AddToFavourite";
+import { Fav } from "@/assets";
 
 const ProductCard = ({ product }) => {
   return (
@@ -25,7 +25,8 @@ const ProductCard = ({ product }) => {
               {product.name}
             </p>
           </Link>
-          <AddToFavourite productId={product.id}/>
+          {/* <AddToFavourite productId={product.id}/> */}
+          <Fav/>
         </div>
         <p className="text-[#888282] text-[10px] lg:text-base leading-[9.75px] w-[70px] h-[10px] sm:w-[105px] sm:h-[20px] sm:text-[16px] sm:leading-[19.5px] truncate font-semibold">
           &#x20A6;{product.price ? Number(product.price).toLocaleString() : ""}

@@ -49,7 +49,7 @@ const MobileNavbar = ({ handleShow }) => {
             duration: 1.0,
             delay: 0.2,
           }}
-          className="lg:hidden fixed overflow-y-scroll no-scrollbar top-0 left-0 w-full h-[100dvh] bg-white z-100 p-[6%] flex flex-col gap-8"
+          className="lg:hidden fixed overflow-y-scroll no-scrollbar top-0 left-0 w-full h-[100dvh] bg-white z-[9999] p-[6%] flex flex-col gap-8"
         >
           <div className="flex justify-between">
             <SmallLogo />
