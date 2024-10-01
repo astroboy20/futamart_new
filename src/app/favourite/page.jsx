@@ -6,7 +6,9 @@ const Page = () => {
   return (
     <main>
       <Header />
-      <Favourite />
+      <div className="px-[6%]">
+        <Favourite />
+      </div>
       <Footer />
     </main>
   );
