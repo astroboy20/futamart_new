@@ -99,7 +99,7 @@ const MobileNavbar = ({ handleShow }) => {
 
           <div className="flex flex-col gap-5">
             <h2 className="text-[18px] font-[600]">Others</h2>
-            {token && ( 
+            {userData && ( 
               <Link href={`${role === "user" ? "/seller" : "/dashboard"}`}>
                 <p>Sell on futamart</p>
               </Link>
