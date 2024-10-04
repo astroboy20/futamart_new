@@ -16,6 +16,8 @@ import { useWebsocket } from "@/hooks/useWebsocket";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Header } from "@/components/headers/header";
 import { Input } from "@/components/ui/input";
+import { ChatSection } from "./chatSection";
+import { ChatInput } from "./chatInput";
 
 const Chats = ({ id, name, price }) => {
   const queryClient = useQueryClient();
@@ -306,19 +308,16 @@ const Chats = ({ id, name, price }) => {
 
   const handleKeyPress = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault(); // Prevent default behavior (like adding a new line)
+      e.preventDefault();
       handleSendMessage();
     }
   };
 
-  // Automatically resize the textarea
   const handleInputChange = (e) => {
     setDisplayedMessage(e.target.value);
-    setMessage(e.target.value); // Keep the original message updated
-
-    // Adjust the height based on content
-    e.target.style.height = "auto"; // Reset height to auto to recalculate
-    e.target.style.height = `${e.target.scrollHeight}px`; // Set height to scrollHeight
+    setMessage(e.target.value);
+    e.target.style.height = "auto";
+    e.target.style.height = `${e.target.scrollHeight}px`;
   };
 
   const handleButtonClick = () => {
@@ -326,133 +325,34 @@ const Chats = ({ id, name, price }) => {
   };
 
   return (
-    <div className="flex flex-col gap-10 ">
+    <div className="flex flex-col gap-5 h-[100dvh] ">
       <Header />
       <div className="flex justify-between items-center text-[18px] font-medium">
         <p className="text-[40px] font-600 px-[6%]">Chats</p>
       </div>
-      <div className="flex flex-col lg:flex-row lg:justify-between w-full h-full px-[6%]">
+      <div className="flex flex-col lg:flex-row lg:justify-between w-full h-full px-[6%] pb-[6%]">
         {(!selectedUser || isDesktop) && (
           <div className="w-full lg:w-[35%]">
-            <div className="flex flex-col gap-5">
-              <div className="w-full lg:w-full flex items-center shadow-[2px_2px_4px_0_rgba(0,0,0,0.1)] bg-[#f2f3f4] rounded-[4px] px-4 py-[3px]">
-                <div>
-                  <SearchIcon />
-                </div>
-                <Input
-                  className="w-full rounded-[2px] h-10 border-none focus-visible:ring-transparent focus-visible:ring-offset-0 bg-transparent"
-                  placeholder="search old chats here..."
-                />
-              </div>
-              <div className="bg-[#F2F3F4] p-[6%] rounded">
-                {userData?.data?.map((user) => (
-                  <div
-                    key={user._id}
-                    className="flex justify-between items-center py-4 bg-[#F5F5F6] cursor-pointer shadow-[] hover:bg-gray-100"
-                    onClick={() => handleClick(user)}
-                  >
-                    <div className="flex flex-col gap-2">
-                      <p className="text-[14px] font-[500]">
-                        {user?.userInfo?.firstname} {user?.userInfo?.lastname}
-                      </p>
-                      <p className="text-gray-600 text-[12px] font-[500] line-clamp-1">
-                        {user?.lastMessage?.message}
-                      </p>
-                    </div>
-
-                    <p className="text-[#51A40A] text-[10px] font-[600]">
-                      {useTimestamp({
-                        timestamp: user?.lastMessage?.createdAt,
-                      })}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <ChatSection
+              userData={userData}
+              setSelectedUser={setSelectedUser}
+            />
           </div>
         )}
         {selectedUser && (
-          <div
-            className={`w-full lg:w-[60%] flex flex-col ${
-              !isDesktop
-                ? "h-[100dvh] absolute inset-0 z-50 bg-white"
-                : "h-[400px] "
-            }  bg-[url('/images/products/chat-bg.png')] bg-cover bg-no-repeat lg:rounded-lg shadow-lg `}
-          >
-            <div className="bg-[#FFF8F8] p-2  lg:bg-white lg:p-4 lg:m-2 shadow-md sticky top-0 z-10 rounded-t-lg flex justify-between items-center">
-              <h2 className="text-[14px] font-[500] flex gap-2 items-center">
-                {!isDesktop && (
-                  <button onClick={() => setSelectedUser(null)}>
-                    <IoIosArrowBack />
-                  </button>
-                )}
-                <Avatar>
-                  <AvatarImage src="https://github.com/shadcn.png" />
-                  <AvatarFallback>CN</AvatarFallback>
-                </Avatar>
-                {selectedUser?.userInfo?.firstname}{" "}
-                {selectedUser?.userInfo?.lastname}
-              </h2>
-            </div>
-
-            <div className="flex-grow overflow-y-auto p-4">
-              <div className="flex flex-col gap-4">
-                {messages?.data?.conversation?.messages?.map((msg) => (
-                  <div
-                    key={msg._id}
-                    className={`flex ${
-                      msg?.senderId === user?.data?._id ? "ml-auto" : "mr-auto"
-                    }`}
-                  >
-                    <div className="flex flex-col max-w-full">
-                      <div
-                        className={`p-3 text-[12px] rounded-lg max-w-full ${
-                          msg.senderId === user?.data?._id
-                            ? "bg-black text-white ml-auto"
-                            : "bg-white text-black mr-auto shadow-md border border-gray-200"
-                        }`}
-                      >
-                        <p>{msg.message}</p>
-                        {msg.status === "failed" && (
-                          <div
-                            className="text-red-500 text-[10px] mt-1 cursor-pointer"
-                            onClick={() => retrySendMessage(msg)}
-                          >
-                            Message failed to send. Tap to retry.
-                          </div>
-                        )}
-                      </div>
-                      <span className="text-[10px] font-[500] mt-1">
-                        {new Date(msg.createdAt).toLocaleTimeString()}
-                      </span>
-                    </div>
-                  </div>
-                ))}
-
-                <div ref={messagesEndRef} />
-              </div>
-            </div>
-
-            {/* Message Input Section */}
-            <div className="bg-white p-3 shadow-md flex items-center gap-3  z-10">
-              <textarea
-                value={displayedMessage}
-                onChange={handleInputChange}
-                onKeyPress={handleKeyPress} // Add the key press handler
-                placeholder="Type a message..."
-                className="flex-grow border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring focus:ring-black"
-                style={{
-                  minHeight: "50px", // Set a minimum height
-                  overflow: "hidden", // Hide scrollbar
-                  resize: "none", // Prevent manual resizing
-                }}
-                disabled={sending}
-              />
-              <button onClick={handleButtonClick} disabled={sending}>
-                <FiSend size={20} />
-              </button>
-            </div>
-          </div>
+          <ChatInput
+            user={user}
+            messages={messages}
+            setSelectedUser={setSelectedUser}
+            isDesktop={isDesktop}
+            selectedUser={selectedUser}
+            messagesEndRef={messagesEndRef}
+            displayedMessage={displayedMessage}
+            handleInputChange={handleInputChange}
+            handleKeyPress={handleKeyPress}
+            sending={sending}
+            handleButtonClick={handleButtonClick}
+          />
         )}
       </div>
     </div>
@@ -460,5 +360,3 @@ const Chats = ({ id, name, price }) => {
 };
 
 export { Chats };
-
-

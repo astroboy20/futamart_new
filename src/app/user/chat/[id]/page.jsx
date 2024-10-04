@@ -1,5 +1,5 @@
 "use client";
-import { Chats } from "@/container/user/chats";
+import { Chats } from "@/container/user/chat/chats";
 import { useParams, useSearchParams } from "next/navigation";
 
 export default function Page() {
