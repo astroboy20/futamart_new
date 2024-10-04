@@ -42,7 +42,7 @@ const ChatInput = ({
           </h2>
         </div>
 
-        <div className="flex-grow overflow-y-auto p-4 bg-[#F2F3F4]">
+        <div className="flex-grow overflow-y-auto p-4 bg-[#F2F3F4]" ref={messagesEndRef}>
           <div className="flex flex-col gap-4">
             {messages?.data?.conversation?.messages?.map((msg) => (
               <div
@@ -76,7 +76,7 @@ const ChatInput = ({
               </div>
             ))}
 
-            <div ref={messagesEndRef} />
+            {/* <div ref={messagesEndRef} /> */}
           </div>
         </div>
 

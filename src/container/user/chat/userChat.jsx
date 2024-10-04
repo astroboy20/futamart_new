@@ -11,14 +11,13 @@ import { Header } from "@/components/headers/header";
 import { ChatSection } from "./chatSection";
 import { ChatInput } from "./chatInput";
 
-const Chats = ({ id, name, price }) => {
+const UserChat = () => {
   const queryClient = useQueryClient();
   const token = Cookies.get("token");
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
   const [displayedMessage, setDisplayedMessage] = useState(message);
   const [selectedUser, setSelectedUser] = useState(null);
-  const [isFirstChat, setIsFirstChat] = useState(true);
   const messagesEndRef = useRef(null);
   const isDesktop = useMediaQuery("(min-width: 1024px)");
   const [failedMessages, setFailedMessages] = useState([]); // State to store failed messages
@@ -112,46 +111,12 @@ const Chats = ({ id, name, price }) => {
 
   useEffect(() => {
     if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+      messagesEndRef.current.scroll({
+        top: messagesEndRef.current.scrollHeight,
+        behavior: "smooth",
+      });
     }
   }, [messages]);
-
-  useEffect(() => {
-    if (id && isFirstChat) {
-      const sendInitialMessage = async () => {
-        try {
-          const messageSent = localStorage.getItem(`initialMessageSent_${id}`);
-          if (messageSent) {
-            setIsFirstChat(false);
-            return;
-          }
-
-          const payload = { message: `${name}\n${price}` };
-          await axios.post(
-            `${process.env.NEXT_PUBLIC_API_URL}/chat/${id}`,
-            payload,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
-          queryClient.invalidateQueries([
-            `${process.env.NEXT_PUBLIC_API_URL}/chat/${id}`,
-          ]);
-          queryClient.invalidateQueries([
-            `${process.env.NEXT_PUBLIC_API_URL}/chats`,
-          ]);
-          localStorage.setItem(`initialMessageSent_${id}`, "true");
-          setIsFirstChat(false);
-        } catch (error) {
-          console.error("Error sending initial message:", error);
-        }
-      };
-
-      sendInitialMessage();
-    }
-  }, [id, isFirstChat, name, price, token, user?.data?._id, queryClient]);
 
   const handleClick = useCallback((user) => {
     setSelectedUser(user);
@@ -162,7 +127,7 @@ const Chats = ({ id, name, price }) => {
       try {
         const payload = { message }; // Only include the message field
         const response = await axios.post(
-          `${process.env.NEXT_PUBLIC_API_URL}/chat/${id}`,
+          `${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser._id}`,
           payload,
           {
             headers: {
@@ -177,7 +142,7 @@ const Chats = ({ id, name, price }) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries([
-        `${process.env.NEXT_PUBLIC_API_URL}/chat/${id}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser._id}`,
       ]);
       queryClient.invalidateQueries([
         `${process.env.NEXT_PUBLIC_API_URL}/chats`,
@@ -222,7 +187,7 @@ const Chats = ({ id, name, price }) => {
       };
 
       queryClient.setQueryData(
-        [`${process.env.NEXT_PUBLIC_API_URL}/chat/${id}`],
+        [`${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser._id}`],
         updateChatData
       );
 
@@ -234,7 +199,7 @@ const Chats = ({ id, name, price }) => {
         console.log("Message sent successfully:", response);
         // Update message status to 'sent'
         queryClient.setQueryData(
-          [`${process.env.NEXT_PUBLIC_API_URL}/chat/${id}`],
+          [`${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser._id}`],
           (oldData) => {
             if (!oldData) return oldData;
             return {
@@ -291,7 +256,7 @@ const Chats = ({ id, name, price }) => {
         setSending(false);
       }
     },
-    [message, sendMessageMutation, user?.data?._id, id, queryClient]
+    [message, sendMessageMutation, user?.data?._id, queryClient]
   );
 
   const retrySendMessage = async (failedMessage) => {
@@ -322,7 +287,7 @@ const Chats = ({ id, name, price }) => {
       <div className="flex justify-between items-center text-[18px] font-medium">
         <p className="text-[40px] font-600 px-[6%]">Chats</p>
       </div>
-      <div className="flex flex-col lg:flex-row lg:justify-between w-full h-full px-[6%] mb-[4%]">
+      <div className="flex flex-col lg:flex-row lg:justify-between w-full h-full px-[6%] mb-[1%]">
         {(!selectedUser || isDesktop) && (
           <div className="w-full lg:w-[35%]">
             <ChatSection
@@ -351,4 +316,4 @@ const Chats = ({ id, name, price }) => {
   );
 };
 
-export { Chats };
+export { UserChat };

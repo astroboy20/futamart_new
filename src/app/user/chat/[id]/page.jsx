@@ -1,4 +1,7 @@
 "use client";
+import { Footer } from "@/components/footer";
+import { Header } from "@/components/headers/header";
+import { Promotion } from "@/components/promotion";
 import { Chats } from "@/container/user/chat/chats";
 import { useParams, useSearchParams } from "next/navigation";
 
@@ -13,7 +16,10 @@ export default function Page() {
 //   console.log(id, name, price);
   return (
     <div>
+      <Header/>
       <Chats id={id} name={name} price={price} />
+      <Promotion/>
+      <Footer/>
     </div>
   );
 }

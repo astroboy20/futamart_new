@@ -146,7 +146,7 @@ const Header = () => {
                   Profile
                 </Link>
                 <Link
-                  href="/"
+                  href="/user/chat"
                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                 >
                   Chats
