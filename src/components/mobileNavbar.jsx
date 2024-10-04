@@ -59,7 +59,7 @@ const MobileNavbar = ({ handleShow }) => {
           </div>
 
           <div className="flex flex-col gap-5">
-            <Link href={"/cart"} onClick={handleShow}>
+            <Link href={"/user/chat"} onClick={handleShow}>
               <p className="flex items-center gap-3">
                 <SmallCartIcon />
                 Chats
