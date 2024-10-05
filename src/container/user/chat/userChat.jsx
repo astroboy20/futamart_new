@@ -285,7 +285,7 @@ const UserChat = () => {
     <div className="flex flex-col gap-5 h-[100dvh] ">
       {/* <Header /> */}
       <div className="flex justify-between items-center text-[18px] font-medium">
-        <p className="text-[40px] font-600 px-[6%]">Chats</p>
+        <p className="text-[20px] lg:text-[35px] font-[600] px-[6%]">Chats</p>
       </div>
       <div className="flex flex-col lg:flex-row lg:justify-between w-full h-full px-[6%] mb-[1%]">
         {(!selectedUser || isDesktop) && (
