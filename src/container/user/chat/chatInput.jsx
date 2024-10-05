@@ -59,7 +59,7 @@ const ChatInput = ({
                         : "bg-white text-black mr-auto shadow-md border border-gray-200"
                     }`}
                   >
-                    <p>{msg.message}</p>
+                    <p dangerouslySetInnerHTML={{ __html: msg.message.replace(/\n/g, "<br />") }} />
                     {msg.status === "failed" && (
                       <div
                         className="text-red-500 text-[10px] mt-1 cursor-pointer"
