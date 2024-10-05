@@ -8,8 +8,6 @@ export default function Page(){
         <div>
             <Header/>
             <UserChat/>
-            <Promotion/>
-            <Footer/>
         </div>
     )
 }
