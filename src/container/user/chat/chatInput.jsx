@@ -1,7 +1,8 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import React from "react";
+import React, { useRef } from "react";
 import { FiSend } from "react-icons/fi";
 import { IoIosArrowBack } from "react-icons/io";
+import { FiPaperclip } from "react-icons/fi"; // Import paperclip icon
 
 const ChatInput = ({
   user,
@@ -15,10 +16,16 @@ const ChatInput = ({
   handleKeyPress,
   sending,
   handleButtonClick,
+  handleFileUpload, // Add file upload handler
 }) => {
+  const fileInputRef = useRef(null);
+
+  const handleAttachmentClick = () => {
+    fileInputRef.current.click(); // Open the file picker
+  };
+
   return (
     <>
-      {" "}
       <div
         className={`w-full lg:w-[60%] flex flex-col ${
           !isDesktop
@@ -26,7 +33,7 @@ const ChatInput = ({
             : "h-[400px] bg-[#F2F3F4]"
         }  `}
       >
-        <div className="bg-[#F5F5F6] rounded-b-[40px] p-2   lg:p-5  shadow-md sticky top-0 z-10 rounded-t-lg flex justify-between items-center">
+        <div className="bg-[#F5F5F6] rounded-b-[40px] p-2 lg:p-5 shadow-md sticky top-0 z-10 rounded-t-lg flex justify-between items-center">
           <h2 className="text-[14px] font-[500] flex gap-2 items-center">
             {!isDesktop && (
               <button onClick={() => setSelectedUser(null)}>
@@ -37,8 +44,7 @@ const ChatInput = ({
               <AvatarImage src="https://github.com/shadcn.png" />
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
-            {selectedUser?.userInfo?.firstname}{" "}
-            {selectedUser?.userInfo?.lastname}
+            {selectedUser?.userInfo?.firstname} {selectedUser?.userInfo?.lastname}
           </h2>
         </div>
 
@@ -75,13 +81,24 @@ const ChatInput = ({
                 </div>
               </div>
             ))}
-
-            {/* <div ref={messagesEndRef} /> */}
           </div>
         </div>
 
         {/* Message Input Section */}
-        <div className="bg-white p-3 shadow-md flex items-center gap-3  z-10">
+        <div className="bg-white p-3 shadow-md flex items-center gap-3 z-10">
+          <button onClick={handleAttachmentClick} className="p-2">
+            <FiPaperclip size={20} />
+          </button>
+
+          {/* Hidden file input */}
+          <input
+            type="file"
+            ref={fileInputRef}
+            style={{ display: "none" }}
+            onChange={handleFileUpload}
+            accept="image/*,.pdf,.doc,.docx" // Accept images, PDFs, and docs
+          />
+
           <textarea
             value={displayedMessage}
             onChange={handleInputChange}
