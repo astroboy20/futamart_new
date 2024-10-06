@@ -306,20 +306,22 @@ const UserChat = () => {
           </div>
         )}
         {selectedUser && (
-          <ChatInput
-            user={user}
-            messages={messages}
-            setSelectedUser={setSelectedUser}
-            isDesktop={isDesktop}
-            selectedUser={selectedUser}
-            messagesEndRef={messagesEndRef}
-            displayedMessage={displayedMessage}
-            handleInputChange={handleInputChange}
-            handleKeyPress={handleKeyPress}
-            sending={sending}
-            handleButtonClick={handleButtonClick}
-          />
-        )}
+  <ChatInput
+    user={user}
+    messages={messages}
+    setSelectedUser={setSelectedUser}
+    isDesktop={isDesktop}
+    selectedUser={selectedUser}
+    messagesEndRef={messagesEndRef}
+    displayedMessage={displayedMessage}
+    handleInputChange={handleInputChange}
+    handleKeyPress={handleKeyPress}
+    sending={sending}
+    handleButtonClick={handleButtonClick}
+    isOnline={onlineUsers.includes(selectedUser._id)}  {/* Pass online status */}
+  />
+)}
+
       </div>
     </div>
   );
