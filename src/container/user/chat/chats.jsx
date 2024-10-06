@@ -97,6 +97,12 @@ const Chats = ({ id, name, price }) => {
               ]);
             }
           }
+          // Check if the selected user is online using `onlineUsers`
+        if (selectedUser && onlineUsers.includes(selectedUser._id)) {
+          console.log(`${selectedUser.name} is online.`);
+        } else {
+          console.log(`${selectedUser?.name || "User"} is offline.`);
+        }
         } catch (err) {
           console.error("Error processing WebSocket message:", err);
         }
@@ -357,6 +363,7 @@ const handleClick = useCallback((user) => {
             handleKeyPress={handleKeyPress}
             sending={sending}
             handleButtonClick={handleButtonClick}
+            isOnline={onlineUsers.includes(selectedUser._id)}
           />
         )}
       </div>
