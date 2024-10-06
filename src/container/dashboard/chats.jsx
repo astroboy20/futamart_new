@@ -276,11 +276,15 @@ const Chats = () => {
                 {selectedUser?.userInfo?.firstname}{" "}
                 {selectedUser?.userInfo?.lastname}
               </h2>
-            </div>
+
           {/* Online/Offline Status */}
           <span className={` ml-[10px] text-[12px] font-[400] ${isOnline ? 'text-green-500' : 'text-red-500'}`}>
             {isOnline ? 'Online' : 'Offline'}
           </span>
+          
+           </div>
+          
+          
             <div className="flex-grow overflow-y-auto p-4" ref={messagesEndRef}>
               <div className="flex flex-col gap-4">
                 {messages?.data?.conversation?.messages?.map((msg) => (
