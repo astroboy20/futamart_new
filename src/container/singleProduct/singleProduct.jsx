@@ -33,12 +33,11 @@ const SingleProduct = ({ getSingleProduct }) => {
     };
   }, []);
 
-  const handleClick = (userId, name, price) => {
-    const url = `/user/chat/${userId}?name=${encodeURIComponent(
-      name
-    )}&price=${encodeURIComponent(price)}`;
-    router.push(url);
-  };
+const handleClick = (userId, name, price, featuredImage) => {
+  const url = `/user/chat/${userId}?name=${encodeURIComponent(name)}&price=${encodeURIComponent(price)}&featuredImage=${encodeURIComponent(featuredImage)}`;
+  router.push(url);
+};
+
 
   const handleTrackViews = (userId) => {
     axios
@@ -217,17 +216,19 @@ const SingleProduct = ({ getSingleProduct }) => {
             Add to cart
           </AddToCart>
           <button
-            onClick={() =>
-              handleClick(
-                getSingleProduct?.data?.product?.user,
-                getSingleProduct?.data?.product?.name,
-                getSingleProduct?.data?.product?.price
-              )
-            }
-            className="bg-[#000000] text-[#FFFFFF] border border-[#000000] py-[10px] px-[24px] font-semibold text-[12px] leading-[14.63px] rounded-[4px] flex-grow sm:p-[24px] sm:text-[24px] sm:leading-[29.26px] sm:w-full"
-          >
-            Chat with seller
-          </button>
+  onClick={() =>
+    handleClick(
+      getSingleProduct?.data?.product?.user,
+      getSingleProduct?.data?.product?.name,
+      getSingleProduct?.data?.product?.price,
+      getSingleProduct?.data?.product?.featuredImage
+    )
+  }
+  className="bg-[#000000] text-[#FFFFFF] border border-[#000000] py-[10px] px-[24px] font-semibold text-[12px] leading-[14.63px] rounded-[4px] flex-grow sm:p-[24px] sm:text-[24px] sm:leading-[29.26px] sm:w-full"
+>
+  Chat with seller
+</button>
+
         </div>
       </div>
     </div>
