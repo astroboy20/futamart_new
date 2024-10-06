@@ -97,7 +97,7 @@ const Chats = () => {
             ]);
           }
         }
-        if (selectedUser && onlineUsers.includes(selectedUser._id)) {
+        if (selectedUser && onlineUsers.includes(selectedUser?._id)) {
           console.log(`${selectedUser.name} is online.`);
         } else {
           console.log(`${selectedUser?.name || "User"} is offline.`);
@@ -203,7 +203,7 @@ const Chats = () => {
     e.target.style.height = "auto"; // Reset height to auto to recalculate
     e.target.style.height = `${e.target.scrollHeight}px`; // Set height to scrollHeight
   };
-  const isOnline= onlineUsers.includes(selectedUser._id);
+  const isOnline= onlineUsers.includes(selectedUser?._id);
   return (
     <div className="flex flex-col gap-10">
       <div className="flex justify-between items-center">
