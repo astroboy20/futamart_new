@@ -16,7 +16,8 @@ const ChatInput = ({
   handleKeyPress,
   sending,
   handleButtonClick,
-  handleFileUpload, // Add file upload handler
+  handleFileUpload,
+  isOnline,
 }) => {
   const fileInputRef = useRef(null);
 
@@ -50,8 +51,8 @@ const ChatInput = ({
           </div>
 
           {/* Online/Offline Status */}
-          <span className={`text-[12px] font-[400] ${selectedUser?.isOnline ? 'text-green-500' : 'text-red-500'}`}>
-            {selectedUser?.isOnline ? 'Online' : 'Offline'}
+            <span className={`text-[12px] font-[400] ${isOnline ? 'text-green-500' : 'text-red-500'}`}>
+            {isOnline ? 'Online' : 'Offline'}
           </span>
         </div>
 
