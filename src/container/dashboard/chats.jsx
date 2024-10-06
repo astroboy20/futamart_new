@@ -97,6 +97,11 @@ const Chats = () => {
             ]);
           }
         }
+        if (selectedUser && onlineUsers.includes(selectedUser._id)) {
+          console.log(`${selectedUser.name} is online.`);
+        } else {
+          console.log(`${selectedUser?.name || "User"} is offline.`);
+        }
       };
 
       socket.addEventListener("message", handleNewMessage);
@@ -271,7 +276,10 @@ const Chats = () => {
                 {selectedUser?.userInfo?.lastname}
               </h2>
             </div>
-
+          {/* Online/Offline Status */}
+          <span className={` ml-[10px] text-[12px] font-[400] ${isOnline ? 'text-green-500' : 'text-red-500'}`}>
+            {isOnline ? 'Online' : 'Offline'}
+          </span>
             <div className="flex-grow overflow-y-auto p-4" ref={messagesEndRef}>
               <div className="flex flex-col gap-4">
                 {messages?.data?.conversation?.messages?.map((msg) => (
