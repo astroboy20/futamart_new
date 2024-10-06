@@ -51,7 +51,7 @@ const ChatInput = ({
           </div>
 
           {/* Online/Offline Status */}
-            <span className={`py-[10px] text-[12px] font-[400] ${isOnline ? 'text-green-500' : 'text-red-500'}`}>
+            <span className={` pl-[10px] text-[12px] font-[400] ${isOnline ? 'text-green-500' : 'text-red-500'}`}>
             {isOnline ? 'Online' : 'Offline'}
           </span>
         </div>
