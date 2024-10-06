@@ -276,7 +276,7 @@ const Chats = () => {
                 {selectedUser?.userInfo?.firstname}{" "}
                 {selectedUser?.userInfo?.lastname}
               </h2>
-
+              <br />  
           {/* Online/Offline Status */}
           <span className={` ml-[10px] text-[12px] font-[400] ${isOnline ? 'text-green-500' : 'text-red-500'}`}>
             {isOnline ? 'Online' : 'Offline'}
