@@ -31,7 +31,7 @@ const ChatInput = ({
           !isDesktop
             ? "h-[100dvh] absolute inset-0 z-50 bg-white"
             : "h-[400px] bg-[#F2F3F4]"
-        }  `}
+        }`}
       >
         <div className="bg-[#F5F5F6] rounded-b-[40px] p-2 lg:p-5 shadow-md sticky top-0 z-10 rounded-t-lg flex justify-between items-center">
           <h2 className="text-[14px] font-[500] flex gap-2 items-center">
@@ -66,6 +66,27 @@ const ChatInput = ({
                     }`}
                   >
                     <p dangerouslySetInnerHTML={{ __html: msg.message.replace(/\n/g, "<br />") }} />
+                    
+                    {/* Display image preview if the file is an image */}
+                    {msg.file && msg.file.match(/\.(jpeg|jpg|gif|png)$/) && (
+                      <img 
+                        src={msg.file} 
+                        alt="Uploaded" 
+                        className="mt-2 max-w-[200px] rounded"
+                      />
+                    )}
+
+                    {/* Display PDF or document preview */}
+                    {msg.file && msg.file.match(/\.(pdf|doc|docx)$/) && (
+                      <div className="mt-2">
+                        <iframe
+                          src={msg.file}
+                          className="w-full h-32 border border-gray-300"
+                          title="Document Preview"
+                        />
+                      </div>
+                    )}
+
                     {msg.status === "failed" && (
                       <div
                         className="text-red-500 text-[10px] mt-1 cursor-pointer"
@@ -86,7 +107,6 @@ const ChatInput = ({
 
         {/* Message Input Section */}
         <div className="bg-white p-3 shadow-md flex items-center gap-3 z-10">
-
           <textarea
             value={displayedMessage}
             onChange={handleInputChange}
@@ -100,7 +120,7 @@ const ChatInput = ({
             }}
             disabled={sending}
           />
-          
+
           <button onClick={handleAttachmentClick} className="p-2">
             <FiPaperclip size={20} />
           </button>
@@ -121,5 +141,8 @@ const ChatInput = ({
     </>
   );
 };
+
+export { ChatInput };
+
 
 export { ChatInput };
