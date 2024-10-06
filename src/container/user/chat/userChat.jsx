@@ -318,7 +318,7 @@ const UserChat = () => {
     handleKeyPress={handleKeyPress}
     sending={sending}
     handleButtonClick={handleButtonClick}
-    isOnline={onlineUsers.includes(selectedUser._id)}  {/* Pass online status */}
+    isOnline={onlineUsers.includes(selectedUser._id)} 
   />
 )}
 
