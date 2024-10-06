@@ -86,18 +86,6 @@ const ChatInput = ({
 
         {/* Message Input Section */}
         <div className="bg-white p-3 shadow-md flex items-center gap-3 z-10">
-          <button onClick={handleAttachmentClick} className="p-2">
-            <FiPaperclip size={20} />
-          </button>
-
-          {/* Hidden file input */}
-          <input
-            type="file"
-            ref={fileInputRef}
-            style={{ display: "none" }}
-            onChange={handleFileUpload}
-            accept="image/*,.pdf,.doc,.docx" // Accept images, PDFs, and docs
-          />
 
           <textarea
             value={displayedMessage}
@@ -111,6 +99,19 @@ const ChatInput = ({
               resize: "none", // Prevent manual resizing
             }}
             disabled={sending}
+          />
+          
+          <button onClick={handleAttachmentClick} className="p-2">
+            <FiPaperclip size={20} />
+          </button>
+
+          {/* Hidden file input */}
+          <input
+            type="file"
+            ref={fileInputRef}
+            style={{ display: "none" }}
+            onChange={handleFileUpload}
+            accept="image/*,.pdf,.doc,.docx" // Accept images, PDFs, and docs
           />
           <button onClick={handleButtonClick} disabled={sending}>
             <FiSend size={20} />
