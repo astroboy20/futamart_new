@@ -54,60 +54,69 @@ const UserChat = () => {
     }
   }, [userId]);
 
-  useEffect(() => {
-    if (socket && socket.readyState === WebSocket.OPEN) {
-      const handleNewMessage = (event) => {
-        try {
-          const data = JSON.parse(event.data);
-          console.log("Message received from server:", data); // Log full message
-          if (data.event === "newMessage") {
-            const newMessage = data.data;
-            console.log("Processing new message:", newMessage);
+ useEffect(() => {
+  if (socket && socket.readyState === WebSocket.OPEN) {
+    const handleNewMessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        console.log("Message received from server:", data); // Log full message
 
-            if (newMessage.receiverId === user?.data?._id) {
-              console.log("New message for this user:", newMessage);
+        if (data.event === "newMessage") {
+          const newMessage = data.data;
+          console.log("Processing new message:", newMessage);
 
-              if (newMessage.senderId === selectedUser?._id) {
-                queryClient.setQueryData(
-                  [
-                    `${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser?._id}`,
-                  ],
-                  (oldData) => {
-                    if (!oldData) return oldData;
-                    return {
-                      ...oldData,
-                      data: {
-                        ...oldData.data,
-                        conversation: {
-                          ...oldData.data.conversation,
-                          messages: [
-                            ...oldData.data.conversation.messages,
-                            newMessage,
-                          ],
-                        },
+          if (newMessage.receiverId === user?.data?._id) {
+            console.log("New message for this user:", newMessage);
+
+            if (newMessage.senderId === selectedUser?._id) {
+              queryClient.setQueryData(
+                [
+                  `${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser?._id}`,
+                ],
+                (oldData) => {
+                  if (!oldData) return oldData;
+                  return {
+                    ...oldData,
+                    data: {
+                      ...oldData.data,
+                      conversation: {
+                        ...oldData.data.conversation,
+                        messages: [
+                          ...oldData.data.conversation.messages,
+                          newMessage,
+                        ],
                       },
-                    };
-                  }
-                );
-              }
-
-              queryClient.invalidateQueries([
-                `${process.env.NEXT_PUBLIC_API_URL}/chats`,
-              ]);
+                    },
+                  };
+                }
+              );
             }
+
+            queryClient.invalidateQueries([
+              `${process.env.NEXT_PUBLIC_API_URL}/chats`,
+            ]);
           }
-        } catch (err) {
-          console.error("Error processing WebSocket message:", err);
         }
-      };
 
-      socket.addEventListener("message", handleNewMessage);
+        // Check if the selected user is online using `onlineUsers`
+        if (selectedUser && onlineUsers.includes(selectedUser._id)) {
+          console.log(`${selectedUser.name} is online.`);
+        } else {
+          console.log(`${selectedUser?.name || "User"} is offline.`);
+        }
 
-      return () => {
-        socket.removeEventListener("message", handleNewMessage);
-      };
-    }
-  }, [socket, queryClient, selectedUser, user?.data?._id]);
+      } catch (err) {
+        console.error("Error processing WebSocket message:", err);
+      }
+    };
+
+    socket.addEventListener("message", handleNewMessage);
+
+    return () => {
+      socket.removeEventListener("message", handleNewMessage);
+    };
+  }
+}, [socket, queryClient, selectedUser, user?.data?._id, onlineUsers]);
 
   useEffect(() => {
     if (messagesEndRef.current) {
