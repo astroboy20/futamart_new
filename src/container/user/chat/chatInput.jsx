@@ -33,19 +33,26 @@ const ChatInput = ({
             : "h-[400px] bg-[#F2F3F4]"
         }`}
       >
-        <div className="bg-[#F5F5F6] rounded-b-[40px] p-2 lg:p-5 shadow-md sticky top-0 z-10 rounded-t-lg flex justify-between items-center">
-          <h2 className="text-[14px] font-[500] flex gap-2 items-center">
-            {!isDesktop && (
-              <button onClick={() => setSelectedUser(null)}>
-                <IoIosArrowBack />
-              </button>
-            )}
-            <Avatar>
-              <AvatarImage src="https://github.com/shadcn.png" />
-              <AvatarFallback>CN</AvatarFallback>
-            </Avatar>
-            {selectedUser?.userInfo?.firstname} {selectedUser?.userInfo?.lastname}
-          </h2>
+        <div className="bg-[#F5F5F6] rounded-b-[40px] p-2 lg:p-5 shadow-md sticky top-0 z-10 rounded-t-lg flex flex-col">
+          <div className="flex justify-between items-center">
+            <h2 className="text-[14px] font-[500] flex gap-2 items-center">
+              {!isDesktop && (
+                <button onClick={() => setSelectedUser(null)}>
+                  <IoIosArrowBack />
+                </button>
+              )}
+              <Avatar>
+                <AvatarImage src="https://github.com/shadcn.png" />
+                <AvatarFallback>CN</AvatarFallback>
+              </Avatar>
+              {selectedUser?.userInfo?.firstname} {selectedUser?.userInfo?.lastname}
+            </h2>
+          </div>
+
+          {/* Online/Offline Status */}
+          <span className={`text-[12px] font-[400] ${selectedUser?.isOnline ? 'text-green-500' : 'text-red-500'}`}>
+            {selectedUser?.isOnline ? 'Online' : 'Offline'}
+          </span>
         </div>
 
         <div className="flex-grow overflow-y-auto p-4 bg-[#F2F3F4]" ref={messagesEndRef}>
