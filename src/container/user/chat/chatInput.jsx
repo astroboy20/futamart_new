@@ -143,6 +143,3 @@ const ChatInput = ({
 };
 
 export { ChatInput };
-
-
-export { ChatInput };
