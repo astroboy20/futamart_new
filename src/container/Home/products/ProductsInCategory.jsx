@@ -6,6 +6,7 @@ import { StarRating } from "@/components/rating";
 import { BASE_URL, useFetchItems } from "@/hooks/useFetchItems";
 import Link from "next/link";
 import Image from "next/image";
+import { AddToFavourite } from "@/components/AddToFavourite";
 const ProductsInCategory = ({ slug }) => {
   const {
     data: categoryProduct,
@@ -57,7 +58,7 @@ const ProductsInCategory = ({ slug }) => {
                     {singleProduct.name}
                   </p>
                 </Link>
-                <Fav />
+                <AddToFavourite productId={singleProduct._id} />
               </div>
               <p className="text-[#888282] text-[8px] leading-[9.75px] w-[70px] h-[10px] sm:w-[105px] sm:h-[20px] sm:text-[16px] sm:leading-[19.5px] truncate">
                 &#8358;{singleProduct.price.toLocaleString()}
