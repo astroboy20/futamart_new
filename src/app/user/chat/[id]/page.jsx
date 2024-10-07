@@ -18,8 +18,6 @@ export default function Page() {
     <div>
       <Header/>
       <Chats id={id} name={name} price={price} />
-      <Promotion/>
-      <Footer/>
     </div>
   );
 }
