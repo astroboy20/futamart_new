@@ -97,6 +97,12 @@ const Chats = ({ id, name, price }) => {
               ]);
             }
           }
+          // Check if the selected user is online using `onlineUsers`
+        if (selectedUser && onlineUsers.includes(selectedUser._id)) {
+          console.log(`${selectedUser.name} is online.`);
+        } else {
+          console.log(`${selectedUser?.name || "User"} is offline.`);
+        }
         } catch (err) {
           console.error("Error processing WebSocket message:", err);
         }
@@ -116,46 +122,59 @@ const Chats = ({ id, name, price }) => {
     }
   }, [messages]);
 
-  useEffect(() => {
-    if (id && isFirstChat) {
-      const sendInitialMessage = async () => {
-        try {
-          const messageSent = localStorage.getItem(`initialMessageSent_${id}`);
-          if (messageSent) {
-            setIsFirstChat(false);
-            return;
-          }
-
-          const payload = { message: `${name}\n${price}` };
-          await axios.post(
-            `${process.env.NEXT_PUBLIC_API_URL}/chat/${id}`,
-            payload,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
-          queryClient.invalidateQueries([
-            `${process.env.NEXT_PUBLIC_API_URL}/chat/${id}`,
-          ]);
-          queryClient.invalidateQueries([
-            `${process.env.NEXT_PUBLIC_API_URL}/chats`,
-          ]);
-          localStorage.setItem(`initialMessageSent_${id}`, "true");
+useEffect(() => {
+  if (id && isFirstChat) {
+    const sendInitialMessage = async () => {
+      try {
+        const messageSent = localStorage.getItem(`initialMessageSent_${id}`);
+        if (messageSent) {
           setIsFirstChat(false);
-        } catch (error) {
-          console.error("Error sending initial message:", error);
+          return;
         }
-      };
 
-      sendInitialMessage();
-    }
-  }, [id, isFirstChat, name, price, token, user?.data?._id, queryClient]);
+        const payload = { message: `${name}\n${price}` };
+        await axios.post(
+          `${process.env.NEXT_PUBLIC_API_URL}/chat/${id}`,
+          payload,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        queryClient.invalidateQueries([
+          `${process.env.NEXT_PUBLIC_API_URL}/chat/${id}`,
+        ]);
+        queryClient.invalidateQueries([
+          `${process.env.NEXT_PUBLIC_API_URL}/chats`,
+        ]);
+        localStorage.setItem(`initialMessageSent_${id}`, "true");
+        setIsFirstChat(false);
+      } catch (error) {
+        console.error("Error sending initial message:", error);
+      }
+    };
 
-  const handleClick = useCallback((user) => {
-    setSelectedUser(user);
-  }, []);
+    sendInitialMessage();
+  }
+}, [id, isFirstChat, name, price, token, user?.data?._id, queryClient]);
+
+const handleClick = useCallback((user) => {
+  setSelectedUser(user);
+
+  // Check if it's not the first chat
+  if (!isFirstChat) {
+    // Store the clicked product information in local storage
+    const productInfo = {
+      name,
+      price,
+      id,
+    };
+    localStorage.setItem(`clickedProduct_${id}`, JSON.stringify(productInfo));
+    console.log("Stored product info in local storage:", productInfo);
+  }
+}, [name, price, id, isFirstChat]);
+
 
   const sendMessageMutation = useMutation({
     mutationFn: async () => {
@@ -320,7 +339,7 @@ const Chats = ({ id, name, price }) => {
     <div className="flex flex-col gap-5 h-[100dvh] ">
       {/* <Header /> */}
       <div className="flex justify-between items-center text-[18px] font-medium">
-        <p className="text-[40px] font-600 px-[6%]">Chats</p>
+        <p className="text-[20px] lg:text-[35px] font-[600] px-[6%]">Chats</p>
       </div>
       <div className="flex flex-col lg:flex-row lg:justify-between w-full h-full px-[6%] mb-[4%]">
         {(!selectedUser || isDesktop) && (
@@ -344,6 +363,7 @@ const Chats = ({ id, name, price }) => {
             handleKeyPress={handleKeyPress}
             sending={sending}
             handleButtonClick={handleButtonClick}
+            isOnline={onlineUsers.includes(selectedUser._id)}
           />
         )}
       </div>

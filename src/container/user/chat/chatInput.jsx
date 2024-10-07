@@ -1,7 +1,8 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import React from "react";
+import React, { useRef } from "react";
 import { FiSend } from "react-icons/fi";
 import { IoIosArrowBack } from "react-icons/io";
+import { FiPaperclip } from "react-icons/fi"; // Import paperclip icon
 
 const ChatInput = ({
   user,
@@ -15,10 +16,17 @@ const ChatInput = ({
   handleKeyPress,
   sending,
   handleButtonClick,
+  handleFileUpload,
+  isOnline,
 }) => {
+  const fileInputRef = useRef(null);
+
+  const handleAttachmentClick = () => {
+    fileInputRef.current.click(); // Open the file picker
+  };
+
   return (
     <>
-      {" "}
       <div
         className={`w-full lg:w-[60%] flex flex-col ${
           !isDesktop
@@ -26,20 +34,26 @@ const ChatInput = ({
             : "h-[400px]  bg-[url('/images/products/chat-bg.png')] bg-cover bg-no-repeat lg:rounded-lg shadow-lg "
         }  `}
       >
-        <div className="bg-[#F5F5F6] rounded-b-[40px] p-2   lg:p-5  shadow-md sticky top-0 z-10 rounded-t-lg flex justify-between items-center">
-          <h2 className="text-[14px] font-[500] flex gap-2 items-center">
-            {!isDesktop && (
-              <button onClick={() => setSelectedUser(null)}>
-                <IoIosArrowBack />
-              </button>
-            )}
-            <Avatar>
-              <AvatarImage src="https://github.com/shadcn.png" />
-              <AvatarFallback>CN</AvatarFallback>
-            </Avatar>
-            {selectedUser?.userInfo?.firstname}{" "}
-            {selectedUser?.userInfo?.lastname}
-          </h2>
+        <div className="bg-[#F5F5F6] rounded-b-[40px] p-2 lg:p-5 shadow-md sticky top-0 z-10 rounded-t-lg flex flex-col">
+          <div className="flex justify-between items-center">
+            <h2 className="text-[14px] font-[500] flex gap-2 items-center">
+              {!isDesktop && (
+                <button onClick={() => setSelectedUser(null)}>
+                  <IoIosArrowBack />
+                </button>
+              )}
+              <Avatar>
+                <AvatarImage src="https://github.com/shadcn.png" />
+                <AvatarFallback>CN</AvatarFallback>
+              </Avatar>
+              {selectedUser?.userInfo?.firstname} {selectedUser?.userInfo?.lastname}
+            </h2>
+          </div>
+
+          {/* Online/Offline Status */}
+            <span className={` ml-[10px] text-[12px] font-[400] ${isOnline ? 'text-green-500' : 'text-red-500'}`}>
+            {isOnline ? 'Online' : 'Offline'}
+          </span>
         </div>
 
         <div
@@ -62,7 +76,28 @@ const ChatInput = ({
                         : "bg-white text-black mr-auto shadow-md border border-gray-200"
                     }`}
                   >
-                    <p>{msg.message}</p>
+                    <p dangerouslySetInnerHTML={{ __html: msg.message.replace(/\n/g, "<br />") }} />
+                    
+                    {/* Display image preview if the file is an image */}
+                    {msg.file && msg.file.match(/\.(jpeg|jpg|gif|png)$/) && (
+                      <img 
+                        src={msg.file} 
+                        alt="Uploaded" 
+                        className="mt-2 max-w-[200px] rounded"
+                      />
+                    )}
+
+                    {/* Display PDF or document preview */}
+                    {msg.file && msg.file.match(/\.(pdf|doc|docx)$/) && (
+                      <div className="mt-2">
+                        <iframe
+                          src={msg.file}
+                          className="w-full h-32 border border-gray-300"
+                          title="Document Preview"
+                        />
+                      </div>
+                    )}
+
                     {msg.status === "failed" && (
                       <div
                         className="text-red-500 text-[10px] mt-1 cursor-pointer"
@@ -78,13 +113,11 @@ const ChatInput = ({
                 </div>
               </div>
             ))}
-
-            {/* <div ref={messagesEndRef} /> */}
           </div>
         </div>
 
         {/* Message Input Section */}
-        <div className="bg-white p-3 shadow-md flex items-center gap-3  z-10">
+        <div className="bg-white p-3 shadow-md flex items-center gap-3 z-10">
           <textarea
             value={displayedMessage}
             onChange={handleInputChange}
@@ -97,6 +130,19 @@ const ChatInput = ({
               resize: "none", // Prevent manual resizing
             }}
             disabled={sending}
+          />
+
+          <button onClick={handleAttachmentClick} className="p-2">
+            <FiPaperclip size={20} />
+          </button>
+
+          {/* Hidden file input */}
+          <input
+            type="file"
+            ref={fileInputRef}
+            style={{ display: "none" }}
+            onChange={handleFileUpload}
+            accept="image/*,.pdf,.doc,.docx" // Accept images, PDFs, and docs
           />
           <button onClick={handleButtonClick} disabled={sending}>
             <FiSend size={20} />
