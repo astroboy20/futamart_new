@@ -23,7 +23,7 @@ const ChatInput = ({
         className={`w-full lg:w-[60%] flex flex-col ${
           !isDesktop
             ? "h-[100dvh] absolute inset-0 z-50 bg-white"
-            : "h-[400px] bg-[#F2F3F4]"
+            : "h-[400px]  bg-[url('/images/products/chat-bg.png')] bg-cover bg-no-repeat lg:rounded-lg shadow-lg "
         }  `}
       >
         <div className="bg-[#F5F5F6] rounded-b-[40px] p-2   lg:p-5  shadow-md sticky top-0 z-10 rounded-t-lg flex justify-between items-center">
@@ -42,7 +42,10 @@ const ChatInput = ({
           </h2>
         </div>
 
-        <div className="flex-grow overflow-y-auto p-4 bg-[#F2F3F4]" ref={messagesEndRef}>
+        <div
+          className="flex-grow overflow-y-auto p-4 bg-[#F2F3F4]"
+          ref={messagesEndRef}
+        >
           <div className="flex flex-col gap-4">
             {messages?.data?.conversation?.messages?.map((msg) => (
               <div
