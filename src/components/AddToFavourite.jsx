@@ -1,5 +1,5 @@
+"use client"
 import React, { useState } from "react";
-import { Fav } from "@/assets";
 import { useToast } from "@chakra-ui/react";
 import Cookies from "js-cookie";
 import { MdFavoriteBorder } from "react-icons/md";
