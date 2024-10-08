@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import React, { useRef } from "react";
 import { FiSend } from "react-icons/fi";
@@ -44,16 +44,28 @@ const ChatInput = ({
                 </button>
               )}
               <Avatar>
-                <AvatarImage src="https://github.com/shadcn.png" />
-                <AvatarFallback>CN</AvatarFallback>
+                {selectedUser?.userInfo?.profile_image ? (
+                  <AvatarImage src={selectedUser.userInfo.profile_image} />
+                ) : (
+                  <AvatarImage src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png" />
+                )}
+                <AvatarFallback>
+                  {selectedUser?.userInfo?.firstname?.[0]}
+                  {selectedUser?.userInfo?.lastname?.[0]}
+                </AvatarFallback>
               </Avatar>
-              {selectedUser?.userInfo?.firstname} {selectedUser?.userInfo?.lastname}
+              {selectedUser?.userInfo?.firstname}{" "}
+              {selectedUser?.userInfo?.lastname}
             </h2>
           </div>
 
           {/* Online/Offline Status */}
-            <span className={` ml-[10px] text-[12px] font-[400] ${isOnline ? 'text-green-500' : 'text-red-500'}`}>
-            {isOnline ? 'Online' : 'Offline'}
+          <span
+            className={` ml-[10px] text-[12px] font-[400] ${
+              isOnline ? "text-green-500" : "text-red-500"
+            }`}
+          >
+            {isOnline ? "Online" : "Offline"}
           </span>
         </div>
 
@@ -77,13 +89,17 @@ const ChatInput = ({
                         : "bg-white text-black mr-auto shadow-md border border-gray-200"
                     }`}
                   >
-                    <p dangerouslySetInnerHTML={{ __html: msg.message.replace(/\n/g, "<br />") }} />
-                    
+                    <p
+                      dangerouslySetInnerHTML={{
+                        __html: msg.message.replace(/\n/g, "<br />"),
+                      }}
+                    />
+
                     {/* Display image preview if the file is an image */}
                     {msg.file && msg.file.match(/\.(jpeg|jpg|gif|png)$/) && (
-                      <img 
-                        src={msg.file} 
-                        alt="Uploaded" 
+                      <img
+                        src={msg.file}
+                        alt="Uploaded"
                         className="mt-2 max-w-[200px] rounded"
                       />
                     )}
