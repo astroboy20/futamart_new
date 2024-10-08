@@ -129,7 +129,7 @@ const ChatInput = ({
                     )}
                   </div>
                   <span className="text-[10px] font-[500] mt-1">
-                    {new Date(msg.createdAt).toLocaleTimeString()}
+                  {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </span>
                 </div>
               </div>
