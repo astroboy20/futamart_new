@@ -35,39 +35,43 @@ const ChatInput = ({
             : "h-[400px]  bg-[url('/images/products/chat-bg.png')] bg-cover bg-no-repeat lg:rounded-lg shadow-lg "
         }  `}
       >
-        <div className="bg-[#F5F5F6] rounded-b-[40px] p-2 lg:p-5 shadow-md sticky top-0 z-10 rounded-t-lg flex flex-col">
-          <div className="flex justify-between items-center">
-            <h2 className="text-[14px] font-[500] flex gap-2 items-center">
-              {!isDesktop && (
-                <button onClick={() => setSelectedUser(null)}>
-                  <IoIosArrowBack />
-                </button>
-              )}
-              <Avatar>
-                {selectedUser?.userInfo?.profile_image ? (
-                  <AvatarImage src={selectedUser.userInfo.profile_image} />
-                ) : (
-                  <AvatarImage src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png" />
-                )}
-                <AvatarFallback>
-                  {selectedUser?.userInfo?.firstname?.[0]}
-                  {selectedUser?.userInfo?.lastname?.[0]}
-                </AvatarFallback>
-              </Avatar>
-              {selectedUser?.userInfo?.firstname}{" "}
-              {selectedUser?.userInfo?.lastname}
-            </h2>
-          </div>
+<div className="bg-[#F5F5F6] rounded-b-[40px] p-2 lg:p-5 shadow-md sticky top-0 z-10 rounded-t-lg flex flex-col">
+  <div className="flex justify-between items-center">
+    <h2 className="text-[14px] font-[500] flex gap-2 items-center">
+      {!isDesktop && (
+        <button onClick={() => setSelectedUser(null)}>
+          <IoIosArrowBack />
+        </button>
+      )}
+      <Avatar>
+        {selectedUser?.userInfo?.profile_image ? (
+          <AvatarImage src={selectedUser.userInfo.profile_image} />
+        ) : (
+          <AvatarImage src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png" />
+        )}
+        <AvatarFallback>
+          {selectedUser?.userInfo?.firstname?.[0]}
+          {selectedUser?.userInfo?.lastname?.[0]}
+        </AvatarFallback>
+      </Avatar>
+      <div className="flex flex-col"> 
+        <span>
+          {selectedUser?.userInfo?.firstname}{" "}
+          {selectedUser?.userInfo?.lastname}
+        </span>
+        {/* Online/Offline Status */}
+        <span
+          className={`text-[12px] font-[400] ${
+            isOnline ? "text-green-500" : "text-red-500"
+          }`}
+        >
+          {isOnline ? "Online" : "Offline"}
+        </span>
+      </div>
+    </h2>
+  </div>
+</div>
 
-          {/* Online/Offline Status */}
-          <span
-            className={` ml-[10px] text-[12px] font-[400] ${
-              isOnline ? "text-green-500" : "text-red-500"
-            }`}
-          >
-            {isOnline ? "Online" : "Offline"}
-          </span>
-        </div>
 
         <div
           className="flex-grow overflow-y-auto p-4 bg-[#F2F3F4]"
