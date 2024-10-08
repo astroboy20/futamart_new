@@ -270,9 +270,16 @@ const Chats = () => {
                   </button>
                 )}
                 <Avatar>
-                  <AvatarImage src="https://github.com/shadcn.png" />
-                  <AvatarFallback>CN</AvatarFallback>
-                </Avatar>
+                {selectedUser?.userInfo?.profile_image ? (
+                  <AvatarImage src={selectedUser.userInfo.profile_image} />
+                ) : (
+                  <AvatarImage src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png" />
+                )}
+                <AvatarFallback>
+                  {selectedUser?.userInfo?.firstname?.[0]}
+                  {selectedUser?.userInfo?.lastname?.[0]}
+                </AvatarFallback>
+              </Avatar>
                 {selectedUser?.userInfo?.firstname}{" "}
                 {selectedUser?.userInfo?.lastname}
               </h2>
