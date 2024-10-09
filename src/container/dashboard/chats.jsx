@@ -14,6 +14,8 @@ import { IoIosArrowBack } from "react-icons/io";
 import { useWebsocket } from "@/hooks/useWebsocket";
 import Image from "next/image";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import notification from "@/assets/sounds/notification.mp3";
+const notificationSound = new Audio(notification);
 
 const Chats = () => {
   const queryClient = useQueryClient();
@@ -67,6 +69,10 @@ const Chats = () => {
 
           if (newMessage.receiverId === userId) {
             console.log("Message for current user:", newMessage);
+
+            notificationSound.play().catch((error) => {
+              console.error("Failed to play notification sound:", error);
+            });
 
             if (newMessage.senderId === selectedUser?._id) {
               queryClient.setQueryData(
