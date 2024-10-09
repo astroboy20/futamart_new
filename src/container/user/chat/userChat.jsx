@@ -11,6 +11,8 @@ import { Header } from "@/components/headers/header";
 import { ChatSection } from "./chatSection";
 import { ChatInput } from "./chatInput";
 
+const notificationSound = new Audio('/sounds/notification.mp3');
+
 const UserChat = () => {
   const queryClient = useQueryClient();
   const token = Cookies.get("token");
@@ -67,6 +69,10 @@ const UserChat = () => {
 
           if (newMessage.receiverId === user?.data?._id) {
             console.log("New message for this user:", newMessage);
+
+            notificationSound.play().catch((error) => {
+              console.error("Failed to play notification sound:", error);
+            });
 
             if (newMessage.senderId === selectedUser?._id) {
               queryClient.setQueryData(
