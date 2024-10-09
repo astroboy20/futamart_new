@@ -297,39 +297,45 @@ const UserChat = () => {
   };
 
   return (
-    <div className="flex flex-col gap-5 h-[100dvh] ">
-      {/* <Header /> */}
-      <div className="flex justify-between items-center text-[18px] font-medium">
-        <p className="text-[20px] lg:text-[35px] font-[600] px-[6%]">Chats</p>
+<div className="flex flex-col gap-5 h-[100dvh] ">
+  <div className="flex justify-between items-center text-[18px] font-medium">
+    <p className="text-[20px] lg:text-[35px] font-[600] px-[6%]">Chats</p>
+  </div>
+  <div className="flex flex-col lg:flex-row lg:justify-between w-full h-full px-[6%] mb-[1%]">
+    {(!selectedUser || isDesktop) && (
+      <div className="w-full lg:w-[35%]">
+        <ChatSection
+          userData={userData}
+          setSelectedUser={setSelectedUser}
+        />
       </div>
-      <div className="flex flex-col lg:flex-row lg:justify-between w-full h-full px-[6%] mb-[1%]">
-        {(!selectedUser || isDesktop) && (
-          <div className="w-full lg:w-[35%]">
-            <ChatSection
-              userData={userData}
-              setSelectedUser={setSelectedUser}
-            />
-          </div>
-        )}
-        {selectedUser && (
-  <ChatInput
-    user={user}
-    messages={messages}
-    setSelectedUser={setSelectedUser}
-    isDesktop={isDesktop}
-    selectedUser={selectedUser}
-    messagesEndRef={messagesEndRef}
-    displayedMessage={displayedMessage}
-    handleInputChange={handleInputChange}
-    handleKeyPress={handleKeyPress}
-    sending={sending}
-    handleButtonClick={handleButtonClick}
-    isOnline={onlineUsers.includes(selectedUser._id)} 
-  />
-)}
+    )}
 
+    {selectedUser ? (
+      <ChatInput
+        user={user}
+        messages={messages}
+        setSelectedUser={setSelectedUser}
+        isDesktop={isDesktop}
+        selectedUser={selectedUser}
+        messagesEndRef={messagesEndRef}
+        displayedMessage={displayedMessage}
+        handleInputChange={handleInputChange}
+        handleKeyPress={handleKeyPress}
+        sending={sending}
+        handleButtonClick={handleButtonClick}
+        isOnline={onlineUsers.includes(selectedUser._id)} 
+      />
+    ) : (
+      <div className="flex items-center justify-center w-full lg:w-[60%] h-[70vh] border border-gray-300 rounded-lg">
+        <p className="text-gray-500 text-center text-[18px] font-medium">
+          Select a user to chat with
+        </p>
       </div>
-    </div>
+    )}
+  </div>
+</div>
+
   );
 };
 
