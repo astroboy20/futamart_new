@@ -22,7 +22,7 @@ const ChatSection = ({ userData, setSelectedUser }) => {
           />
         </div>
 
-        <div className="lg:bg-[#F2F3F4] lg:p-[3%] flex flex-col gap-5 rounded lg:shadow-[4px_4px_4px_0_rgba(0,0,0,0.25)] h-full lg:h-[330px] overflow-y-scroll no-scrollbar">
+        <div className="lg:bg-[#F2F3F4] lg:p-[3%] flex flex-col gap-5 rounded lg:shadow-[4px_4px_4px_0_rgba(0,0,0,0.25)] h-full lg:h-[430px] overflow-y-scroll no-scrollbar">
           {userData?.data?.map((user) => (
             <div
               key={user._id}
