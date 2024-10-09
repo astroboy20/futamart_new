@@ -14,8 +14,8 @@ import { IoIosArrowBack } from "react-icons/io";
 import { useWebsocket } from "@/hooks/useWebsocket";
 import Image from "next/image";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import notification from "@/assets/sounds/notification.mp3";
-const notificationSound = new Audio(notification);
+
+const notificationSound = new Audio('/sounds/notification.mp3');
 
 const Chats = () => {
   const queryClient = useQueryClient();
