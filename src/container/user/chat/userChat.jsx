@@ -327,11 +327,14 @@ const UserChat = () => {
         isOnline={onlineUsers.includes(selectedUser._id)} 
       />
     ) : (
-      <div className="flex items-center justify-center w-full lg:w-[60%] h-[70vh] border border-gray-300 rounded-lg">
-        <p className="text-gray-500 text-center text-[18px] font-medium">
-          Select a user to chat with
-        </p>
-      </div>
+      // Message displayed only in desktop mode when no user is selected
+      isDesktop && (
+        <div className="flex items-center justify-center w-full lg:w-[60%] h-[70vh] border border-gray-300 rounded-lg">
+          <p className="text-gray-500 text-center text-[18px] font-medium">
+            Select a user to chat with
+          </p>
+        </div>
+      )
     )}
   </div>
 </div>

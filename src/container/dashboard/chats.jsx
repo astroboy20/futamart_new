@@ -261,7 +261,14 @@ const Chats = () => {
         </div>
       </div>
     )}
-    
+
+    {/* Message when no chat is selected in desktop mode */}
+    {isDesktop && !selectedUser && (
+      <div className="flex items-center justify-center w-full lg:w-[60%] h-[70vh]">
+        <p className="text-gray-500 text-xl">Select a chat to begin messaging.</p>
+      </div>
+    )}
+
     {/* Fixed Chat Area */}
     {selectedUser && (
       <div className="w-full lg:w-[60%] flex flex-col h-[100dvh] lg:h-[70vh] bg-[url('/images/products/chat-bg.png')] bg-cover bg-no-repeat lg:rounded-lg shadow-lg">
@@ -358,7 +365,6 @@ const Chats = () => {
     )}
   </div>
 </div>
-
 
   );
 };
