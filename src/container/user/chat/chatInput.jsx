@@ -16,6 +16,7 @@ const ChatInput = ({
   handleInputChange,
   handleKeyPress,
   sending,
+  retrySendMessage,
   handleButtonClick,
   handleFileUpload,
   isOnline,

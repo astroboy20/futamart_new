@@ -194,10 +194,21 @@ const Chats = () => {
     }
   }, [message, sendMessageMutation, queryClient, selectedUser, user]);
 
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
   const handleKeyPress = (e) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault(); // Prevent default behavior (like adding a new line)
-      handleSendMessage();
+    if (!isMobile) {
+      // On desktop, press Enter to send the message.
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        handleSendMessage();
+      }
+    } else {
+      // On mobile, press Enter to add a new line.
+      if (e.key === "Enter" && !e.shiftKey) {
+        // Just let the default behavior happen for a new line.
+        return;
+      }
     }
   };
 
