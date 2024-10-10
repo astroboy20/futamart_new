@@ -34,7 +34,7 @@ const ChatSection = ({ userData, setSelectedUser }) => {
               >
                 <div className="flex flex-col gap-2">
                   <p className="text-[14px] font-[500]">
-                    {user?.userInfo?.firstname} {user?.userInfo?.lastname}
+                    {user?.businessInfo?.businessName}
                   </p>
                   <p className="text-gray-600 text-[12px] font-[500] line-clamp-1">
                     {user?.lastMessage?.message}
