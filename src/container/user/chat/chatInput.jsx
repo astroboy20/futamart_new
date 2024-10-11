@@ -72,7 +72,7 @@ const ChatInput = ({
         </div>
 
         <div
-          className="flex-grow overflow-y-auto p-4 bg-[#F2F3F4]"
+          className="flex-grow overflow-y-auto p-4 bg-[url('/images/products/chat-bg.png')] bg-cover bg-no-repeat lg:rounded-lg shadow-lg"
           ref={messagesEndRef}
         >
           <div className="flex flex-col gap-4">
