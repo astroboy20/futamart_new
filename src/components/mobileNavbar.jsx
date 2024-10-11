@@ -1,10 +1,4 @@
-import {
-  CloseIcon,
-  SmallCartIcon,
-  SmallFavouriteIcon,
-  SmallLogo,
-  UserIcon,
-} from "@/assets";
+import { CloseIcon, SmallFavouriteIcon, SmallLogo, UserIcon } from "@/assets";
 import { BASE_URL, useFetchItems } from "@/hooks/useFetchItems";
 import { motion, AnimatePresence } from "framer-motion";
 import { PiBowlFood } from "react-icons/pi";
@@ -16,6 +10,7 @@ import { TbShoe } from "react-icons/tb";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import Cookies from "js-cookie";
+import { FiMessageCircle } from "react-icons/fi";
 
 const MobileNavbar = ({ handleShow }) => {
   const token = Cookies.get("token");
@@ -61,7 +56,7 @@ const MobileNavbar = ({ handleShow }) => {
           <div className="flex flex-col gap-5">
             <Link href={"/user/chat"} onClick={handleShow}>
               <p className="flex items-center gap-3">
-                <SmallCartIcon />
+                <FiMessageCircle className="text-[23px]" />
                 Chats
               </p>
             </Link>
@@ -99,11 +94,14 @@ const MobileNavbar = ({ handleShow }) => {
 
           <div className="flex flex-col gap-5">
             <h2 className="text-[18px] font-[600]">Others</h2>
-            {userData && ( 
-              <Link href={`${role === "user" ? "/seller" : "/dashboard"}`}>
-                <p>Sell on futamart</p>
+            {userData && (
+              <Link href={role === "seller" ? "/dashboard" : "/seller"}>
+                <p>
+                  {role === "seller" ? "Go to Dashboard" : "Become a Seller"}
+                </p>
               </Link>
             )}
+
             <p>Contact Us</p>
             <p>
               {token ? (
