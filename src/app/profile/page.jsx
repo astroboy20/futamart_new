@@ -4,11 +4,15 @@ import { Header } from "@/components/headers/header";
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Cookies from "js-cookie";
+import { ClipLoader } from "react-spinners";
+import { useToast } from "@chakra-ui/react";
 
 export default function ProfilePage() {
+  const [loading, setLoading] = useState(false);
   const [profile, setProfile] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const toast = useToast();
 
   useEffect(() => {
     const token = Cookies.get("token");
@@ -67,6 +71,7 @@ export default function ProfilePage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     let profileImageUrl = profile.profile_image;
 
     if (profile.profile_image && profile.profile_image.startsWith("data:")) {
@@ -89,14 +94,42 @@ export default function ProfilePage() {
           body: JSON.stringify(updatedProfile),
         }
       );
-
+      const result = await response.json();
       if (!response.ok) {
         throw new Error("Failed to update profile");
+        setLoading(false);
+        toast({
+          title: "Error",
+          description: result?.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+        return;
       }
 
+      setLoading(false);
+
+      toast({
+        title: "Success",
+        description: result?.message,
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+
       console.log("Updated Profile data:", updatedProfile);
-    } catch (err) {
-      setError(err.message);
+    } catch (error) {
+      setError(error.message);
+      console.log(error);
+      setLoading(false);
+      toast({
+        title: "An error occurred.",
+        description: error.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
     }
   };
 
@@ -116,15 +149,18 @@ export default function ProfilePage() {
       <Header />
       <div className="content-center w-full h-full">
         <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
-          <h1 className="text-2xl font-bold mb-6 text-center">Profile</h1>
+          <h1 className="text-2xl font-bold mb-6">Profile</h1>
           <div className="flex justify-center mb-6">
-            <label htmlFor="profileImageInput">
+            <label
+              htmlFor="profileImageInput"
+              className="border-2 border-black aspect-square flex content-center rounded-full cursor-pointer overflow-hidden w-1/2"
+            >
               <Image
                 src={profile?.profile_image || "/images/futamart.png"}
                 alt="Profile picture"
                 width={100}
                 height={100}
-                className="cursor-pointer"
+                className="cursor-pointer w-full"
               />
             </label>
             <input
@@ -139,7 +175,7 @@ export default function ProfilePage() {
             <div>
               <label
                 htmlFor="firstname"
-                className="block text-sm font-medium text-gray-700"
+                className="block text-base font-semibold text-gray-700"
               >
                 First name
               </label>
@@ -149,13 +185,18 @@ export default function ProfilePage() {
                 type="text"
                 value={profile?.firstname}
                 onChange={handleChange}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm "
+                style={{
+                  boxShadow: "2px 2px 4px 0px #0000001F inset",
+                  border: "0.2px solid #00000099",
+                  borderRadius: "5px",
+                }}
+                className="mt-1 block w-full px-4 p-2 bg-[#F2F3F466] "
               />
             </div>
             <div>
               <label
                 htmlFor="middlename"
-                className="block text-sm font-medium text-gray-700"
+                className="block text-base font-semibold text-gray-700"
               >
                 Middle name
               </label>
@@ -165,13 +206,18 @@ export default function ProfilePage() {
                 type="text"
                 value={profile?.middlename}
                 onChange={handleChange}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm "
+                style={{
+                  boxShadow: "2px 2px 4px 0px #0000001F inset",
+                  border: "0.2px solid #00000099",
+                  borderRadius: "5px",
+                }}
+                className="mt-1 block w-full px-4 p-2 bg-[#F2F3F466] "
               />
             </div>
             <div>
               <label
                 htmlFor="lastname"
-                className="block text-sm font-medium text-gray-700"
+                className="block text-base font-semibold text-gray-700"
               >
                 Last name
               </label>
@@ -181,13 +227,18 @@ export default function ProfilePage() {
                 type="text"
                 value={profile?.lastname}
                 onChange={handleChange}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm "
+                style={{
+                  boxShadow: "2px 2px 4px 0px #0000001F inset",
+                  border: "0.2px solid #00000099",
+                  borderRadius: "5px",
+                }}
+                className="mt-1 block w-full px-4 p-2 bg-[#F2F3F466] "
               />
             </div>
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-gray-700"
+                className="block text-base font-semibold text-gray-700"
               >
                 Email Address
               </label>
@@ -197,13 +248,18 @@ export default function ProfilePage() {
                 type="email"
                 value={profile?.email}
                 onChange={handleChange}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm "
+                style={{
+                  boxShadow: "2px 2px 4px 0px #0000001F inset",
+                  border: "0.2px solid #00000099",
+                  borderRadius: "5px",
+                }}
+                className="mt-1 block w-full px-4 p-2 bg-[#F2F3F466] "
               />
             </div>
             <div>
               <label
                 htmlFor="role"
-                className="block text-sm font-medium text-gray-700"
+                className="block text-base font-semibold text-gray-700"
               >
                 Role
               </label>
@@ -213,15 +269,20 @@ export default function ProfilePage() {
                 type="text"
                 value={profile?.role.name}
                 readOnly
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm bg-gray-100"
+                className="mt-1 block w-full rounded-md border-gray-300 px-4 p-2 shadow-sm bg-gray-100"
               />
             </div>
-            <button
-              type="submit"
-              className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-black hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            >
-              Save changes
-            </button>
+            <div className="w-full flex justify-end">
+              <button
+                disabled={loading}
+                type="submit"
+                className={`py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
+                  loading ? "bg-gray-400" : "bg-black hover:bg-gray-900"
+                } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
+              >
+                {loading ? <ClipLoader color="white" /> : "Save profile"}
+              </button>
+            </div>
           </form>
         </div>
       </div>
