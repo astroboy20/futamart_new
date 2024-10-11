@@ -22,7 +22,8 @@ const SellerProfile = ({ sellerName, sellerProfileImage, businessDetails }) => {
       <div className="flex flex-col gap-4">
         <div className="flex items-center gap-3">
           <h1 className="text-xl sm:text-2xl font-medium">{sellerName}</h1>
-          <RiVerifiedBadgeFill className="text-[20px] sm:text-[30px]" />
+          <RiVerifiedBadgeFill className="text-blue-500 text-[20px] sm:text-[30px]" />
+
 
           <div className="flex items-center gap-3 absolute bottom-0 left-0 w-full sm:relative sm:left-[10rem] sm:bottom-[20rem] lg:static lg:w-auto lg:left-auto lg:bottom-auto hidden sm:flex">
             <Link

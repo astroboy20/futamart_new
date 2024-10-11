@@ -1,9 +1,11 @@
 "use client";
 
+import { BASE_URL, useFetchItems } from "@/hooks/useFetchItems";
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation"; // Import usePathname
 import Cookies from "js-cookie";
+
 import {
   CartIcon,
   Hamburger,
@@ -22,6 +24,11 @@ const Header = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const dropdownRef = useRef(null);
   const pathname = usePathname(); // Get the current path
+  const { data: userData } = useFetchItems({
+    url: `${BASE_URL}/user`,
+  });
+
+  const role = userData?.data?.role?.name;
 
   const handleShow = () => {
     setShow(!show);
@@ -100,7 +107,7 @@ const Header = () => {
           </div>
         </Link>
       </div>
-      
+
       {/* Conditionally render the search bar based on the pathname */}
       {pathname !== "/user/chat" && (
         <div className="flex items-center flex-grow lg:justify-center w-full lg:w-4/6 gap-5 lg:px-10">
@@ -176,12 +183,15 @@ const Header = () => {
                 >
                   Settings
                 </Link>
-                <Link
-                  href="/seller"
-                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                >
-                  Sell on FUTAMart
-                </Link>
+                {userData && (
+                  <Link
+                    href={role === "seller" ? "/dashboard" : "/seller"}
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    {role === "seller" ? "Go to Dashboard" : "Become a Seller"}
+                  </Link>
+                )}
+
                 <button
                   onClick={handleLogout}
                   className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
