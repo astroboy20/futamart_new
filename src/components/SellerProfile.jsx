@@ -3,13 +3,12 @@ import { VscUnverified } from "react-icons/vsc";
 import { FaStar } from "react-icons/fa";
 import React from "react";
 import Link from "next/link";
-import { StarRating } from "./rating";
 
 const SellerProfile = ({
   sellerName,
   sellerProfileImage,
   businessDetails,
-  isVerified, // Add this prop to determine if the seller is verified
+  isVerified,
 }) => {
   const details = businessDetails.split(", ").reduce((acc, detail) => {
     const [key, value] = detail.split(": ");
@@ -29,9 +28,19 @@ const SellerProfile = ({
         <div className="flex items-center gap-3">
           <h1 className="text-xl sm:text-2xl font-medium">{sellerName}</h1>
           {isVerified ? (
-            <RiVerifiedBadgeFill className="text-blue-500 text-[20px] sm:text-[30px]" />
+            <div
+              className="tooltip"
+              title="Seller is verified"
+            >
+              <RiVerifiedBadgeFill className="text-blue-500 text-[20px] sm:text-[30px]" />
+            </div>
           ) : (
-            <VscUnverified className="text-red-500 text-[20px] sm:text-[30px]" />
+            <div
+              className="tooltip"
+              title="Seller is not verified"
+            >
+              <VscUnverified className="text-red-500 text-[20px] sm:text-[30px]" />
+            </div>
           )}
 
           <div className="flex items-center gap-3 absolute bottom-0 left-0 w-full sm:relative sm:left-[10rem] sm:bottom-[20rem] lg:static lg:w-auto lg:left-auto lg:bottom-auto hidden sm:flex">
