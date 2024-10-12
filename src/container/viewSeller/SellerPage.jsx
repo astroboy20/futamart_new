@@ -37,6 +37,7 @@ export default async function Page({ params }) {
           sellerProfileImage={
             data.business.business_logo || "/images/Sample_User_Icon.png"
           }
+          isVerified={data.business.verified || false}
           businessDetails={`Address: ${
             data.business.business_address || "N/A"
           }, Contact: ${data.business.business_contact || "N/A"}, Email: ${
