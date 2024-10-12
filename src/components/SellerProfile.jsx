@@ -1,10 +1,16 @@
 import { RiVerifiedBadgeFill } from "react-icons/ri";
+import { VscUnverified } from "react-icons/vsc";
 import { FaStar } from "react-icons/fa";
 import React from "react";
 import Link from "next/link";
 import { StarRating } from "./rating";
 
-const SellerProfile = ({ sellerName, sellerProfileImage, businessDetails }) => {
+const SellerProfile = ({
+  sellerName,
+  sellerProfileImage,
+  businessDetails,
+  isVerified, // Add this prop to determine if the seller is verified
+}) => {
   const details = businessDetails.split(", ").reduce((acc, detail) => {
     const [key, value] = detail.split(": ");
     acc[key] = value;
@@ -22,8 +28,11 @@ const SellerProfile = ({ sellerName, sellerProfileImage, businessDetails }) => {
       <div className="flex flex-col gap-4">
         <div className="flex items-center gap-3">
           <h1 className="text-xl sm:text-2xl font-medium">{sellerName}</h1>
-          <RiVerifiedBadgeFill className="text-blue-500 text-[20px] sm:text-[30px]" />
-
+          {isVerified ? (
+            <RiVerifiedBadgeFill className="text-blue-500 text-[20px] sm:text-[30px]" />
+          ) : (
+            <VscUnverified className="text-red-500 text-[20px] sm:text-[30px]" />
+          )}
 
           <div className="flex items-center gap-3 absolute bottom-0 left-0 w-full sm:relative sm:left-[10rem] sm:bottom-[20rem] lg:static lg:w-auto lg:left-auto lg:bottom-auto hidden sm:flex">
             <Link
@@ -39,13 +48,6 @@ const SellerProfile = ({ sellerName, sellerProfileImage, businessDetails }) => {
             />
           </div>
         </div>
-
-        {/* <div className="flex items-center gap-2">
-          <p className="font-medium">
-            Customer rating: <span className="font-medium">Very good</span>
-            <StarRating rating="5" width={18} height={18} />
-          </p>
-        </div> */}
 
         <div className="text-sm text-gray-700">
           <p>
