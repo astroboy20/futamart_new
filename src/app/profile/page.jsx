@@ -156,7 +156,7 @@ export default function ProfilePage() {
               className="border-2 border-black aspect-square flex content-center rounded-full cursor-pointer overflow-hidden w-1/2"
             >
               <Image
-                src={profile?.profile_image || "/images/futamart.png"}
+                src={profile?.profile_image || "/images/profile.png"}
                 alt="Profile picture"
                 width={100}
                 height={100}
