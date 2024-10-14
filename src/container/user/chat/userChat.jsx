@@ -11,7 +11,7 @@ import { Header } from "@/components/headers/header";
 import { ChatSection } from "./chatSection";
 import { ChatInput } from "./chatInput";
 
-const notificationSound = new Audio('/sounds/notification.mp3');
+const notificationSound = new Audio("/sounds/notification.mp3");
 
 const UserChat = () => {
   const queryClient = useQueryClient();
@@ -23,10 +23,36 @@ const UserChat = () => {
   const messagesEndRef = useRef(null);
   const isDesktop = useMediaQuery("(min-width: 1024px)");
   const [failedMessages, setFailedMessages] = useState([]); // State to store failed messages
+  const [userData, setUserData] = useState(null);
 
-  const { data: userData } = useFetchItems({
-    url: `${process.env.NEXT_PUBLIC_API_URL}/chats`,
-  });
+  const fetchUserData = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/chats`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      // Update userData only if there are changes
+      if (JSON.stringify(userData) !== JSON.stringify(response.data)) {
+        setUserData(response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchUserData(); // Initial fetch
+
+    // Polling every 1 second
+    const interval = setInterval(fetchUserData, 1000);
+
+    // Cleanup function to clear the interval
+    return () => clearInterval(interval);
+  }, [userData, token]);
 
   const { data: user } = useFetchItems({
     url: `${process.env.NEXT_PUBLIC_API_URL}/user`,
@@ -56,73 +82,72 @@ const UserChat = () => {
     }
   }, [userId]);
 
- useEffect(() => {
-  if (socket && socket.readyState === WebSocket.OPEN) {
-    const handleNewMessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
-        console.log("Message received from server:", data); // Log full message
+  useEffect(() => {
+    if (socket && socket.readyState === WebSocket.OPEN) {
+      const handleNewMessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          console.log("Message received from server:", data); // Log full message
 
-        if (data.event === "newMessage") {
-          const newMessage = data.data;
-          console.log("Processing new message:", newMessage);
+          if (data.event === "newMessage") {
+            const newMessage = data.data;
+            console.log("Processing new message:", newMessage);
 
-          if (newMessage.receiverId === user?.data?._id) {
-            console.log("New message for this user:", newMessage);
+            if (newMessage.receiverId === user?.data?._id) {
+              console.log("New message for this user:", newMessage);
 
-            notificationSound.play().catch((error) => {
-              console.error("Failed to play notification sound:", error);
-            });
+              notificationSound.play().catch((error) => {
+                console.error("Failed to play notification sound:", error);
+              });
 
-            if (newMessage.senderId === selectedUser?._id) {
-              queryClient.setQueryData(
-                [
-                  `${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser?._id}`,
-                ],
-                (oldData) => {
-                  if (!oldData) return oldData;
-                  return {
-                    ...oldData,
-                    data: {
-                      ...oldData.data,
-                      conversation: {
-                        ...oldData.data.conversation,
-                        messages: [
-                          ...oldData.data.conversation.messages,
-                          newMessage,
-                        ],
+              if (newMessage.senderId === selectedUser?._id) {
+                queryClient.setQueryData(
+                  [
+                    `${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser?._id}`,
+                  ],
+                  (oldData) => {
+                    if (!oldData) return oldData;
+                    return {
+                      ...oldData,
+                      data: {
+                        ...oldData.data,
+                        conversation: {
+                          ...oldData.data.conversation,
+                          messages: [
+                            ...oldData.data.conversation.messages,
+                            newMessage,
+                          ],
+                        },
                       },
-                    },
-                  };
-                }
-              );
+                    };
+                  }
+                );
+              }
+
+              queryClient.invalidateQueries([
+                `${process.env.NEXT_PUBLIC_API_URL}/chats`,
+              ]);
             }
-
-            queryClient.invalidateQueries([
-              `${process.env.NEXT_PUBLIC_API_URL}/chats`,
-            ]);
           }
+
+          // Check if the selected user is online using `onlineUsers`
+          if (selectedUser && onlineUsers.includes(selectedUser._id)) {
+            console.log(`${selectedUser.name} is online.`);
+          } else {
+            console.log(`${selectedUser?.name || "User"} is offline.`);
+          }
+        } catch (err) {
+          console.error("Error processing WebSocket message:", err);
         }
+      };
 
-        // Check if the selected user is online using `onlineUsers`
-        if (selectedUser && onlineUsers.includes(selectedUser._id)) {
-          console.log(`${selectedUser.name} is online.`);
-        } else {
-          console.log(`${selectedUser?.name || "User"} is offline.`);
-        }
+      socket.addEventListener("message", handleNewMessage);
 
-      } catch (err) {
-        console.error("Error processing WebSocket message:", err);
-      }
-    };
-
-    socket.addEventListener("message", handleNewMessage);
-
-    return () => {
-      socket.removeEventListener("message", handleNewMessage);
-    };
-  }
-}, [socket, queryClient, selectedUser, user?.data?._id, onlineUsers]);
+      return () => {
+        socket.removeEventListener("message", handleNewMessage);
+      };
+    }
+  }, [socket, queryClient, selectedUser, user?.data?._id, onlineUsers]);
 
   useEffect(() => {
     if (messagesEndRef.current) {
@@ -308,49 +333,49 @@ const UserChat = () => {
   };
 
   return (
-<div className="flex flex-col gap-5 h-[100dvh] ">
-  <div className="flex justify-between items-center text-[18px] font-medium">
-    <p className="text-[20px] lg:text-[35px] font-[600] px-[6%]">Chats</p>
-  </div>
-  <div className="flex flex-col lg:flex-row lg:justify-between w-full h-full px-[6%] mb-[1%]">
-    {(!selectedUser || isDesktop) && (
-      <div className="w-full lg:w-[35%]">
-        <ChatSection
-          userData={userData}
-          setSelectedUser={setSelectedUser}
-        />
+    <div className="flex flex-col gap-5 h-[100dvh] ">
+      <div className="flex justify-between items-center text-[18px] font-medium">
+        <p className="text-[20px] lg:text-[35px] font-[600] px-[6%]">Chats</p>
       </div>
-    )}
+      <div className="flex flex-col lg:flex-row lg:justify-between w-full h-full px-[6%] mb-[1%]">
+        {(!selectedUser || isDesktop) && (
+          <div className="w-full lg:w-[35%]">
+            <ChatSection
+              userId={userId}
+              userData={userData}
+              setSelectedUser={setSelectedUser}
+            />
+          </div>
+        )}
 
-    {selectedUser ? (
-      <ChatInput
-        user={user}
-        messages={messages}
-        setSelectedUser={setSelectedUser}
-        isDesktop={isDesktop}
-        selectedUser={selectedUser}
-        messagesEndRef={messagesEndRef}
-        displayedMessage={displayedMessage}
-        handleInputChange={handleInputChange}
-        handleKeyPress={handleKeyPress}
-        sending={sending}
-        retrySendMessage={retrySendMessage}
-        handleButtonClick={handleButtonClick}
-        isOnline={onlineUsers.includes(selectedUser._id)} 
-      />
-    ) : (
-      // Message displayed only in desktop mode when no user is selected
-      isDesktop && (
-        <div className="flex items-center justify-center w-full lg:w-[60%] h-[70vh] border border-gray-300 rounded-lg">
-          <p className="text-gray-500 text-center text-[18px] font-medium">
-            Select a user to chat with
-          </p>
-        </div>
-      )
-    )}
-  </div>
-</div>
-
+        {selectedUser ? (
+          <ChatInput
+            user={user}
+            messages={messages}
+            setSelectedUser={setSelectedUser}
+            isDesktop={isDesktop}
+            selectedUser={selectedUser}
+            messagesEndRef={messagesEndRef}
+            displayedMessage={displayedMessage}
+            handleInputChange={handleInputChange}
+            handleKeyPress={handleKeyPress}
+            sending={sending}
+            retrySendMessage={retrySendMessage}
+            handleButtonClick={handleButtonClick}
+            isOnline={onlineUsers.includes(selectedUser._id)}
+          />
+        ) : (
+          // Message displayed only in desktop mode when no user is selected
+          isDesktop && (
+            <div className="flex items-center justify-center w-full lg:w-[60%] h-[70vh] border border-gray-300 rounded-lg">
+              <p className="text-gray-500 text-center text-[18px] font-medium">
+                Select a user to chat with
+              </p>
+            </div>
+          )
+        )}
+      </div>
+    </div>
   );
 };
 
