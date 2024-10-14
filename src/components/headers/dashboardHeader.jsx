@@ -114,6 +114,17 @@ const DashboardHeader = () => {
               <IoSettingsSharp size={"30px"} /> Settings
             </Link>
             <Link
+              href={"/dashboard/subscriptions"}
+              className={`flex items-center gap-3 ${
+                pathname === "/dashboard/subscriptions"
+                  ? "bg-[#FFFFFF33] border rounded-[8px] py-2 px-5 "
+                  : ""
+              }`}
+              onClick={handleShow}
+            >
+              <IoSettingsSharp size={"30px"} /> Subscriptions
+            </Link>
+            <Link
               href={"/"}
               className={`flex items-center gap-3 ${
                 pathname === "/"
