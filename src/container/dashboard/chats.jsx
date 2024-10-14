@@ -292,7 +292,7 @@ const Chats = () => {
           </Link>
         </div>
       </div>
-
+  
       <div className="flex flex-col lg:flex-row lg:justify-between w-full h-[100vh]">
         {/* Scrollable User List */}
         {(!selectedUser || isDesktop) && (
@@ -307,18 +307,14 @@ const Chats = () => {
               </p>
               <p className="hidden lg:flex">Oldest</p>
             </div>
-
+  
             <div>
               {userData?.data?.map((user) => (
                 <div
                   key={user._id}
-                   className="p-[3%] bg-[#F5F5F6] shadow-[2px_2px_4px_0_rgba(0,0,0,0.15)]"
-                  
+                  className="flex justify-between items-center py-4 border-b cursor-pointer hover:bg-gray-100"
+                  onClick={() => handleClick(user)}
                 >
-                   <div
-                className="flex justify-between items-center py-4 cursor-pointer hover:bg-gray-100"
-                onClick={() => handleClick(user)}
-              >
                   <div className="flex flex-col gap-2">
                     <p className="text-[14px] font-[500]">
                       {user?.userInfo?.firstname} {user?.userInfo?.lastname}
@@ -327,7 +323,7 @@ const Chats = () => {
                       {user?.lastMessage?.message}
                     </p>
                   </div>
-
+  
                   <div>
                     {user?.unreadMessagesCount > 0 && (
                       <span className="bg-black text-white text-[10px] font-[600] rounded-full h-5 w-5 flex items-center justify-center border border-white">
@@ -335,27 +331,22 @@ const Chats = () => {
                       </span>
                     )}
                     <p className="text-[#51A40A] text-[10px] font-[600]">
-                      {useTimestamp({
-                        timestamp: user?.lastMessage?.createdAt,
-                      })}
+                      {useTimestamp({ timestamp: user?.lastMessage?.createdAt })}
                     </p>
                   </div>
-                </div>
                 </div>
               ))}
             </div>
           </div>
         )}
-
+  
         {/* Message when no chat is selected in desktop mode */}
         {isDesktop && !selectedUser && (
           <div className="flex items-center justify-center w-full lg:w-[60%] h-[70vh]">
-            <p className="text-gray-500 text-xl">
-              Select a chat to begin messaging.
-            </p>
+            <p className="text-gray-500 text-xl">Select a chat to begin messaging.</p>
           </div>
         )}
-
+  
         {/* Fixed Chat Area */}
         {selectedUser && (
           <div className="w-full lg:w-[60%] flex flex-col h-[100dvh] lg:h-[70vh] bg-[url('/images/products/chat-bg.png')] bg-cover bg-no-repeat lg:rounded-lg shadow-lg">
@@ -392,7 +383,7 @@ const Chats = () => {
                 </div>
               </h2>
             </div>
-
+  
             {/* Chat Messages Section */}
             <div className="flex-grow overflow-y-auto p-4" ref={messagesEndRef}>
               <div className="flex flex-col gap-4">
@@ -424,7 +415,7 @@ const Chats = () => {
                 ))}
               </div>
             </div>
-
+  
             {/* Message Input Section */}
             <div className="bg-white p-3 shadow-md flex items-center gap-3 z-10">
               <textarea
@@ -452,7 +443,7 @@ const Chats = () => {
         )}
       </div>
     </div>
-  );
+  );  
 };
 
 export { Chats };
