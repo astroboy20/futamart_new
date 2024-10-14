@@ -1,0 +1,270 @@
+[33mcommit 39dc3b0303b4e4aea07c10322ae0955638261879[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: Fidel Wole <adewoyeadedayo10@gmail.com>
+Date:   Mon Oct 14 04:33:48 2024 +0100
+
+    feat: get message count
+
+[33mcommit 9eb04f465571eb3397bcae4bf9b1f7c567d4e888[m
+Author: CodeThiefX <timiwade97@gmail.com>
+Date:   Sun Oct 13 18:45:17 2024 +0100
+
+    Feat: updated header to display profile picture alongside user icon
+
+[33mcommit 230cd008189b344f52ed0eea9bff8ef7552a15fb[m
+Author: CodeThiefX <timiwade97@gmail.com>
+Date:   Sun Oct 13 18:40:56 2024 +0100
+
+    Feat: Fixed profile image eidt function
+
+[33mcommit e148cc9312603ff89fe7a903d5f8d4e05023df0d[m
+Author: Fidel Wole <adewoyeadedayo10@gmail.com>
+Date:   Sun Oct 13 06:47:20 2024 +0100
+
+    update favicon
+
+[33mcommit 7c19e53bf415db1235a05fb9fe2cf75b1c8204a6[m
+Author: Fidel Wole <adewoyeadedayo10@gmail.com>
+Date:   Sat Oct 12 19:31:48 2024 +0100
+
+    feat: metadata and favicon
+
+[33mcommit 069a00c0903d2f8fd2ab40b3f0a8dbeba8aad383[m
+Author: CodeThiefX <timiwade97@gmail.com>
+Date:   Sat Oct 12 12:27:36 2024 +0100
+
+    feat: changed default profile image
+
+[33mcommit bddd94b0b75d268bcb333a5d84390c1006dcd5f8[m
+Author: Fidel Wole <adewoyeadedayo10@gmail.com>
+Date:   Sat Oct 12 07:57:27 2024 +0100
+
+    feat: add no cache to seller profile
+
+[33mcommit 142787e11c1b1b7f105db4c31630307e3d3d21b6[m
+Author: Fidel Wole <adewoyeadedayo10@gmail.com>
+Date:   Sat Oct 12 07:39:27 2024 +0100
+
+    feat: add no cache to seller profile
+
+[33mcommit 8262b06ce1e476e45b2cdc6d7ebbf29606542b3e[m
+Author: Fidel Wole <adewoyeadedayo10@gmail.com>
+Date:   Sat Oct 12 07:13:12 2024 +0100
+
+    fear: unverified logo
+
+[33mcommit a1115fe966ada5614ab1614a065c23f0fe6b33ed[m
+Author: astroboy20 <tolulopeakinkunmi7@gmail.com>
+Date:   Fri Oct 11 23:54:19 2024 +0100
+
+    feat: work on the update business profile update
+
+[33mcommit ff9d2d87d8761c092578851960f8ea048900f2ce[m
+Author: astroboy20 <tolulopeakinkunmi7@gmail.com>
+Date:   Fri Oct 11 22:51:01 2024 +0100
+
+    add backgroud image to chat section
+
+[33mcommit cdcbe676de7d361eab96bd216fec30eff279ddb1[m
+Author: Fidel Wole <adewoyeadedayo10@gmail.com>
+Date:   Fri Oct 11 18:20:22 2024 +0100
+
+    feat: change sell on futamart to go to dashboard if user is a seller
+
+[33mcommit f10b2e362164fdd2ffd396ec60121a8de9078bd5[m
+Author: CodeThiefX <timiwade97@gmail.com>
+Date:   Fri Oct 11 09:57:56 2024 +0100
+
+    Feat: Profile page UI improvement and fix
+
+[33mcommit dbe5c8b66a7d5edc67bfcf0280f08fe51ea403f3[m
+Author: Fidel Wole <adewoyeadedayo10@gmail.com>
+Date:   Thu Oct 10 19:24:20 2024 +0100
+
+    fix: enter button on mobile screen
+
+[33mcommit f9a6f712126fb077c355b63f0b01a786a593dbaf[m
+Author: Fidel Wole <adewoyeadedayo10@gmail.com>
+Date:   Thu Oct 10 17:37:53 2024 +0100
+
+    fix: enter button on mobile screen
+
+[33mcommit d11c185c23c67fad080e9ded1fc4f50293e447fd[m
+Author: Fidel Wole <adewoyeadedayo10@gmail.com>
+Date:   Wed Oct 9 07:03:13 2024 +0100
+
+    fix chat
+
+[33mcommit 90892e8bd8786b49edd5436243a5405947c4e015[m
+Author: Fidel Wole <adewoyeadedayo10@gmail.com>
+Date:   Wed Oct 9 06:47:58 2024 +0100
+
+    chat modification
+
+[33mcommit a817d83063bd5ab3c8e4a0a80f4e09d11c698b3b[m
+Author: Fidel Wole <adewoyeadedayo10@gmail.com>
+Date:   Wed Oct 9 05:28:07 2024 +0100
+
+    fix: audio notificatio
+
+[33mcommit 43229bce240feb4130c7d68cc62bb3268a4a1636[m
+Author: Fidel Wole <adewoyeadedayo10@gmail.com>
+Date:   Wed Oct 9 05:18:36 2024 +0100
+
+    feat: add notification sound
+
+[33mcommit b1ef815c2b838fa411c57d85785e17889dccd916[m
+Author: Fidel Wole <adewoyeadedayo10@gmail.com>
+Date:   Tue Oct 8 22:05:47 2024 +0100
+
+    edit createdAt to display just hour and min
+
+[33mcommit 9b845ff46d5d43a3d031ca41dbe8fee35820d8b2[m
+Author: Fidel Wole <adewoyeadedayo10@gmail.com>
+Date:   Tue Oct 8 21:52:29 2024 +0100
+
+    edit online status
+
+[33mcommit be0e41932f6e4d1197ef113152b9247c9f2a26a0[m
+Author: Fidel Wole <adewoyeadedayo10@gmail.com>
+Date:   Tue Oct 8 21:44:24 2024 +0100
+
+    edit online status alignment
+
+[33mcommit c392d859c792defe42e90d30b14913f46f860136[m
+Author: Fidel Wole <adewoyeadedayo10@gmail.com>
+Date:   Tue Oct 8 21:33:09 2024 +0100
+
+    edit profile image
+
+[33mcommit 810db26287820e22d12eeda3f0ca84e7328ffe7d[m
+Author: CodeThiefX <timiwade97@gmail.com>
+Date:   Tue Oct 8 11:19:09 2024 +0100
+
+    Feat: Products page image cleanup and OnClick Modal
+
+[33mcommit 5a489799f7bc75c74ecd8e349d47bdc636abf509[m
+Author: CodeThiefX <timiwade97@gmail.com>
+Date:   Tue Oct 8 10:50:38 2024 +0100
+
+    feat: Profile page creation and API connection
+
+[33mcommit 8462e2bf0bac96b15be95dfb6499846b0d454a88[m
+Author: astroboy20 <tolulopeakinkunmi7@gmail.com>
+Date:   Mon Oct 7 12:12:45 2024 +0100
+
+    add skeleton loading to the favorite component
+
+[33mcommit 5fb02d0920a490270ff3f75cf0edb506edb03480[m
+Author: astroboy20 <tolulopeakinkunmi7@gmail.com>
+Date:   Mon Oct 7 12:01:00 2024 +0100
+
+    updated version
+
+[33mcommit 9fb419cb4e8ff7dd86398fc6f4ddb3808f642de7[m
+Merge: 56e97a3 6901167
+Author: astroboy20 <tolulopeakinkunmi7@gmail.com>
+Date:   Mon Oct 7 11:56:01 2024 +0100
+
+    Merge branch 'master' of https://github.com/astroboy20/futamart_new
+
+[33mcommit 56e97a33fc4d33e0b9bc1456a0bfc89230e6de14[m
+Author: astroboy20 <tolulopeakinkunmi7@gmail.com>
+Date:   Mon Oct 7 11:51:01 2024 +0100
+
+    feat: work on the add to favorite logic
+
+[33mcommit 6901167e667e87f953face5b552703bb428466a6[m
+Author: Fidel Wole <adewoyeadedayo10@gmail.com>
+Date:   Sun Oct 6 21:16:18 2024 +0100
+
+    feat: add online status
+
+[33mcommit 4cb95e15938f3bed58b88f0f2fa5047fc54c7e38[m
+Author: Fidel Wole <adewoyeadedayo10@gmail.com>
+Date:   Sun Oct 6 21:14:25 2024 +0100
+
+    feat: add online status
+
+[33mcommit 4d6ed1d6070b1d269da34aa53807e622b04c740f[m
+Author: Fidel Wole <adewoyeadedayo10@gmail.com>
+Date:   Sun Oct 6 21:06:57 2024 +0100
+
+    feat: add online status
+
+[33mcommit d034eaa589016aef31c575a0f461766941e053c2[m
+Author: Fidel Wole <adewoyeadedayo10@gmail.com>
+Date:   Sun Oct 6 20:57:01 2024 +0100
+
+    feat: add online status
+
+[33mcommit ff1a0b9ec4aaadd65270d0cd0feb4010f956b64d[m
+Author: Fidel Wole <adewoyeadedayo10@gmail.com>
+Date:   Sun Oct 6 20:51:09 2024 +0100
+
+    feat: add online status
+
+[33mcommit d74e9293ba5d8598fba385b5cb5d022e3f82b7ce[m
+Author: Fidel Wole <adewoyeadedayo10@gmail.com>
+Date:   Sun Oct 6 20:45:49 2024 +0100
+
+    feat: add online status
+
+[33mcommit 3e429162e8fe02eb500aa2b51a0f2ed44d98c9b8[m
+Author: Fidel Wole <adewoyeadedayo10@gmail.com>
+Date:   Sun Oct 6 20:42:28 2024 +0100
+
+    feat: add online status
+
+[33mcommit 2b6ee83df13c917b294b58662aa1e84535d84f79[m
+Author: Fidel Wole <adewoyeadedayo10@gmail.com>
+Date:   Sun Oct 6 20:40:00 2024 +0100
+
+    fix: chat bugs
+
+[33mcommit 9d014f9126739c43947fa62a914e46773d1cb122[m
+Author: Fidelis Adewole <adewoyeadedayo10@gmail.com>
+Date:   Sun Oct 6 20:33:55 2024 +0100
+
+    Update chats.jsx
+
+[33mcommit 26d7727e4fc8a0ece95826079411a8566a9bcda9[m
+Author: Fidelis Adewole <adewoyeadedayo10@gmail.com>
+Date:   Sun Oct 6 20:30:00 2024 +0100
+
+    Update chatInput.jsx
+
+[33mcommit 87f69e2f638e6fc322c938d43949180c9189d77c[m
+Author: Fidelis Adewole <adewoyeadedayo10@gmail.com>
+Date:   Sun Oct 6 20:24:30 2024 +0100
+
+    Update userChat.jsx
+
+[33mcommit 9ceaf4897fb5762363ea03e637f0dbbb8dc74f2f[m
+Author: Fidelis Adewole <adewoyeadedayo10@gmail.com>
+Date:   Sun Oct 6 20:22:46 2024 +0100
+
+    Update userChat.jsx
+
+[33mcommit ab48c6fc32e9b15a834c2d127bf71e50f939a023[m
+Author: Fidelis Adewole <adewoyeadedayo10@gmail.com>
+Date:   Sun Oct 6 20:08:49 2024 +0100
+
+    Update chatInput.jsx
+
+[33mcommit 2f52935bf3f7812a2769fcb86664286235ac7bd6[m
+Author: Fidelis Adewole <adewoyeadedayo10@gmail.com>
+Date:   Sun Oct 6 20:00:58 2024 +0100
+
+    Update chats.jsx
+
+[33mcommit 1565503362c7471cbf2eb2c0e3d64b2988699e98[m
+Author: Fidelis Adewole <adewoyeadedayo10@gmail.com>
+Date:   Sun Oct 6 19:36:58 2024 +0100
+
+    Update singleProduct.jsx
+
+[33mcommit 6822bea3d2f4c1ad0f5ee20e662f66860553e700[m
+Author: Fidelis Adewole <adewoyeadedayo10@gmail.com>
+Date:   Sun Oct 6 19:30:10 2024 +0100
+
+  
