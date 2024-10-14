@@ -9,8 +9,6 @@ import {
   ProductIcon,
   SettingIcon,
 } from "@/assets";
-import { useAuth } from "@/context/AuthContext";
-import { BASE_URL, useFetchItems } from "@/hooks/useFetchItems";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -84,6 +82,16 @@ const DashboardSidebar = () => {
           }`}
         >
           <SettingIcon /> Settings
+        </Link>
+        <Link
+          href={"/dashboard/subscriptions"}
+          className={`flex items-center gap-3 ${
+            pathname === "/dashboard/settings"
+              ? "bg-[#FFFFFF33] border rounded-[8px] py-2 px-5 "
+              : ""
+          }`}
+        >
+          <SettingIcon /> Subscriptions
         </Link>
         <Link
           href={"/"}
