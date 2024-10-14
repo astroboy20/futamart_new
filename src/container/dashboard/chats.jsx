@@ -26,10 +26,37 @@ const Chats = () => {
   const [sending, setSending] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const messagesEndRef = useRef(null);
+  const [userData, setUserData] = useState(null);
 
-  const { data: userData } = useFetchItems({
-    url: `${process.env.NEXT_PUBLIC_API_URL}/chats`,
-  });
+  const fetchUserData = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/chats`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      // Update userData only if there are changes
+      if (JSON.stringify(userData) !== JSON.stringify(response.data)) {
+        setUserData(response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchUserData(); // Initial fetch
+
+    // Polling every 1 second
+    const interval = setInterval(fetchUserData, 1000);
+
+    // Cleanup function to clear the interval
+    return () => clearInterval(interval);
+  }, [userData, token]);
+  
   const { data: user } = useFetchItems({
     url: `${process.env.NEXT_PUBLIC_API_URL}/user`,
   });
@@ -127,9 +154,42 @@ const Chats = () => {
     }
   }, [messages]);
 
-  const handleClick = (user) => {
-    setSelectedUser(user);
-  };
+    // Function to mark messages as read
+    const markMessagesAsRead = useCallback(
+      async (conversationId, userId) => {
+        console.log("Marking messages as read for:", { conversationId, userId });
+        try {
+          const response = await axios.put(
+            `${process.env.NEXT_PUBLIC_API_URL}/read/${conversationId}`,
+            { userId },
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          console.log(response.data.message);
+        } catch (error) {
+          console.error("Error marking messages as read:", error);
+        }
+      },
+      [token] 
+    );
+
+    const handleClick = useCallback(
+      (user) => {
+        setSelectedUser(user);
+    
+        // Optimistically update the unread message count to 0
+        user.unreadMessagesCount = 0;
+    
+        // Mark messages as read if a conversationId is present
+        if (user?.conversationId) {
+          markMessagesAsRead(user.conversationId, user._id);
+        }
+      },
+      [setSelectedUser, markMessagesAsRead]
+    );
 
   const sendMessageMutation = useMutation({
     mutationFn: async () => {
@@ -264,9 +324,16 @@ const Chats = () => {
                 </p>
               </div>
 
-              <p className="text-[#51A40A] text-[10px] font-[600]">
-                {useTimestamp({ timestamp: user?.lastMessage?.createdAt })}
-              </p>
+              <div>
+                  {user?.unreadMessagesCount > 0 && (
+                    <span className="bg-black text-white text-[10px] font-[600] rounded-full h-5 w-5 flex items-center justify-center border border-white">
+                      {user.unreadMessagesCount}
+                    </span>
+                  )}
+                  <p className="text-[#51A40A] text-[10px] font-[600]">
+                    {useTimestamp({ timestamp: user?.lastMessage?.createdAt })}
+                  </p>
+                </div>
             </div>
           ))}
         </div>
