@@ -130,7 +130,15 @@ const Header = () => {
         onMouseLeave={handleMouseLeave}
         ref={dropdownRef}
       >
-        <PersonIcon />
+        {userData?.data?.profile_image ? (
+          <img
+            src={userData.data.profile_image}
+            alt="Profile"
+            className="w-8 h-8 rounded-full"
+          />
+        ) : (
+          <PersonIcon />
+        )}
         <Link href="/cart">
           <CartIcon />
         </Link>

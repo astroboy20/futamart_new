@@ -2,6 +2,9 @@ import { promotionData } from "@/providers/data";
 
 const Promotion = () => {
   return (
+    <div className="px-[6%]">
+
+ 
     <div className="relative rounded-[4px] sm:rounded-none bg-black my-5 text-[#FFFFFF] py-4 px-8">
       <p className=" my-1 text-center sm:text-right text-[18px] sm:text-[24px] text-[#FFAD33] font-semibold">
         Combo deal
@@ -42,6 +45,7 @@ const Promotion = () => {
           <path d="M383-480 200-664l56-56 240 240-240 240-56-56 183-184Zm264 0L464-664l56-56 240 240-240 240-56-56 183-184Z" />
         </svg>
       </span>
+    </div>
     </div>
   );
 };

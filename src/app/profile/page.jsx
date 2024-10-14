@@ -10,6 +10,7 @@ import { useToast } from "@chakra-ui/react";
 export default function ProfilePage() {
   const [loading, setLoading] = useState(false);
   const [profile, setProfile] = useState(null);
+  const [profileImageFile, setProfileImageFile] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const toast = useToast();
@@ -45,41 +46,18 @@ export default function ProfilePage() {
     setProfile({ ...profile, [e.target.name]: e.target.value });
   };
 
-  const uploadImageToCloudinary = async (file) => {
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append(
-      "upload_preset",
-      process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET
-    );
-
-    formData.append("api_key", process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY);
-    formData.append("timestamp", Math.floor(Date.now() / 1000));
-    formData.append("signature", process.env.NEXT_PUBLIC_CLOUDINARY_SIGNATURE);
-
-    const response = await fetch(
-      `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
-      {
-        method: "POST",
-        body: formData,
-      }
-    );
-
-    const data = await response.json();
-    return data.secure_url;
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    let profileImageUrl = profile.profile_image;
 
-    if (profile.profile_image && profile.profile_image.startsWith("data:")) {
-      const file = await fetch(profile.profile_image).then((r) => r.blob());
-      profileImageUrl = await uploadImageToCloudinary(file);
+    const formData = new FormData();
+    formData.append("firstname", profile.firstname);
+    formData.append("middlename", profile.middlename);
+    formData.append("lastname", profile.lastname);
+    formData.append("email", profile.email);
+    if (profileImageFile) {
+      formData.append("profile_image", profileImageFile);
     }
-
-    const updatedProfile = { ...profile, profile_image: profileImageUrl };
 
     try {
       const token = Cookies.get("token");
@@ -88,24 +66,14 @@ export default function ProfilePage() {
         {
           method: "PUT",
           headers: {
-            "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify(updatedProfile),
+          body: formData,
         }
       );
       const result = await response.json();
       if (!response.ok) {
         throw new Error("Failed to update profile");
-        setLoading(false);
-        toast({
-          title: "Error",
-          description: result?.message,
-          status: "error",
-          duration: 5000,
-          isClosable: true,
-        });
-        return;
       }
 
       setLoading(false);
@@ -118,7 +86,7 @@ export default function ProfilePage() {
         isClosable: true,
       });
 
-      console.log("Updated Profile data:", updatedProfile);
+      console.log("Updated Profile data:", profile);
     } catch (error) {
       setError(error.message);
       console.log(error);
@@ -136,6 +104,7 @@ export default function ProfilePage() {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      setProfileImageFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
         setProfile({ ...profile, profile_image: reader.result });
@@ -156,7 +125,7 @@ export default function ProfilePage() {
               className="border-2 border-black aspect-square flex content-center rounded-full cursor-pointer overflow-hidden w-1/2"
             >
               <Image
-                src={profile?.profile_image || "/images/futamart.png"}
+                src={profile?.profile_image || "/images/profile.png"}
                 alt="Profile picture"
                 width={100}
                 height={100}
