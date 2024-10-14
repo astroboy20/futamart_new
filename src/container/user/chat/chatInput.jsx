@@ -24,7 +24,7 @@ const ChatInput = ({
   const fileInputRef = useRef(null);
 
   const handleAttachmentClick = () => {
-    fileInputRef.current.click(); // Open the file picker
+    fileInputRef.current.click(); 
   };
 
   return (
