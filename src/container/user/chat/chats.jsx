@@ -49,7 +49,7 @@ const Chats = ({ id, name, price }) => {
     if (onlineUsers.length > 0) {
       console.log("Online users:", onlineUsers);
     }
-  }, [onlineUsers]);
+  }, [onlineUsers])
 
   useEffect(() => {
     if (userId) {
@@ -67,14 +67,14 @@ const Chats = ({ id, name, price }) => {
             const newMessage = data.data;
             console.log("Processing new message:", newMessage);
 
-            if (newMessage.receiverId === user?.data?._id) {
+            if (newMessage._doc.receiverId === user?.data?._id) {
               console.log("New message for this user:", newMessage);
 
               notificationSound.play().catch((error) => {
                 console.error("Failed to play notification sound:", error);
               });
 
-              if (newMessage.senderId === selectedUser?._id) {
+              if (newMessage._doc.senderId === selectedUser?._id) {
                 queryClient.setQueryData(
                   [
                     `${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser?._id}`,
@@ -89,7 +89,7 @@ const Chats = ({ id, name, price }) => {
                           ...oldData.data.conversation,
                           messages: [
                             ...oldData.data.conversation.messages,
-                            newMessage,
+                            newMessage._doc,,
                           ],
                         },
                       },
