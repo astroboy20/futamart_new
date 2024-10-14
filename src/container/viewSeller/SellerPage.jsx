@@ -2,10 +2,16 @@
 import React from "react";
 import ProductCard from "@/components/ProductCard";
 import SellerProfile from "@/components/SellerProfile";
+
 const fetchBusinessData = async (collectionName) => {
   try {
     const baseUrl = "https://api.futamart.com";
-    const response = await fetch(`${baseUrl}/v1/business/${collectionName}`);
+    const timestamp = new Date().getTime(); // Adding a timestamp to prevent caching
+    const response = await fetch(`${baseUrl}/v1/business/${collectionName}?timestamp=${timestamp}`, {
+      headers: {
+        'Cache-Control': 'no-cache', // Ensuring no caching is applied on this request
+      },
+    });
     if (!response.ok) {
       throw new Error("Network response was not ok");
     }
@@ -37,6 +43,7 @@ export default async function Page({ params }) {
           sellerProfileImage={
             data.business.business_logo || "/images/Sample_User_Icon.png"
           }
+          isVerified={data.business.verified || false}
           businessDetails={`Address: ${
             data.business.business_address || "N/A"
           }, Contact: ${data.business.business_contact || "N/A"}, Email: ${
