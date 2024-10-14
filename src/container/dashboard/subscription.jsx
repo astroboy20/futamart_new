@@ -43,7 +43,8 @@ const Subscription = () => {
 
       toast({
         title: "Subscription Successful",
-        description: "You have successfully subscribed to the plan. Proceed to payment.",
+        description:
+          "You have successfully subscribed to the plan. Proceed to payment.",
         status: "success",
         duration: 5000,
         isClosable: true,
@@ -56,7 +57,9 @@ const Subscription = () => {
     onError: (error) => {
       toast({
         title: "Subscription Failed",
-        description: error?.response?.data?.message || "Something went wrong. Please try again.",
+        description:
+          error?.response?.data?.message ||
+          "Something went wrong. Please try again.",
         status: "error",
         duration: 5000,
         isClosable: true,
@@ -79,6 +82,17 @@ const Subscription = () => {
 
   return (
     <div className="flex flex-col gap-10 lg:gap-10 mt-[100px] lg:mt-0">
+      {/* Expired Subscription Message */}
+      {!userPlan?.data?.isActive && !userPlan?.data?.isFreeTrial && ( 
+      <div className="bg-red-600 text-white p-4 rounded-md">
+        <p>
+          Your subscription has expired. Please subscribe to enjoy uninterrupted
+          access to our services.
+        </p>
+      </div>
+       )}
+
+      {/* Plan and Billing Header */}
       <div className="flex justify-between items-center lg:items-start">
         <div className="flex flex-col gap-2">
           <h1 className="text-[20px] font-[700]">Plan and Billing</h1>
@@ -89,9 +103,9 @@ const Subscription = () => {
           <Button className="bg-transparent border border-black text-black text-[14px] hover:bg-transparent">
             Cancel subscription
           </Button>
-          <Button className="hidden lg:flex gap-3 items-center bg-transparent border border-black text-black text-[14px] hover:bg-transparent">
+          {/* <Button className="hidden lg:flex gap-3 items-center bg-transparent border border-black text-black text-[14px] hover:bg-transparent">
             Manage subscription <FaRegShareSquare size={20} />
-          </Button>
+          </Button> */}
         </div>
       </div>
 
@@ -113,8 +127,19 @@ const Subscription = () => {
                   </span>
                 )}
               </div>
-              <span className="text-[20px] font-[700]">
-                ₦ {userPlan?.data?.subscriptionPlan?.price || "-"} /month
+              <span
+                className={`text-[20px] font-[700] ${
+                  !userPlan?.data?.subscriptionPlan?.price &&
+                  !userPlan?.data?.isFreeTrial
+                    ? "text-red-400"
+                    : ""
+                }`}
+              >
+                {userPlan?.data?.isFreeTrial
+                  ? "Free Trial"
+                  : userPlan?.data?.subscriptionPlan?.price
+                  ? `₦ ${userPlan.data.subscriptionPlan.price} /month`
+                  : "No active plan"}
               </span>
             </div>
           </Card>
@@ -139,11 +164,16 @@ const Subscription = () => {
                 <div className="flex flex-col">
                   <p>{plan.plan}</p>
                   <div className="text-[16px] text-[#FFF8F8] font-[500] flex gap-1 items-center">
-                    <span className="text-[36px] font-[600]">₦ {plan.price}</span>/month
+                    <span className="text-[36px] font-[600]">
+                      ₦ {plan.price}
+                    </span>
+                    /month
                   </div>
                 </div>
                 <div className="text-[16px]">
-                  <p className="text-[16px] font-[600] mb-5">For individuals:</p>
+                  <p className="text-[16px] font-[600] mb-5">
+                    For individuals:
+                  </p>
                   <div className="flex flex-col gap-5">
                     {plan?.details?.map((detail, index) => (
                       <div className="flex gap-3 items-center" key={index}>
@@ -154,7 +184,7 @@ const Subscription = () => {
                 </div>
                 <Button
                   onClick={() => handleSubmit(plan._id)}
-                  className="flex mt-auto bg-white border border-black text-black text-[14px] hover:bg-white"
+                  className="flex bg-white border border-black text-black text-[14px] hover:bg-white mt-auto"
                 >
                   {mutation.isPending && selectedPlanId === plan._id ? (
                     <ClipLoader size={20} />
