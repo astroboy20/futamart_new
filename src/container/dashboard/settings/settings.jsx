@@ -5,7 +5,6 @@ import { TermsofService } from "./termsofService";
 import { PasswordSettings } from "./passwordSettings";
 import { Profile } from "./profile";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
-import { Subscription } from "./subscription";
 
 const Settings = () => {
   const isDesktop = useMediaQuery("(min-width: 1024px)");
@@ -17,7 +16,6 @@ const Settings = () => {
   const sideData = [
     { id: 1, name: "Profile", value: "profile" },
     { id: 2, name: "Password settings", value: "password" },
-    { id: 3, name: "Manage subscription", value: "manage" },
     { id: 4, name: "Terms of service", value: "terms" },
     { id: 5, name: "Privacy policies", value: "privacy" },
   ];
@@ -61,11 +59,6 @@ const Settings = () => {
             {selected === "password" && (
               <div>
                 <PasswordSettings setSelected={setSelected} />
-              </div>
-            )}
-            {selected === "manage" && (
-              <div>
-                <Subscription setSelected={setSelected} />
               </div>
             )}
             {selected === "terms"&& (
