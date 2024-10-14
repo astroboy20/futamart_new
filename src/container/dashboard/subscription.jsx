@@ -42,9 +42,9 @@ const Subscription = () => {
       queryClient.invalidateQueries(`${BASE_URL}/subscription/plan`);
 
       toast({
-        title: "Subscription Successful",
+        title: "Payment Initiated",
         description:
-          "You have successfully subscribed to the plan. Proceed to payment.",
+          "Payment Initiated. You will be redirected to the payment page shortly.",
         status: "success",
         duration: 5000,
         isClosable: true,
