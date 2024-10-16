@@ -7,25 +7,37 @@ import {
   Select,
   Spinner,
   useToast,
+  Textarea,
+  FormHelperText,
+  Box,
 } from "@chakra-ui/react";
 import axios from "axios";
 import React, { useState } from "react";
+import { useFetchItems } from "@/hooks/useFetchItems";
 import { IoIosAddCircle } from "react-icons/io";
-
-
+import { BASE_URL } from "@/hooks/useFetchItems";
 
 const SellerRefForm = ({ nextStep }) => {
+  const { data: allCategories } = useFetchItems({
+    url: `${BASE_URL}/categories`,
+  });
+
+  const categories = Array.isArray(allCategories?.data)
+    ? [...allCategories.data]
+    : [];
+
   const [businessData, setBusinessData] = useState({
     businessName: "",
     category: "",
     address: "",
     contact: "",
     email: "",
+    description: "",
   });
-  const [logo, setLogo] = useState(null); 
-  const [loading, setLoading] = useState(false); 
+  const [logo, setLogo] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [valid, setValid] = useState(true);
-  const toast = useToast(); 
+  const toast = useToast();
 
   const handleChange = async (e) => {
     const { name, value, type, files } = e.target;
@@ -33,7 +45,7 @@ const SellerRefForm = ({ nextStep }) => {
     if (type === "file") {
       const file = files ? files[0] : null;
       if (file) {
-        setLoading(true); 
+        setLoading(true);
         const formData = new FormData();
         formData.append("file", file);
         formData.append("upload_preset", "futamart");
@@ -43,9 +55,8 @@ const SellerRefForm = ({ nextStep }) => {
             "https://api.cloudinary.com/v1_1/dm42ixhsz/image/upload",
             formData
           );
-          setLogo(response.data.secure_url); 
+          setLogo(response.data.secure_url);
 
-         
           toast({
             title: "Upload Successful",
             description: "Your logo has been uploaded successfully.",
@@ -56,7 +67,7 @@ const SellerRefForm = ({ nextStep }) => {
         } catch (err) {
           console.error("Upload failed:", err);
         } finally {
-          setLoading(false); 
+          setLoading(false);
         }
       }
     } else {
@@ -73,7 +84,8 @@ const SellerRefForm = ({ nextStep }) => {
     !businessData.businessName ||
     !businessData.email ||
     !businessData.contact ||
-    !logo; 
+    !businessData.description ||
+    !logo;
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -105,6 +117,36 @@ const SellerRefForm = ({ nextStep }) => {
         </FormControl>
         <FormControl>
           <FormLabel fontSize={{ base: "16px", lg: "18px" }}>
+            Business Description
+          </FormLabel>
+          <Box position="relative" width={{ base: "100%", md: "400px" }}>
+            {" "}
+          
+            <Textarea
+              name="description"
+              value={businessData.description}
+              onChange={handleChange}
+              size="lg"
+              width={{ base: "100%", md: "175%" }}
+              height="150px"
+              boxShadow="0px 0px 0px 1px #CDD1DC"
+              placeholder="Business description"
+              maxLength={200} 
+              resize="none" 
+            />
+            <FormHelperText
+              position="absolute"
+              bottom="8px"
+              left="20px"
+              fontSize="sm"
+            >
+              {`${businessData.description.length}/200 characters`}
+            </FormHelperText>
+          </Box>
+        </FormControl>
+
+        <FormControl>
+          <FormLabel fontSize={{ base: "16px", lg: "18px" }}>
             Business Email
           </FormLabel>
           <Input
@@ -125,12 +167,13 @@ const SellerRefForm = ({ nextStep }) => {
           </FormLabel>
           <Input
             name="contact"
+            type="number"
             value={businessData.contact}
             onChange={handleChange}
             size={"lg"}
             width={"100%"}
             boxShadow={"0px 0px 0px 1px #CDD1DC"}
-            placeholder=""
+            placeholder="+234"
           />
         </FormControl>
 
@@ -151,12 +194,12 @@ const SellerRefForm = ({ nextStep }) => {
 
         <FormControl>
           <FormLabel fontSize={{ base: "16px", lg: "18px" }}>
-            Business category
+            Business Category
           </FormLabel>
           <Select
-            size={"lg"}
-            width={"100%"}
-            boxShadow={"0px 0px 0px 1px #CDD1DC"}
+            size="lg"
+            width="100%"
+            boxShadow="0px 0px 0px 1px #CDD1DC"
             name="category"
             value={businessData.category}
             onChange={handleChange}
@@ -164,13 +207,11 @@ const SellerRefForm = ({ nextStep }) => {
             <option value="" disabled hidden>
               Select Category
             </option>
-            <option value="Food">Food</option>
-            <option value="Electronics & Gadget">Electronics & Gadget</option>
-            <option value="Fashion & Clothing">Fashion & Clothing</option>
-            <option value="Beauty & Skincare">Beauty & Skincare</option>
-            <option value="Hair Products">Hair Products</option>
-            <option value="Footwears">Footwears</option>
-            <option value="Others">Others</option>
+            {categories?.map((category) => (
+              <option key={category._id} value={category._id}>
+                {category.name}
+              </option>
+            ))}
           </Select>
         </FormControl>
 
