@@ -9,7 +9,6 @@ const Camera = ({ nextStep }) => {
   const canvasRef = useRef(null);
   const [error, setError] = useState(null);
   const [capturedImage, setCapturedImage] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [pictureTaken, setPictureTaken] = useState(false);
   const [imageUrl, setImageUrl] = useState(null);
@@ -104,44 +103,76 @@ const Camera = ({ nextStep }) => {
   };
 
   const handleContinue = () => {
-    nextStep()
+    nextStep();
     typeof window != "undefined" && localStorage.setItem("imageUrl", imageUrl);
+  };
+
+  const handleRetake = () => {
+    setCapturedImage(null);
+    setPictureTaken(false);
+    setImageUrl(null);
+    // Restart the video feed if necessary
+    const getUserMedia = async () => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+        });
+        videoRef.current.srcObject = stream;
+        videoRef.current.play();
+      } catch (err) {
+        setError("Error accessing camera: " + err.message);
+      }
+    };
+    getUserMedia();
   };
 
   return (
     <div className="flex flex-col items-center justify-center py-2 text-center gap-5">
-      <p>Position your face into the frame</p>
-
-      {error ? (
-        <p className="text-red-500">{error}</p>
-      ) : (
-        <div className="relative w-80 h-80 mb-4 border-2 border-[#1A1A1A] rounded-full border-dashed">
-          <video
-            ref={videoRef}
-            className="absolute inset-0 w-full h-full object-cover rounded-full border-2"
-            autoPlay
-          />
-          <canvas ref={canvasRef} className="hidden" width="320" height="320" />
-        </div>
+      {/* Instructions will only show when a picture hasn't been taken */}
+      {!pictureTaken && (
+        <>
+          <p>Position your face into the frame</p>
+          {error && <p className="text-red-500">{error}</p>}
+          <div className="relative w-80 h-80 mb-4 border-2 border-[#1A1A1A] rounded-full border-dashed">
+            <video
+              ref={videoRef}
+              className="absolute inset-0 w-full h-full object-cover rounded-full border-2"
+              autoPlay
+            />
+            <canvas ref={canvasRef} className="hidden" width="320" height="320" />
+          </div>
+          <p>
+            Make sure your face and shoulder is showing <br /> and Please remove any
+            covering from your face
+          </p>
+        </>
       )}
-      <p>
-        Make sure your face and shoulder is showing <br /> and Please remove any
-        covering from your face
-      </p>
-      <Button
-        onClick={pictureTaken ? handleContinue : capture}
-        className="bg-[#000000] text-[#FFFFFF] p-3 w-full my-5 shadow-sm rounded-[8px] md:text-[18px] sm:leading-[29.26px] h-[50px]"
-      >
-        {uploading
-          ? "Uploading..."
-          : pictureTaken
-          ? "Continue"
-          : "Take Picture"}
-      </Button>
-      {capturedImage && (
-        <div className="mt-4">
-          <img src={capturedImage} alt="Captured" className="rounded" />
-        </div>
+
+      {pictureTaken ? (
+        <>
+          <div className="mt-4">
+            <img src={capturedImage} alt="Captured" className="rounded" />
+          </div>
+          <Button
+            onClick={handleContinue}
+            className="bg-[#000000] text-[#FFFFFF] p-3 w-full mt-5 shadow-sm rounded-[8px] md:text-[18px] sm:leading-[29.26px] h-[50px]"
+          >
+            Continue
+          </Button>
+          <Button
+            onClick={handleRetake}
+            className="bg-[#000000] text-[#FFFFFF] p-3 w-full shadow-sm rounded-[8px] md:text-[18px] sm:leading-[29.26px] h-[50px]"
+          >
+            Retake Picture
+          </Button>
+        </>
+      ) : (
+        <Button
+          onClick={capture}
+          className="bg-[#000000] text-[#FFFFFF] p-3 w-full my-5 shadow-sm rounded-[8px] md:text-[18px] sm:leading-[29.26px] h-[50px]"
+        >
+          {uploading ? "Uploading..." : "Take Picture"}
+        </Button>
       )}
     </div>
   );
