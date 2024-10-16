@@ -2,10 +2,19 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { BASE_URL } from "@/hooks/useFetchItems";
+import { useToast } from "@chakra-ui/react";
+import axios from "axios";
 import { useState } from "react";
+import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
+import { ClipLoader } from "react-spinners";
 
 const OTP = () => {
+  const router = useRouter();
+  const toast = useToast();
   const [otpValues, setOtpValues] = useState(["", "", "", ""]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleOtpChange = (index, value) => {
     if (value.length > 1) return;
@@ -39,7 +48,38 @@ const OTP = () => {
   };
 
   const handleSubmit = () => {
-    console.log(otpValues);
+    if (otpValues.every((values) => values.trim(""))) {
+      const otp = otpValues.join("");
+      setIsLoading(true);
+      axios
+        .post(`${BASE_URL}/user/verify-otp`, { otp })
+        .then((response) => {
+          Cookies.set("new-token", response.data?.data, { expires: 1 });
+          toast({
+            title: "OTP Verified",
+            description: "Your OTP has been successfully submitted.",
+            status: "success",
+            duration: 3000,
+            isClosable: true,
+          });
+          setIsLoading(false);
+          router.push("/forgot-password/new-password");
+        })
+        .catch((error) => {
+          setIsLoading(false);
+          console.log(error);
+        });
+
+      // console.log("OTP Values:", otpValues.join(""));
+    } else {
+      toast({
+        title: "Incomplete OTP",
+        description: "Please fill all the OTP fields.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
   };
 
   return (
@@ -72,9 +112,12 @@ const OTP = () => {
             onClick={handleSubmit}
             className="text-[16px] lg:text-[20px] font-[600] w-[150px] rounded-[8px]"
           >
-            Confirm
+            {isLoading ? <ClipLoader color="#fff" /> : "Confirm"}
           </Button>
-          <Button className="text-[16px] lg:text-[20px] font-[600] w-[150px] rounded-[8px] border-2 border-[#000] bg-transparent text-black">
+          <Button
+            onClick={() => router.back()}
+            className="text-[16px] lg:text-[20px] font-[600] w-[150px] rounded-[8px] border-2 border-[#000] bg-transparent text-black"
+          >
             Cancel
           </Button>
         </div>
