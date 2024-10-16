@@ -83,14 +83,14 @@ const Subscription = () => {
   return (
     <div className="flex flex-col gap-10 lg:gap-10 mt-[100px] lg:mt-0">
       {/* Expired Subscription Message */}
-      {!userPlan?.data?.isActive && !userPlan?.data?.isFreeTrial && ( 
-      <div className="bg-red-600 text-white p-4 rounded-md">
-        <p>
-          Your subscription has expired. Please subscribe to enjoy uninterrupted
-          access to our services.
-        </p>
-      </div>
-       )}
+      {!userPlan?.data?.isActive && !userPlan?.data?.isFreeTrial && (
+        <div className="bg-red-600 text-white p-4 rounded-md">
+          <p>
+            Your subscription has expired. Please subscribe to enjoy
+            uninterrupted access to our services.
+          </p>
+        </div>
+      )}
 
       {/* Plan and Billing Header */}
       <div className="flex justify-between items-center lg:items-start">
@@ -159,8 +159,11 @@ const Subscription = () => {
         <h1 className="text-[18px] font-[600]">Subscription plans</h1>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
           {plans?.data?.map((plan) => (
-            <Card className="bg-black text-white mx-5 lg:mx-0" key={plan._id}>
-              <div className="flex flex-col gap-6 p-5">
+            <Card
+              className="bg-black text-white mx-5 lg:mx-0 h-[550px]"
+              key={plan._id}
+            >
+              <div className="flex flex-col gap-6 p-5  h-full">
                 <div className="flex flex-col">
                   <p>{plan.plan}</p>
                   <div className="text-[16px] text-[#FFF8F8] font-[500] flex gap-1 items-center">
@@ -177,21 +180,27 @@ const Subscription = () => {
                   <div className="flex flex-col gap-5">
                     {plan?.details?.map((detail, index) => (
                       <div className="flex gap-3 items-center" key={index}>
-                        <IoMdCheckmarkCircle /> {detail}
+                        <div>
+                          <IoMdCheckmarkCircle size={20} />
+                        </div>{" "}
+                        {detail}
                       </div>
                     ))}
                   </div>
                 </div>
-                <Button
-                  onClick={() => handleSubmit(plan._id)}
-                  className="flex bg-white border border-black text-black text-[14px] hover:bg-white mt-auto"
-                >
-                  {mutation.isPending && selectedPlanId === plan._id ? (
-                    <ClipLoader size={20} />
-                  ) : (
-                    "Choose subscription"
-                  )}
-                </Button>
+                <div className="flex mt-auto">
+                  {" "}
+                  <Button
+                    onClick={() => handleSubmit(plan._id)}
+                    className="flex bg-white border border-black text-black text-[14px] hover:bg-white w-full"
+                  >
+                    {mutation.isPending && selectedPlanId === plan._id ? (
+                      <ClipLoader size={20} />
+                    ) : (
+                      "Choose subscription"
+                    )}
+                  </Button>
+                </div>
               </div>
             </Card>
           ))}
