@@ -13,7 +13,7 @@ export default function Page() {
   const name = searchParams.get("name");
   const price = searchParams.get("price");
 
-//   console.log(id, name, price);
+console.log(id, name, price);
   return (
     <div>
       <Header/>

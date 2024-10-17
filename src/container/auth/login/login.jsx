@@ -15,6 +15,10 @@ const Login = () => {
   const { login } = useAuth();
   const toast = useToast();
 
+  const handleGoogleLogin = () => {
+    // Redirect the user to the Google login URL
+    window.location.href = 'https://api.futamart.com/v1/user/google';
+  };
   const handleOptions = (option) => {
     setOptions(option);
   };
@@ -86,7 +90,7 @@ const Login = () => {
         </p>
       </div>
       <div className="flex flex-col w-full lg:w-4/5">
-        <Button className="bg-[#F7F7F7] flex gap-[10px] items-center text-[16px] font-[600] w-full rounded-[16px] border-2 border-[#292D32BA] text-[#000] py-[25px]">
+        <Button onClick={handleGoogleLogin} className="bg-[#F7F7F7] flex gap-[10px] items-center text-[16px] font-[600] w-full rounded-[16px] border-2 border-[#292D32BA] text-[#000] py-[25px]">
           <GoogleIcon /> Continue with Google
         </Button>
 
