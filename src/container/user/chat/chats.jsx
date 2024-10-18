@@ -356,7 +356,7 @@ const handleClick = useCallback((user) => {
             />
           </div>
         )}
-        {selectedUser && (
+        {selectedUser  && (
           <ChatInput
             user={user}
             messages={messages}
@@ -369,7 +369,7 @@ const handleClick = useCallback((user) => {
             handleKeyPress={handleKeyPress}
             sending={sending}
             handleButtonClick={handleButtonClick}
-            isOnline={onlineUsers.includes(selectedUser._id)}
+            isOnline={onlineUsers.includes(selectedUser?._id)}
           />
         )}
       </div>
