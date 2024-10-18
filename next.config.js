@@ -4,7 +4,19 @@ const nextConfig = {
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
   },
   images: {
-    domains: ["res.cloudinary.com", "localhost", "api.futamart.com"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "logo.com",
+        pathname: "/image-cdn/images/**",
+      },
+    ],
+    domains: [
+      "res.cloudinary.com",
+      "localhost",
+      "api.futamart.com",
+      "logo.com",
+    ],
   },
 };
 
