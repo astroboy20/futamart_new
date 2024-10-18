@@ -5,7 +5,7 @@ import {
   Hamburger_Left,
   Logo_Right,
 } from "@/assets";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import React, { useState } from "react";
 import Link from "next/link";
 import { HiArchiveBox } from "react-icons/hi2";
@@ -16,19 +16,30 @@ import { IoChatbubbles, IoSettingsSharp } from "react-icons/io5";
 import { motion } from "framer-motion";
 import { BASE_URL, useFetchItems } from "@/hooks/useFetchItems";
 import Image from "next/image";
+import Cookies from "js-cookie";
+import { Skeleton } from "../ui/skeleton";
 
 const DashboardHeader = () => {
   const pathname = usePathname();
-  const { data: business } = useFetchItems({ url: `${BASE_URL}/business` });
-
+  const router = useRouter();
+  const { data: business, isLoading } = useFetchItems({
+    url: `${BASE_URL}/business`,
+  });
 
   const splitedPathname = pathname.split("/")[2];
+
   const headerName = splitedPathname
     ? splitedPathname[0].toUpperCase() + splitedPathname.slice(1)
     : "Dashboard";
   const [show, setShow] = useState(false);
+
   const handleShow = () => {
     setShow(!show);
+  };
+
+  const handleLogout = () => {
+    Cookies.remove("token");
+    router.push("/login");
   };
 
   return (
@@ -129,31 +140,47 @@ const DashboardHeader = () => {
             >
               <MdAnalytics size={"30px"} /> Subscriptions
             </Link>
-            <Link
-              href={"/"}
+            <p
               className={`flex items-center gap-3 ${
                 pathname === "/"
                   ? "bg-[#FFFFFF33] border rounded-[8px] py-2 px-5 "
                   : ""
               }`}
-              onClick={handleShow}
+              onClick={() => {
+                handleShow();
+                handleLogout();
+              }}
             >
               <RiLogoutCircleLine size={"30px"} />
               Logout
-            </Link>
+            </p>
             <div className="mt-auto flex gap-5 items-center">
               <div>
-                <Image
-                  src={business?.data?.business_logo}
-                  width={48}
-                  height={48}
-                  alt="user-image"
-                  className="rounded-full"
-                />
+                {isLoading ? (
+                  <Skeleton className="w-12 h-12 rounded-full" />
+                ) : (
+                  <Image
+                    src={business?.data?.business_logo}
+                    width={48}
+                    height={48}
+                    alt="user-image"
+                    className="rounded-full"
+                  />
+                )}
               </div>
+
               <div className="flex flex-col text-[16px] text-white">
-                <p>{business?.data?.businessName}</p>
-                <p>{business?.data?.business_email}</p>
+                {isLoading ? (
+                  <>
+                    <Skeleton className="w-32 h-4" />
+                    <Skeleton className="w-48 h-4" />
+                  </>
+                ) : (
+                  <>
+                    <p>{business?.data?.businessName}</p>
+                    <p>{business?.data?.business_email}</p>
+                  </>
+                )}
               </div>
             </div>
           </div>
