@@ -175,14 +175,14 @@ const Chats = () => {
     },
     [token]
   );
-
+  
   const handleClick = useCallback(
     (user) => {
       setSelectedUser(user);
-
+  
       // Optimistically update the unread message count to 0
       user.unreadMessagesCount = 0;
-
+  
       // Mark messages as read if a conversationId is present
       if (user?.conversationId) {
         markMessagesAsRead(user.conversationId, user._id);
@@ -190,7 +190,7 @@ const Chats = () => {
     },
     [setSelectedUser, markMessagesAsRead]
   );
-
+  
   const sendMessageMutation = useMutation({
     mutationFn: async () => {
       const response = await axios.post(

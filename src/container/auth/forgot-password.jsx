@@ -21,7 +21,7 @@ const Forgotpassword = () => {
         .then((response) => {
           toast({
             title: "OTP Sent",
-            description: "OTP has been sent, check your mail",
+            description: response.data?.message,
             status: "success",
             duration: 3000,
             isClosable: true,
@@ -33,7 +33,7 @@ const Forgotpassword = () => {
           console.log(error);
           toast({
             title: "Error",
-            description: "Failed to send OTP. Please try again.",
+            description: response.data?.message,
             status: "error",
             duration: 3000,
             isClosable: true,

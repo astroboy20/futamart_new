@@ -60,10 +60,10 @@ const MobileNavbar = ({ handleShow }) => {
                 Chats
               </p>
             </Link>
-            <Link href={"/"} onClick={handleShow}>
+            <Link href={"/profile"} onClick={handleShow}>
               <p className="flex items-center gap-3">
                 <UserIcon />
-                User Account
+                Profile
               </p>
             </Link>
             <Link href={"/favourite"} onClick={handleShow}>
