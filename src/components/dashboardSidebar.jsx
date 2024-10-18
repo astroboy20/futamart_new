@@ -12,12 +12,21 @@ import {
 import { BASE_URL, useFetchItems } from "@/hooks/useFetchItems";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import React from "react";
+import Cookies from "js-cookie";
+import { Skeleton } from "./ui/skeleton";
 
 const DashboardSidebar = () => {
+  const router = useRouter();
   const pathname = usePathname();
-  const { data: business } = useFetchItems({ url: `${BASE_URL}/business` });
+  const { data: business, isLoading } = useFetchItems({
+    url: `${BASE_URL}/business`,
+  });
+  const handleLogout = () => {
+    Cookies.remove("token");
+    router.push("/login");
+  };
   return (
     <div className="hidden lg:w-[40%] h-full pr-5 lg:flex flex-col gap-10 overflow-hidden ">
       <Logo_White />
@@ -93,31 +102,44 @@ const DashboardSidebar = () => {
         >
           <AnalyticsIcon /> Subscriptions
         </Link>
-        <Link
-          href={"/"}
+        <p
+          onClick={handleLogout}
           className={`flex items-center gap-3 ${
             pathname === "/"
-              ? "bg-[#FFFFFF33] border rounded-[8px] py-2 px-5 "
+              ? "bg-[#FFFFFF33] border rounded-[8px] py-2 px-5 cursor-pointer"
               : ""
           }`}
         >
           <LogoutIcon />
           Logout
-        </Link>
+        </p>
         <div className="mt-auto flex gap-5 items-center">
           <div>
-            <Image
-              src={business?.data?.business_logo}
-              width={48}
-              height={48}
-              alt="user-image"
-              className="rounded-full"
-            />
+            {isLoading ? (
+              <Skeleton className="w-12 h-12 rounded-full" />
+            ) : (
+              <Image
+                src={business?.data?.business_logo}
+                width={48}
+                height={48}
+                alt="user-image"
+                className="rounded-full"
+              />
+            )}
           </div>
 
           <div className="flex flex-col text-[16px] text-white">
-            <p>{business?.data?.businessName}</p>
-            <p>{business?.data?.business_email}</p>
+            {isLoading ? (
+              <>
+                <Skeleton className="w-32 h-4" />
+                <Skeleton className="w-48 h-4" />
+              </>
+            ) : (
+              <>
+                <p>{business?.data?.businessName}</p>
+                <p>{business?.data?.business_email}</p>
+              </>
+            )}
           </div>
         </div>
       </div>
