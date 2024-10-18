@@ -108,7 +108,7 @@ const Login = () => {
             >
               Email
             </p>
-            <p
+            {/* <p
               onClick={() => handleOptions("phone")}
               className={
                 options === "phone"
@@ -117,15 +117,15 @@ const Login = () => {
               }
             >
               Phone Number
-            </p>
+            </p> */}
           </div>
 
           {options === "email" && (
             <FormWithEmail handleChange={handleChange} formData={formData} />
           )}
-          {options === "phone" && (
+          {/* {options === "phone" && (
             <FormWithPhone handleChange={handleChange} formData={formData} />
-          )}
+          )} */}
 
           <div className="flex justify-between text-[16px] font-[400]">
             <label className="flex gap-[5px] items-center">

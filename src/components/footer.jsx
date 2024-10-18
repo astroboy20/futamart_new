@@ -1,14 +1,49 @@
-import {
-
-  Logo_Black_Small,
-  PhoneIcon,
-  WhatsappIcon,
-} from "@/assets";
-import React from "react";
+"use client";
+import { Logo_Black_Small, PhoneIcon, WhatsappIcon } from "@/assets";
+import React, { useState } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
+import axios from "axios";
+import { BASE_URL } from "@/hooks/useFetchItems";
+import { useToast } from "@chakra-ui/react";
+import { ClipLoader } from "react-spinners";
 
 const Footer = () => {
+  const toast = useToast();
+  const [email, setEmail] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (email.trim() !== "" && emailPattern.test(email)) {
+      setIsLoading(true);
+      axios
+        .post(`${BASE_URL}/newsletter`, { email })
+        .then((response) => {
+          setIsLoading(false);
+          toast({
+            title: "Subscription Successful!",
+            description: response.data?.message,
+            status: "success",
+            duration: 3000,
+            isClosable: true,
+          });
+          setEmail("");
+        })
+        .catch((error) => {
+          setIsLoading(false);
+          toast({
+            title: "Subscription Failed",
+            description:
+              "There was an issue subscribing you to our newsletter. Please try again later.",
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+          });
+          setEmail("");
+        });
+    }
+  };
   return (
     <footer className="flex flex-col ">
       <div className="bg-[rgb(247,247,247)] flex flex-col gap-[30px] py-10 px-5 lg:flex-row justify-between  lg:px-[5%] lg:py-6">
@@ -30,11 +65,19 @@ const Footer = () => {
           </div>
           <div className="flex gap-2 border border-[#4e4e4e] bg-white p-1 rounded-[2px]">
             <Input
-              className="border-none bg-transparent"
+              className="border-none bg-transparent outline-none focus:outline-none focus-visible:ring-0 focus-visible:ring-transparent"
               placeholder="Enter email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
             <div margin={"0 3px"} width={"fit-content"}>
-              <Button className="text-[14px] font-[600] py-[10px] px-[16px]">Subscribe</Button>
+              <Button
+                type="submit"
+                onClick={handleSubmit}
+                className="text-[14px] font-[600] py-[10px] px-[16px] outline-none"
+              >
+                {isLoading ? <ClipLoader color="#fff" /> : "Subscribe"}
+              </Button>
             </div>
           </div>
         </div>
