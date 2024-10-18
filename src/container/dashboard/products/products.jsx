@@ -23,6 +23,7 @@ import { useToast } from "@chakra-ui/react";
 import Cookies from "js-cookie";
 import { AddProducts } from "./addProducts";
 import { ShareLinkButton } from "@/hooks/useShareLink";
+import { UpdateProducts } from "./updateProducts";
 
 const Products = () => {
   const toast = useToast();
@@ -33,6 +34,7 @@ const Products = () => {
   });
   const products = data?.data?.items || [];
   const [showModal, setShowModal] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   const handleModal = () => {
     setShowModal(true);
@@ -89,20 +91,18 @@ const Products = () => {
   //   },
   // });
 
-  // const handleEdit = (id) => {
-  //   const updatedProduct = {
-  //     id,
-  //     name: "Updated Product Name",
-  //     category: "Updated Category",
-  //     price: 2000,
-  //   };
-  //   editProductMutation.mutateAsync(updatedProduct);
-  // };
-  // console.log(products);
+  const handleEdit = (product) => {
+    setSelectedProduct(product);
+  };
+  console.log("d", selectedProduct);
   return (
     <main className="flex flex-col gap-5 lg:gap-10 mt-[100px] lg:mt-0">
       <ModalContainer isOpen={showModal} onClose={setShowModal}>
         <AddProducts onClose={setShowModal} />
+      </ModalContainer>
+
+      <ModalContainer isOpen={showModal} onClose={setShowModal}>
+        <UpdateProducts product={selectedProduct} onClose={setShowModal} />
       </ModalContainer>
 
       <div className="flex justify-between items-center lg:items-start">
@@ -188,7 +188,10 @@ const Products = () => {
                     <div className="flex my-12 lg:my-0 ">
                       <TableCell
                         className="flex items-center gap-2 text-[#00000066] cursor-pointer"
-                        // onClick={() => handleEdit(data._id)}
+                        onClick={() => {
+                         handleEdit(data);
+                          handleModal();
+                        }}
                       >
                         <EditIcon /> Edit
                       </TableCell>
