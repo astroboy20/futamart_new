@@ -9,6 +9,7 @@ import {
   ProductIcon,
   SettingIcon,
 } from "@/assets";
+import { BASE_URL, useFetchItems } from "@/hooks/useFetchItems";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -16,12 +17,11 @@ import React from "react";
 
 const DashboardSidebar = () => {
   const pathname = usePathname();
-  // const {user} = useAuth()
-  // console.log(user)
+  const { data: business } = useFetchItems({ url: `${BASE_URL}/business` });
   return (
-    <div className="hidden lg:w-[40%] h-[100vh] pr-5 lg:flex flex-col gap-10 overflow-hidden ">
+    <div className="hidden lg:w-[40%] h-full pr-5 lg:flex flex-col gap-10 overflow-hidden ">
       <Logo_White />
-      <div className="flex flex-col gap-7 text-[#F2F3F4] text-[20px]">
+      <div className="flex flex-col gap-7 text-[#F2F3F4] text-[20px]  h-full">
         <Link
           href={"/dashboard"}
           className={`flex items-center gap-3 ${
@@ -53,7 +53,7 @@ const DashboardSidebar = () => {
           <ChatIcon />
           Chats
         </Link>
-        <Link
+        {/* <Link
           href={"/dashboard/analytics"}
           className={`flex items-center gap-3 ${
             pathname === "/dashboard/analytics"
@@ -62,7 +62,7 @@ const DashboardSidebar = () => {
           }`}
         >
           <AnalyticsIcon /> Analytics
-        </Link>
+        </Link> */}
         <Link
           href={"/dashboard/notifications"}
           className={`flex items-center gap-3 ${
@@ -91,7 +91,7 @@ const DashboardSidebar = () => {
               : ""
           }`}
         >
-          <SettingIcon /> Subscriptions
+          <AnalyticsIcon /> Subscriptions
         </Link>
         <Link
           href={"/"}
@@ -104,18 +104,21 @@ const DashboardSidebar = () => {
           <LogoutIcon />
           Logout
         </Link>
-      </div>
+        <div className="mt-auto flex gap-5 items-center">
+          <div>
+            <Image
+              src={business?.data?.business_logo}
+              width={48}
+              height={48}
+              alt="user-image"
+              className="rounded-full"
+            />
+          </div>
 
-      <div className="flex gap-5 items-center">
-        <Image
-          src={"/images/user-image.png"}
-          width={48}
-          height={48}
-          alt="user-image"
-        />
-        <div className="flex flex-col text-[16px] text-white">
-          <p>La_spag</p>
-          <p>La_spag2024@gmail.com</p>
+          <div className="flex flex-col text-[16px] text-white">
+            <p>{business?.data?.businessName}</p>
+            <p>{business?.data?.business_email}</p>
+          </div>
         </div>
       </div>
     </div>

@@ -32,9 +32,14 @@ const Home = () => {
   const { data: notification } = useFetchItems({
     url: `${BASE_URL}/notification/user`,
   });
+  const { data: product } = useFetchItems({
+    url: `${BASE_URL}/products/user`,
+  });
+  console.log("c", product?.data?.items);
 
   const overview = overviewData?.data;
   const notifications = notification?.data?.slice(0, 2);
+  const products = product?.data?.items?.slice(0, 1);
 
   if (isLoading) {
     return (
@@ -144,7 +149,7 @@ const Home = () => {
           </ChartContainer>
         </Card>
 
-        <Card className="p-5 w-full lg:w-[30%] h-fit lg:h-[400px] shadow-[2px_2px_4px_0_rgba(0,0,0,0.1)] border-[#0000004D] rounded-[8px] bg-black flex flex-col gap-5">
+        <Card className="p-5 w-full lg:w-[30%] h-fit lg:h-[400px] shadow-[2px_2px_4px_0_rgba(0,0,0,0.1)] border-[#0000004D] rounded-[8px] bg-black flex flex-col gap-5 overflow-y-scroll no-scrollbar">
           <div className="text-[8px] flex flex-col gap-4 lg:gap-2">
             <p className="rounded-full py-2 px-4 text-[#BD8B00] bg-[#FFEDBB] w-fit">
               Combo Deals
@@ -162,9 +167,9 @@ const Home = () => {
               of this opportunity to boost your sales and reach more customers.
             </p>
           </div>
-          <Button className="bg-[#F2F3F4] text-black w-fit m-auto px-[16px] lg:w-full">
+          <Link href={"/dahboard/products"} className="bg-[#F2F3F4] rounded text-center text-black w-fit m-auto px-[16px] py-2 lg:w-full">
             Add product
-          </Button>
+          </Link>
         </Card>
       </div>
 
@@ -206,23 +211,20 @@ const Home = () => {
             ))} */}
           </div>
         </Card>
-        <Card className="hidden p-5 w-[70%] h-[180px] shadow-[2px_2px_4px_0_rgba(0,0,0,0.1)] border-[#0000004D] rounded-[8px] lg:flex flex-col gap-5 overflow-hidden">
+        <Card className="hidden p-5 w-[70%] h-[180px] shadow-[2px_2px_4px_0_rgba(0,0,0,0.1)] border-[#0000004D] rounded-[8px] lg:flex flex-col gap-5 overflow-y-scroll no-scrollbar">
           <h1 className="text-[20px] font-[500]">All Products</h1>
           <div className="">
             <Table className="min-w-full">
               <TableHeader className="bg-black text-white rounded-t-[4px]">
                 <TableRow>
                   <TableHead className="font-medium text-white border-none">
-                    Product Name
+                    Name
                   </TableHead>
                   <TableHead className="font-medium text-white border-none">
-                    Product Photo
+                    Photo
                   </TableHead>
                   <TableHead className="font-medium text-white border-none">
-                    Category
-                  </TableHead>
-                  <TableHead className="font-medium text-white border-none">
-                    Product Size
+                    Categories
                   </TableHead>
                   <TableHead className="font-medium text-white border-none">
                     Price
@@ -230,13 +232,22 @@ const Home = () => {
                 </TableRow>
               </TableHeader>
               <TableBody className="no-scrollbar">
-                <TableRow>
-                  <TableCell>Paid</TableCell>
-                  <TableCell>Credit Card</TableCell>
-                  <TableCell>Credit Card</TableCell>
-                  <TableCell>Credit Card</TableCell>
-                  <TableCell>Credit Card</TableCell>
-                </TableRow>
+                {products?.map((data) => (
+                  <TableRow key={data._id}>
+                    <TableCell>{data.name}</TableCell>
+                    <TableCell>
+                      <Image
+                        src={data.featuredImage}
+                        width={48}
+                        height={48}
+                        alt="product-image"
+                        className="object-contain"
+                      />
+                    </TableCell>
+                    <TableCell>{data.category.name}</TableCell>
+                    <TableCell>₦{data.price}</TableCell>
+                  </TableRow>
+                ))}
               </TableBody>
             </Table>
           </div>

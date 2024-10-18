@@ -14,9 +14,14 @@ import { IoMdNotifications } from "react-icons/io";
 import { RiLogoutCircleLine } from "react-icons/ri";
 import { IoChatbubbles, IoSettingsSharp } from "react-icons/io5";
 import { motion } from "framer-motion";
+import { BASE_URL, useFetchItems } from "@/hooks/useFetchItems";
+import Image from "next/image";
 
 const DashboardHeader = () => {
   const pathname = usePathname();
+  const { data: business } = useFetchItems({ url: `${BASE_URL}/business` });
+
+
   const splitedPathname = pathname.split("/")[2];
   const headerName = splitedPathname
     ? splitedPathname[0].toUpperCase() + splitedPathname.slice(1)
@@ -30,7 +35,7 @@ const DashboardHeader = () => {
     <>
       {show ? (
         <motion.main
-          className="lg:hidden bg-black fixed top-0 w-4/5 left-0 h-[100vh] z-50 flex flex-col gap-5 py-8 px-5"
+          className="lg:hidden bg-black fixed top-0 w-4/5 left-0 h-full z-50 flex flex-col gap-5 py-8 px-5"
           initial={{ x: "-100vw" }}
           animate={{ x: 0 }}
           transition={{
@@ -45,7 +50,7 @@ const DashboardHeader = () => {
             <CancelIcon />
           </span>
 
-          <div className="flex flex-col gap-10 text-[#F2F3F4] text-[20px]">
+          <div className="flex flex-col gap-10 text-[#F2F3F4] text-[20px] h-full">
             <Link
               href={"/dashboard"}
               className={`flex items-center gap-3 ${
@@ -80,7 +85,7 @@ const DashboardHeader = () => {
               <IoChatbubbles size={"30px"} />
               Chats
             </Link>
-            <Link
+            {/* <Link
               href={"/dashboard/analytics"}
               className={`flex items-center gap-3 ${
                 pathname === "/dashboard/analytics"
@@ -90,7 +95,7 @@ const DashboardHeader = () => {
               onClick={handleShow}
             >
               <MdAnalytics size={"30px"} /> Analytics
-            </Link>
+            </Link> */}
             <Link
               href={"/dashboard/notifications"}
               className={`flex items-center gap-3 ${
@@ -122,7 +127,7 @@ const DashboardHeader = () => {
               }`}
               onClick={handleShow}
             >
-              <IoSettingsSharp size={"30px"} /> Subscriptions
+              <MdAnalytics size={"30px"} /> Subscriptions
             </Link>
             <Link
               href={"/"}
@@ -136,6 +141,21 @@ const DashboardHeader = () => {
               <RiLogoutCircleLine size={"30px"} />
               Logout
             </Link>
+            <div className="mt-auto flex gap-5 items-center">
+              <div>
+                <Image
+                  src={business?.data?.business_logo}
+                  width={48}
+                  height={48}
+                  alt="user-image"
+                  className="rounded-full"
+                />
+              </div>
+              <div className="flex flex-col text-[16px] text-white">
+                <p>{business?.data?.businessName}</p>
+                <p>{business?.data?.business_email}</p>
+              </div>
+            </div>
           </div>
         </motion.main>
       ) : (
