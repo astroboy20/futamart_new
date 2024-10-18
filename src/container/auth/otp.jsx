@@ -57,7 +57,7 @@ const OTP = () => {
           Cookies.set("new-token", response.data?.data, { expires: 1 });
           toast({
             title: "OTP Verified",
-            description: "Your OTP has been successfully submitted.",
+            description: response.data?.message,
             status: "success",
             duration: 3000,
             isClosable: true,
