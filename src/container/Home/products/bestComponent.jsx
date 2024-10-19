@@ -1,19 +1,16 @@
 "use client";
-import Link from "next/link";
 import { BASE_URL, useFetchItems } from "@/hooks/useFetchItems";
-import { StarRating } from "@/components/rating";
+import React from "react";
+import Link from "next/link";
 import { AddToCart } from "@/components/addToCart";
-import { Fav, Next_Icon } from "@/assets";
-import { Loading } from "@/components/loading";
+import { StarRating } from "@/components/rating";
 import { AddToFavourite } from "@/components/AddToFavourite";
 
-const ExploreProducts = () => {
-  const {
-    data: exploreProducts,
-    isLoading,
-    error,
-  } = useFetchItems({ url: `${BASE_URL}/products` });
-  // console.log(exploreProducts);
+const BestComponent = () => {
+  const { data: bestRated, isLoading,error } = useFetchItems({
+    url: `${BASE_URL}/products_by_query?query=top-rated&page=1`,
+  });
+
   if (isLoading) {
     return (
       <div className="p-3 sm:py-3 sm:px-0 grid grid-cols-2 gap-2 lg:gap-[15px] md:grid-cols-2 lg:grid-cols-4 w-full">
@@ -25,21 +22,16 @@ const ExploreProducts = () => {
   if (error) {
     return <div> {error.message}</div>;
   }
-
   return (
-    <div className="flex flex-col gap-10 pb-10">
+    <div className="flex flex-col gap-6 py-[3%] px-[6%]">
       <div className="flex justify-between items-center">
         <h1 className="text-[20px] lg:text-[35px] font-[600]">
-          Explore Products
+        Best Selling Products
         </h1>
-        <Link href={"/explore-products"} className="flex items-center gap-3 text-[10px] lg:text-[20px]">
-          View all
-          <Next_Icon />
-        </Link>
       </div>
 
       <div className="py-3 sm:py-3 sm:px-0 grid grid-cols-2 gap-[15px] md:grid-cols-2 lg:grid-cols-4">
-        {exploreProducts?.data?.products?.map((singleProduct) => (
+        {bestRated?.data?.map((singleProduct) => (
           <div
             key={singleProduct._id}
             className="pb-3 max-w-[180px] cursor-pointer shadow-md bg-[#f2f4f4] sm:max-w-[295px]"
@@ -91,4 +83,4 @@ const ExploreProducts = () => {
   );
 };
 
-export { ExploreProducts };
+export { BestComponent };
