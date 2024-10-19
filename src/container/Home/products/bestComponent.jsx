@@ -5,6 +5,7 @@ import Link from "next/link";
 import { AddToCart } from "@/components/addToCart";
 import { StarRating } from "@/components/rating";
 import { AddToFavourite } from "@/components/AddToFavourite";
+import { Loading } from "@/components/loading";
 
 const BestComponent = () => {
   const { data: bestRated, isLoading,error } = useFetchItems({
