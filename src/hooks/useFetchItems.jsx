@@ -21,13 +21,12 @@ export const useFetchItems = ({ url }) => {
         console.log(error?.response?.status,"codebro")
         if (
           token &&
-          error.response &&
           (error.response.status === 401 || error.response.status === 403)
         ) {
           router.push("/login");
         }
         throw new Error(
-          error?.response?.data?.message || "Error fetching data"
+          error?.response?.message || "Error fetching data"
         );
         // console.error("Error fetching items:", error.message);
       }
