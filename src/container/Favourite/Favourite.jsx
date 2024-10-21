@@ -73,6 +73,7 @@ const Favourite = () => {
             <ProductCard
               key={product?._id}
               product={{
+                id : product?._id,
                 slug: product?.slug || "Product",
                 image: product?.featuredImage,
                 rating: product?.averageRating,
