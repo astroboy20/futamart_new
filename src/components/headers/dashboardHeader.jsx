@@ -18,7 +18,7 @@ import { BASE_URL, useFetchItems } from "@/hooks/useFetchItems";
 import Image from "next/image";
 import Cookies from "js-cookie";
 import { Skeleton } from "../ui/skeleton";
-
+import { FaShoppingCart } from "react-icons/fa";
 const DashboardHeader = () => {
   const pathname = usePathname();
   const router = useRouter();
@@ -139,6 +139,17 @@ const DashboardHeader = () => {
               onClick={handleShow}
             >
               <MdAnalytics size={"30px"} /> Subscriptions
+            </Link>
+            <Link
+              href={"/"}
+              className={`flex items-center gap-3 ${
+                pathname === "/"
+                  ? "bg-[#FFFFFF33] border rounded-[8px] py-2 px-5 "
+                  : ""
+              }`}
+              onClick={handleShow}
+            >
+              <FaShoppingCart size={"30px"} /> Marketplace
             </Link>
             <p
               className={`flex items-center gap-3 ${

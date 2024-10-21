@@ -16,7 +16,7 @@ import { usePathname, useRouter } from "next/navigation";
 import React from "react";
 import Cookies from "js-cookie";
 import { Skeleton } from "./ui/skeleton";
-
+import { FaShoppingCart } from "react-icons/fa";
 const DashboardSidebar = () => {
   const router = useRouter();
   const pathname = usePathname();
@@ -101,6 +101,16 @@ const DashboardSidebar = () => {
           }`}
         >
           <AnalyticsIcon /> Subscriptions
+        </Link>
+        <Link
+          href={"/"}
+          className={`flex items-center gap-3 ${
+            pathname === "/"
+              ? "bg-[#FFFFFF33] border rounded-[8px] py-2 px-5 "
+              : ""
+          }`}
+        >
+          <FaShoppingCart /> Marketplace
         </Link>
         <p
           onClick={handleLogout}
