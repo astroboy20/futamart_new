@@ -6,7 +6,7 @@ import { Header } from "@/components/headers/header";
 import { Loading } from "@/components/loading";
 import { StarRating } from "@/components/rating";
 import { BASE_URL, useFetchItems } from "@/hooks/useFetchItems";
-import { Link } from "next/link";
+import Link  from "next/link";
 
 export default function Page() {
   const {
