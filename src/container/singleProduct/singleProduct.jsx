@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Fav } from "@/assets";
+import { AddToFavourite } from "@/components/AddToFavourite";
 import { AddToCart } from "@/components/addToCart";
 import { StarRating } from "@/components/rating";
 import { BASE_URL } from "@/hooks/useFetchItems";
@@ -131,7 +131,7 @@ const SingleProduct = ({ getSingleProduct }) => {
             {getSingleProduct?.data?.product?.name}
           </p>
           <span className="w-[5%]">
-            <Fav />
+          <AddToFavourite productId={getSingleProduct.data.product._id} />
           </span>
         </div>
         <div className="flex items-center justify-between">

@@ -35,10 +35,10 @@ const Products = () => {
   const products = data?.data?.items || [];
   const [showModal, setShowModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const [modalType, setModalType] = useState("add"); // New state for distinguishing modal type
+  const [modalType, setModalType] = useState("add");
 
   const handleAddProduct = () => {
-    setSelectedProduct(null); // Ensure no product is selected for adding a new one
+    setSelectedProduct(null); 
     setModalType("add");
     setShowModal(true);
   };
@@ -52,7 +52,7 @@ const Products = () => {
   const handleCloseModal = () => {
     setShowModal(false);
     setSelectedProduct(null);
-    setModalType("add"); // Reset to "add" after closing
+    setModalType("add"); 
   };
 
   const deleteProductMutation = useMutation({

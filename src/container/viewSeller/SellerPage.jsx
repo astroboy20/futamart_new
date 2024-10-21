@@ -58,6 +58,7 @@ export default async function Page({ params }) {
               <ProductCard
                 key={product._id}
                 product={{
+                  id: product._id,
                   slug: product.slug,
                   image: product.featuredImage,
                   rating: product.averageRating,
