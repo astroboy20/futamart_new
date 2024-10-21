@@ -1,5 +1,6 @@
 import { Footer } from "@/components/footer";
 import { Header } from "@/components/headers/header";
+import { BestComponent } from "@/container/home/products/bestComponent";
 // import { BestComponent } from "@/container/home/products/bestComponent";
 
 export default function Page() {
@@ -7,7 +8,7 @@ export default function Page() {
 
     <main>
       <Header />
-      {/* <BestComponent /> */}
+      <BestComponent />
       <Footer />
     </main>
   );
