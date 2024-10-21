@@ -2,7 +2,7 @@ import { Fav } from "@/assets";
 import Link from "next/link";
 import { StarRating } from "@/components/rating";
 import { AddToCart } from "@/components/addToCart";
-
+import { AddToFavourite } from "@/components/AddToFavourite";
 const OtherProducts = ({ relatedProducts }) => {
   return (
     <div className="my-10 lg:py-3 lg:px-[4%]">
