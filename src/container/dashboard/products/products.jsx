@@ -35,9 +35,24 @@ const Products = () => {
   const products = data?.data?.items || [];
   const [showModal, setShowModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [modalType, setModalType] = useState("add"); // New state for distinguishing modal type
 
-  const handleModal = () => {
+  const handleAddProduct = () => {
+    setSelectedProduct(null); // Ensure no product is selected for adding a new one
+    setModalType("add");
     setShowModal(true);
+  };
+  
+  const handleEdit = (product) => {
+    setSelectedProduct(product);
+    setModalType("edit");
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setSelectedProduct(null);
+    setModalType("add"); // Reset to "add" after closing
   };
 
   const deleteProductMutation = useMutation({
@@ -91,19 +106,19 @@ const Products = () => {
   //   },
   // });
 
-  const handleEdit = (product) => {
-    setSelectedProduct(product);
-  };
+  // const handleEdit = (product) => {
+  //   setSelectedProduct(product);
+  // };
   console.log("d", selectedProduct);
   return (
     <main className="flex flex-col gap-5 lg:gap-10 mt-[100px] lg:mt-0">
-      <ModalContainer isOpen={showModal} onClose={setShowModal}>
-        <AddProducts onClose={setShowModal} />
-      </ModalContainer>
-
-      <ModalContainer isOpen={showModal} onClose={setShowModal}>
-        <UpdateProducts product={selectedProduct} onClose={setShowModal} />
-      </ModalContainer>
+    <ModalContainer isOpen={showModal} onClose={handleCloseModal}>
+      {modalType === "add" ? (
+        <AddProducts onClose={handleCloseModal} />
+      ) : (
+        <UpdateProducts product={selectedProduct} onClose={handleCloseModal} />
+      )}
+    </ModalContainer>
 
       <div className="flex justify-between items-center lg:items-start">
         <div className="w-[80%] lg:w-[70%] h-fit px-3 py-1 border-2 shadow-[2px_2px_4px_0_rgba(0,0,0,0.12)] rounded flex items-center gap-5">
@@ -116,7 +131,7 @@ const Products = () => {
 
         <div className="flex items-center gap-5">
           <ShareLinkButton />
-          <Button className="hidden lg:block" onClick={handleModal}>
+          <Button className="hidden lg:block" onClick={handleAddProduct}>
             Add products
           </Button>
         </div>
@@ -190,7 +205,7 @@ const Products = () => {
                         className="flex items-center gap-2 text-[#00000066] cursor-pointer"
                         onClick={() => {
                          handleEdit(data);
-                          handleModal();
+                         
                         }}
                       >
                         <EditIcon /> Edit
@@ -211,7 +226,7 @@ const Products = () => {
           </Table>
           <span
             className="lg:hidden flex absolute bottom-[30px] left-[75%]"
-            onClick={handleModal}
+            onClick={handleAddProduct}
           >
             <AddIcon />
           </span>

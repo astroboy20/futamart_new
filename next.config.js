@@ -16,6 +16,7 @@ const nextConfig = {
       "localhost",
       "api.futamart.com",
       "logo.com",
+      "media.istockphoto.com", 
     ],
   },
 };
