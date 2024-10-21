@@ -103,7 +103,7 @@ const SingleProduct = ({ getSingleProduct }) => {
             setSelectedImage(getSingleProduct?.data?.product?.featuredImage)
           }
         />
-        <div className="flex flex-row gap-1 h-[100px] max-w-[70%] mx-auto overflow-scroll items-center justify-center">
+        <div className="flex flex-row gap-1 h-[100px] max-w-[70%] mx-auto no-scrollbar overflow-scroll items-center justify-center">
           {getSingleProduct?.data?.product?.additionalImages?.map(
             (image, index) => (
               <img
@@ -176,7 +176,7 @@ const SingleProduct = ({ getSingleProduct }) => {
           </p>
           <div className="relative flex items-center gap-2 sm:gap-4">
             <StarRating
-              rating={getSingleProduct?.data?.product?.averageRating || 5}
+              rating={getSingleProduct?.data?.product?.averageRating}
               width={15}
               height={15}
             />
