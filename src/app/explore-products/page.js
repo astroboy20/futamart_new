@@ -6,7 +6,7 @@ export default function Page() {
   return (
     <main>
       <Header />
-      <ExploreComponent />
+      {/* <ExploreComponent /> */}
       <Footer />
     </main>
   );
