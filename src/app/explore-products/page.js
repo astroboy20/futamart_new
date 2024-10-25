@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { AddToCart } from "@/components/addToCart";
 import { AddToFavourite } from "@/components/AddToFavourite";
 import { Footer } from "@/components/footer";
@@ -6,16 +6,26 @@ import { Header } from "@/components/headers/header";
 import { Loading } from "@/components/loading";
 import { StarRating } from "@/components/rating";
 import { BASE_URL, useFetchItems } from "@/hooks/useFetchItems";
-import Link  from "next/link";
+import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import Link from "next/link";
+import React, { useState } from "react";
 
 export default function Page() {
+  const [page, setPage] = useState(1);
+
   const {
     data: explore,
     isLoading,
     error,
   } = useFetchItems({
-    url: `${BASE_URL}/products_by_query?query=explore&page=1`,
+    url: `${BASE_URL}/products_by_query?query=explore&page=${page}`,
   });
+
+  const totalPages = explore?.data?.totalPages || 1;
+
+  const handlePageChange = (pageNum) => {
+    setPage(pageNum);
+  };
 
   if (isLoading) {
     return (
@@ -28,6 +38,7 @@ export default function Page() {
   if (error) {
     return <div> {error.message}</div>;
   }
+
   return (
     <main>
       <Header />
@@ -87,6 +98,52 @@ export default function Page() {
             </div>
           ))}
         </div>
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="flex justify-center items-center mt-4 gap-2">
+            {/* Previous Button */}
+            <button
+              onClick={() => handlePageChange(page - 1)}
+              disabled={page === 1}
+              className={`px-4 py-2 border rounded-md ${
+                page === 1
+                  ? "bg-gray-300 text-gray-500"
+                  : "bg-gray-200 hover:bg-gray-300"
+              }`}
+            >
+              <FiChevronLeft />
+            </button>
+
+            {/* Page Numbers */}
+            {Array.from({ length: totalPages }, (_, i) => (
+              <button
+                key={i + 1}
+                onClick={() => handlePageChange(i + 1)}
+                className={`px-4 py-2 border rounded-md ${
+                  page === i + 1
+                    ? "bg-black text-white"
+                    : "bg-gray-200 hover:bg-black"
+                }`}
+              >
+                {i + 1}
+              </button>
+            ))}
+
+            {/* Next Button */}
+            <button
+              onClick={() => handlePageChange(page + 1)}
+              disabled={page === totalPages}
+              className={`px-4 py-2 border rounded-md ${
+                page === totalPages
+                  ? "bg-gray-300 text-gray-500"
+                  : "bg-gray-200 hover:bg-gray-300"
+              }`}
+            >
+              <FiChevronRight />
+            </button>
+          </div>
+        )}
       </div>
       <Footer />
     </main>
