@@ -155,10 +155,6 @@ const UpdateProducts = ({ onClose, product }) => {
       <div className="flex justify-between items-center lg:items-start">
         <h1 className="underline text-[24px] font-[600]">Add Products</h1>
 
-        <div className="flex items-center gap-5">
-          <NotificationIconX />
-          <Button className="hidden lg:block">Add products</Button>
-        </div>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mt-10">
         <div className="h-fit text-black rounded-[16px] flex flex-col gap-10">

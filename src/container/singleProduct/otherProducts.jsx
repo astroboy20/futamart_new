@@ -2,7 +2,7 @@ import { Fav } from "@/assets";
 import Link from "next/link";
 import { StarRating } from "@/components/rating";
 import { AddToCart } from "@/components/addToCart";
-
+import { AddToFavourite } from "@/components/AddToFavourite";
 const OtherProducts = ({ relatedProducts }) => {
   return (
     <div className="my-10 lg:py-3 lg:px-[4%]">
@@ -31,7 +31,7 @@ const OtherProducts = ({ relatedProducts }) => {
                         {singleProduct.name}
                       </p>
                     </Link>
-                    <Fav />
+                    <AddToFavourite productId={singleProduct._id} />
                   </div>
                   <p className="text-[#888282] text-[10px] lg:text-base font-semibold leading-[9.75px] w-[70px] h-[10px] sm:w-[105px] sm:h-[20px] sm:text-[16px] sm:leading-[19.5px] truncate">
                     &#8358;{singleProduct.price}
