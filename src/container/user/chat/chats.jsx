@@ -383,9 +383,7 @@ const Chats = ({ id, name, price }) => {
             handleKeyPress={handleKeyPress}
             sending={sending}
             handleButtonClick={handleButtonClick}
-            isOnline={
-              selectedUser ? onlineUsers.includes(selectedUser._id) : false
-            }
+            isOnline={onlineUsers.includes(selectedUser._id)}
           />
         )}
       </div>

@@ -34,18 +34,16 @@ const ChatSection = ({ userData, setSelectedUser,setIsChatOpen }) => {
   const handleClick = useCallback(
     (user) => {
       setSelectedUser(user);
-      setIsChatOpen(true)
-  
-      // Optimistically update the unread message count to 0
+      setIsChatOpen(true);
       user.unreadMessagesCount = 0;
   
-      // Mark messages as read if a conversationId is present
       if (user?.conversationId) {
         markMessagesAsRead(user.conversationId, user._id);
       }
     },
     [setSelectedUser, markMessagesAsRead]
   );
+  
   
 
   return (

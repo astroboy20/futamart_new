@@ -24,6 +24,7 @@ const UserChat = () => {
   const isDesktop = useMediaQuery("(min-width: 1024px)");
   const [failedMessages, setFailedMessages] = useState([]); // State to store failed messages
   const [userData, setUserData] = useState(null);
+  const [isChatOpen, setIsChatOpen] = useState(false);
 
   const fetchUserData = async () => {
     try {
@@ -115,7 +116,8 @@ const UserChat = () => {
                           ...oldData.data.conversation,
                           messages: [
                             ...oldData.data.conversation.messages,
-                            newMessage._doc,,
+                            newMessage._doc,
+                            ,
                           ],
                         },
                       },
@@ -344,6 +346,7 @@ const UserChat = () => {
               userId={userId}
               userData={userData}
               setSelectedUser={setSelectedUser}
+              setIsChatOpen={setIsChatOpen}
             />
           </div>
         )}
@@ -353,6 +356,8 @@ const UserChat = () => {
             user={user}
             messages={messages}
             setSelectedUser={setSelectedUser}
+            isChatOpen={isChatOpen}
+            setIsChatOpen={setIsChatOpen}
             isDesktop={isDesktop}
             selectedUser={selectedUser}
             messagesEndRef={messagesEndRef}
