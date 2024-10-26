@@ -6,7 +6,7 @@ import React, { useCallback } from "react";
 import Cookies from "js-cookie";
 import axios from "axios";
 
-const ChatSection = ({ userData, setSelectedUser }) => {
+const ChatSection = ({ userData, setSelectedUser,setIsChatOpen }) => {
   const token = Cookies.get("token");
 
   // Function to mark messages as read
@@ -34,6 +34,7 @@ const ChatSection = ({ userData, setSelectedUser }) => {
   const handleClick = useCallback(
     (user) => {
       setSelectedUser(user);
+      setIsChatOpen(true)
   
       // Optimistically update the unread message count to 0
       user.unreadMessagesCount = 0;

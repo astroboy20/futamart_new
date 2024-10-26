@@ -35,8 +35,8 @@ const Chats = ({ id, name, price }) => {
   });
 
   const { data: messages } = useFetchItems({
-    url: selectedUser
-      ? `${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser._id || id}`
+    url: selectedUser || id
+      ? `${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser?._id || id}`
       : null,
     enabled: !!selectedUser || id,
   });
@@ -362,12 +362,17 @@ const Chats = ({ id, name, price }) => {
             <ChatSection
               userData={userData}
               setSelectedUser={setSelectedUser}
+              setIsChatOpen={setIsChatOpen}
+              
             />
           </div>
         )}
         {(selectedUser || isChatOpen || id) && (
           <ChatInput
             user={user}
+            id={id}
+            isChatOpen={isChatOpen}
+            setIsChatOpen={setIsChatOpen}
             messages={messages}
             setSelectedUser={setSelectedUser}
             isDesktop={isDesktop}
