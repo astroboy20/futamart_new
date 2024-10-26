@@ -45,13 +45,13 @@ const ChatInput = ({
                 </button>
               )}
               <Avatar>
-                {selectedUser?.userInfo?.profile_image ? (
+                {user?.data?.userInfo?.profile_image||selectedUser?.userInfo?.profile_image ? (
                   <AvatarImage src={selectedUser.userInfo.profile_image} />
                 ) : (
                   <AvatarImage src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png" />
                 )}
                 <AvatarFallback>
-                {selectedUser?.businessInfo?.businessName}
+                {user?.data?.businessInfo?.businessName||selectedUser?.businessInfo?.businessName}
                 </AvatarFallback>
               </Avatar>
               <div className="flex flex-col">

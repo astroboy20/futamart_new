@@ -11,7 +11,7 @@ import { Header } from "@/components/headers/header";
 import { ChatSection } from "./chatSection";
 import { ChatInput } from "./chatInput";
 
-const notificationSound = new Audio('/sounds/notification.mp3');
+const notificationSound = new Audio("/sounds/notification.mp3");
 
 const Chats = ({ id, name, price }) => {
   const queryClient = useQueryClient();
@@ -24,6 +24,7 @@ const Chats = ({ id, name, price }) => {
   const messagesEndRef = useRef(null);
   const isDesktop = useMediaQuery("(min-width: 1024px)");
   const [failedMessages, setFailedMessages] = useState([]); // State to store failed messages
+  const [isChatOpen, setIsChatOpen] = useState(false);
 
   const { data: userData } = useFetchItems({
     url: `${process.env.NEXT_PUBLIC_API_URL}/chats`,
@@ -35,21 +36,21 @@ const Chats = ({ id, name, price }) => {
 
   const { data: messages } = useFetchItems({
     url: selectedUser
-      ? `${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser._id}`
+      ? `${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser._id || id}`
       : null,
-    enabled: !!selectedUser,
+    enabled: !!selectedUser || id,
   });
 
   const userId = user?.data?._id;
   const { socket, error, connected, onlineUsers } = useWebsocket(
-    userId ? `wss://api.futamart.com/?userId=${userId}` : null
+    userId ? `wss://api.futamart.com/?userId=${userId || id}` : null
   );
 
   useEffect(() => {
     if (onlineUsers.length > 0) {
       console.log("Online users:", onlineUsers);
     }
-  }, [onlineUsers])
+  }, [onlineUsers]);
 
   useEffect(() => {
     if (userId) {
@@ -89,7 +90,8 @@ const Chats = ({ id, name, price }) => {
                           ...oldData.data.conversation,
                           messages: [
                             ...oldData.data.conversation.messages,
-                            newMessage._doc,,
+                            newMessage._doc,
+                            ,
                           ],
                         },
                       },
@@ -104,11 +106,11 @@ const Chats = ({ id, name, price }) => {
             }
           }
           // Check if the selected user is online using `onlineUsers`
-        if (selectedUser && onlineUsers.includes(selectedUser._id)) {
-          console.log(`${selectedUser.name} is online.`);
-        } else {
-          console.log(`${selectedUser?.name || "User"} is offline.`);
-        }
+          if (selectedUser && onlineUsers.includes(selectedUser._id)) {
+            console.log(`${selectedUser.name} is online.`);
+          } else {
+            console.log(`${selectedUser?.name || "User"} is offline.`);
+          }
         } catch (err) {
           console.error("Error processing WebSocket message:", err);
         }
@@ -128,59 +130,66 @@ const Chats = ({ id, name, price }) => {
     }
   }, [messages]);
 
-useEffect(() => {
-  if (id && isFirstChat) {
-    const sendInitialMessage = async () => {
-      try {
-        const messageSent = localStorage.getItem(`initialMessageSent_${id}`);
-        if (messageSent) {
-          setIsFirstChat(false);
-          return;
-        }
-
-        const payload = { message: `${name}\n${price}` };
-        await axios.post(
-          `${process.env.NEXT_PUBLIC_API_URL}/chat/${id}`,
-          payload,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+  useEffect(() => {
+    if (id && isFirstChat) {
+      const sendInitialMessage = async () => {
+        try {
+          const messageSent = localStorage.getItem(`initialMessageSent_${id}`);
+          if (messageSent) {
+            setIsFirstChat(false);
+            setIsChatOpen(true);
+            return;
           }
+
+          const payload = { message: `${name}\n${price}` };
+          await axios.post(
+            `${process.env.NEXT_PUBLIC_API_URL}/chat/${id}`,
+            payload,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          queryClient.invalidateQueries([
+            `${process.env.NEXT_PUBLIC_API_URL}/chat/${id}`,
+          ]);
+          queryClient.invalidateQueries([
+            `${process.env.NEXT_PUBLIC_API_URL}/chats`,
+          ]);
+          localStorage.setItem(`initialMessageSent_${id}`, "true");
+          setIsFirstChat(false);
+          setIsChatOpen(true);
+        } catch (error) {
+          console.error("Error sending initial message:", error);
+        }
+      };
+
+      sendInitialMessage();
+    }
+  }, [id, isFirstChat, name, price, token, user?.data?._id, queryClient]);
+
+  const handleClick = useCallback(
+    (user) => {
+      setSelectedUser(user);
+
+      // Check if it's not the first chat
+      if (!isFirstChat) {
+        // Store the clicked product information in local storage
+        const productInfo = {
+          name,
+          price,
+          id,
+        };
+        localStorage.setItem(
+          `clickedProduct_${id}`,
+          JSON.stringify(productInfo)
         );
-        queryClient.invalidateQueries([
-          `${process.env.NEXT_PUBLIC_API_URL}/chat/${id}`,
-        ]);
-        queryClient.invalidateQueries([
-          `${process.env.NEXT_PUBLIC_API_URL}/chats`,
-        ]);
-        localStorage.setItem(`initialMessageSent_${id}`, "true");
-        setIsFirstChat(false);
-      } catch (error) {
-        console.error("Error sending initial message:", error);
+        console.log("Stored product info in local storage:", productInfo);
       }
-    };
-
-    sendInitialMessage();
-  }
-}, [id, isFirstChat, name, price, token, user?.data?._id, queryClient]);
-
-const handleClick = useCallback((user) => {
-  setSelectedUser(user);
-
-  // Check if it's not the first chat
-  if (!isFirstChat) {
-    // Store the clicked product information in local storage
-    const productInfo = {
-      name,
-      price,
-      id,
-    };
-    localStorage.setItem(`clickedProduct_${id}`, JSON.stringify(productInfo));
-    console.log("Stored product info in local storage:", productInfo);
-  }
-}, [name, price, id, isFirstChat]);
-
+    },
+    [name, price, id, isFirstChat]
+  );
 
   const sendMessageMutation = useMutation({
     mutationFn: async () => {
@@ -348,7 +357,7 @@ const handleClick = useCallback((user) => {
         <p className="text-[20px] lg:text-[35px] font-[600] px-[6%]">Chats</p>
       </div>
       <div className="flex flex-col lg:flex-row lg:justify-between w-full h-full px-[6%] mb-[4%]">
-        {(!selectedUser || isDesktop) && (
+        {(!selectedUser || isDesktop || !id) && (
           <div className="w-full lg:w-[35%]">
             <ChatSection
               userData={userData}
@@ -356,7 +365,7 @@ const handleClick = useCallback((user) => {
             />
           </div>
         )}
-        {selectedUser  && (
+        {(selectedUser || isChatOpen || id) && (
           <ChatInput
             user={user}
             messages={messages}
@@ -369,7 +378,9 @@ const handleClick = useCallback((user) => {
             handleKeyPress={handleKeyPress}
             sending={sending}
             handleButtonClick={handleButtonClick}
-            isOnline={onlineUsers.includes(selectedUser?._id)}
+            isOnline={
+              selectedUser ? onlineUsers.includes(selectedUser._id) : false
+            }
           />
         )}
       </div>
