@@ -268,7 +268,7 @@ const UserChat = () => {
         console.error("Error sending message:", error);
         // Update message status to 'failed'
         queryClient.setQueryData(
-          [`${process.env.NEXT_PUBLIC_API_URL}/chat/${id}`],
+          [`${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser._id}`],
           (oldData) => {
             if (!oldData) return oldData;
             return {
