@@ -47,8 +47,7 @@ const SingleProduct = ({ getSingleProduct }) => {
   const handleClick = (userId, name, price, featuredImage) => {
     const url = `/user/chat/${userId}?name=${encodeURIComponent(
       name
-    )}&price=${encodeURIComponent(price)}
-    )}`;
+    )}&price=${encodeURIComponent(price)}`;
     router.push(url);
   };
 
@@ -263,7 +262,7 @@ const SingleProduct = ({ getSingleProduct }) => {
               handleClick(
                 getSingleProduct?.data?.product?.user,
                 getSingleProduct?.data?.product?.name,
-                getSingleProduct?.data?.product?.price
+                getSingleProduct?.data?.product?.price,
                 // getSingleProduct?.data?.product?.featuredImage
               )
             }

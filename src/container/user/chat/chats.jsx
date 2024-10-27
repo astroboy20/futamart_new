@@ -129,7 +129,6 @@ const Chats = ({ id, name, price }) => {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [messages]);
-
   useEffect(() => {
     if (id && isFirstChat) {
       const sendInitialMessage = async () => {
@@ -140,8 +139,20 @@ const Chats = ({ id, name, price }) => {
             setIsChatOpen(true);
             return;
           }
-
-          const payload = { message: `${name}\n${price}` };
+  
+          // Retrieve product details if undefined
+          let productName = name;
+          let productPrice = price;
+          if (!productName || !productPrice) {
+            const storedProduct = localStorage.getItem(`clickedProduct_${id}`);
+            if (storedProduct) {
+              const { name: storedName, price: storedPrice } = JSON.parse(storedProduct);
+              productName = storedName || name;
+              productPrice = storedPrice || price;
+            }
+          }
+  
+          const payload = { message: `${productName}\n${productPrice}` };
           await axios.post(
             `${process.env.NEXT_PUBLIC_API_URL}/chat/${id}`,
             payload,
@@ -151,12 +162,9 @@ const Chats = ({ id, name, price }) => {
               },
             }
           );
-          queryClient.invalidateQueries([
-            `${process.env.NEXT_PUBLIC_API_URL}/chat/${id}`,
-          ]);
-          queryClient.invalidateQueries([
-            `${process.env.NEXT_PUBLIC_API_URL}/chats`,
-          ]);
+  
+          queryClient.invalidateQueries([`${process.env.NEXT_PUBLIC_API_URL}/chat/${id}`]);
+          queryClient.invalidateQueries([`${process.env.NEXT_PUBLIC_API_URL}/chats`]);
           localStorage.setItem(`initialMessageSent_${id}`, "true");
           setIsFirstChat(false);
           setIsChatOpen(true);
@@ -164,32 +172,28 @@ const Chats = ({ id, name, price }) => {
           console.error("Error sending initial message:", error);
         }
       };
-
+  
       sendInitialMessage();
     }
   }, [id, isFirstChat, name, price, token, user?.data?._id, queryClient]);
-
+  
   const handleClick = useCallback(
     (user) => {
       setSelectedUser(user);
-
-      // Check if it's not the first chat
+  
       if (!isFirstChat) {
-        // Store the clicked product information in local storage
         const productInfo = {
           name,
           price,
           id,
         };
-        localStorage.setItem(
-          `clickedProduct_${id}`,
-          JSON.stringify(productInfo)
-        );
+        localStorage.setItem(`clickedProduct_${id}`, JSON.stringify(productInfo));
         console.log("Stored product info in local storage:", productInfo);
       }
     },
     [name, price, id, isFirstChat]
   );
+  
 
   const sendMessageMutation = useMutation({
     mutationFn: async () => {
@@ -383,7 +387,7 @@ const Chats = ({ id, name, price }) => {
             handleKeyPress={handleKeyPress}
             sending={sending}
             handleButtonClick={handleButtonClick}
-            isOnline={onlineUsers.includes(selectedUser._id)}
+            isOnline={onlineUsers.includes(id)}
           />
         )}
       </div>
