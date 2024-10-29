@@ -14,8 +14,8 @@ const montserrat = Montserrat({
 });
 
 export const metadata = {
-  title: "futamart",
-  description: "The All-in-One Marketplace Where Businesses Thrive and Shoppers Discover with Ease.",
+  title: "FUTAMart",
+  description: "A platform where anyone can SELL, and everyone can BUY. 🛒",
 };
 
 export default function RootLayout({ children }) {
@@ -38,4 +38,3 @@ export default function RootLayout({ children }) {
     </html>
   );
 }
-
