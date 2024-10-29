@@ -13,9 +13,10 @@ const montserrat = Montserrat({
   variable: "--font-montserrat",
 });
 
+// Update metadata
 export const metadata = {
-  title: "FUTAMart",
-  description: "A platform where anyone can SELL, and everyone can BUY. 🛒",
+  title: "futamart - Your Marketplace for All",
+  description: "Join futamart to sell and buy products with ease. Connect with buyers and boost your sales!",
 };
 
 export default function RootLayout({ children }) {
@@ -23,6 +24,12 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <head>
         <link rel="icon" href="/futamart.png" />
+        {/* Open Graph metadata */}
+        <meta property="og:title" content={metadata.title} />
+        <meta property="og:description" content={metadata.description} />
+        <meta property="og:image" content="https://res.cloudinary.com/doqmoy4ix/image/upload/v1726765077/futamart-logo_bwairn.png"/> 
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://futamart.vercel.app" />
       </head>
       <body className={montserrat.variable}>
         <AuthProvider>
