@@ -44,9 +44,9 @@ export default async function Page({ params }) {
             data.business.business_logo || "/images/Sample_User_Icon.png"
           }
           isVerified={data.business.verified || false}
-          businessDetails={`Address: ${
-            data.business.business_address || "N/A"
-          }, Contact: ${data.business.business_contact || "N/A"}, Email: ${
+          businessDetails={`Description: ${
+            data.business.business_description || "N/A"
+          }, Joined: ${data.business.createdAt || "N/A"}, Email: ${
             data.business.business_email || "N/A"
           }`}
         />

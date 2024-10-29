@@ -10,11 +10,23 @@ const SellerProfile = ({
   businessDetails,
   isVerified,
 }) => {
-  const details = businessDetails.split(", ").reduce((acc, detail) => {
-    const [key, value] = detail.split(": ");
-    acc[key] = value;
+  const details = businessDetails.split(",").reduce((acc, detail) => {
+    const [key, ...valueParts] = detail.split(":");
+    const value = valueParts.join(":").trim(); 
+    if (key && value) {
+      acc[key.trim()] = value; 
+    }
     return acc;
   }, {});
+
+  // Extract and format the Joined date
+  const joinedDate = details["Joined"]
+    ? new Date(details["Joined"]).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      })
+    : "N/A";
 
   return (
     <div className="flex relative items-start space-y-4 sm:space-y-0 sm:space-x-[80px] mb-10">
@@ -28,17 +40,11 @@ const SellerProfile = ({
         <div className="flex items-center gap-3">
           <h1 className="text-xl sm:text-2xl font-medium">{sellerName}</h1>
           {isVerified ? (
-            <div
-              className="tooltip"
-              title="Seller is verified"
-            >
+            <div className="tooltip" title="Seller is verified">
               <RiVerifiedBadgeFill className="text-blue-500 text-[20px] sm:text-[30px]" />
             </div>
           ) : (
-            <div
-              className="tooltip"
-              title="Seller is not verified"
-            >
+            <div className="tooltip" title="Seller is not verified">
               <VscUnverified className="text-red-500 text-[20px] sm:text-[30px]" />
             </div>
           )}
@@ -59,13 +65,10 @@ const SellerProfile = ({
         </div>
 
         <div className="text-sm text-gray-700">
-          <p>
-            <span className="font-semibold">Address:</span>{" "}
-            {details["Address"] || "N/A"}
-          </p>
-          <p>
-            <span className="font-semibold">Contact:</span>{" "}
-            {details["Contact"] || "N/A"}
+          <p className="pb-[8px]">{details["Description"] || "N/A"}</p>
+          <p className="pb-[8px]">
+            <span className="font-semibold">Joined:</span>{" "}
+            {joinedDate}
           </p>
           <p>
             <span className="font-semibold">Email:</span>{" "}
