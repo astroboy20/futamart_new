@@ -10,7 +10,7 @@ export default async function SellerPageDynamic({ params }) {
         <title>Seller Profile - futamart</title>
         <meta name="description" content="Connect with thousands of buyers and boost your sales on futamart's seller platform!" /> 
         <meta name="keywords" content="futamart, sell online, marketplace, seller page" /> 
-        <link rel="canonical" href={`https://futamart.vercel.app/seller/${params}`} /> 
+        <link rel="canonical" href={`https://futamart.vercel.app/seller/${params.slug}`} /> 
       </Head>
       <Header />
       <SellerPage params={params} />
