@@ -47,26 +47,29 @@ const ChatInput = ({
   const renderMessageWithImages = (message) => {
     const lines = message.split("\n");
     const imageUrlPattern = /(https?:\/\/.*\.(?:png|jpg|jpeg|gif))/gi;
-    const firstLine = lines[0].trim();
-
+  
     let htmlContent = "";
-
-    // Check if the first line is a valid image URL
-    if (imageUrlPattern.test(firstLine)) {
-      htmlContent += `<img src="${firstLine}" alt="Message Image" class="rounded-lg mb-2 max-w-full max-h-48" /><br />`;
+    let imageFound = false;
+  
+    // Check each line for an image URL
+    for (let line of lines) {
+      const trimmedLine = line.trim();
+      if (imageUrlPattern.test(trimmedLine)) {
+        htmlContent += `<img src="${trimmedLine}" alt="Message Image" class="rounded-lg mb-2 max-w-full max-h-48" /><br />`;
+        imageFound = true;
+      } else {
+        htmlContent += `<p>${line}</p>`;
+      }
     }
-
-    // Combine remaining text and truncate if too long
-    const remainingText = lines.slice(1).join("<br />");
-    const truncatedText =
-      remainingText.length > 100
-        ? remainingText.substring(0, 100) +
-          '... <span class="text-blue-500 cursor-pointer">Show more</span>'
-        : remainingText;
-    htmlContent += truncatedText;
-
+  
+    // If no image is found, return the message as a plain text
+    if (!imageFound) {
+      htmlContent = message;
+    }
+  
     return htmlContent;
   };
+  
 
   return (
     <div
