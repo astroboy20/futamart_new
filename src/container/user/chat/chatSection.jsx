@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import React, { useCallback } from "react";
 import Cookies from "js-cookie";
 import axios from "axios";
+import { MdImage } from "react-icons/md";
 
 const ChatSection = ({ userData, setSelectedUser, setIsChatOpen }) => {
   const token = Cookies.get("token");
