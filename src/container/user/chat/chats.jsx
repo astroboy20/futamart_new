@@ -13,7 +13,7 @@ import { ChatInput } from "./chatInput";
 
 const notificationSound = new Audio("/sounds/notification.mp3");
 
-const Chats = ({ id, name, price }) => {
+const Chats = ({ id, featuredImage, name, price }) => {
   const queryClient = useQueryClient();
   const token = Cookies.get("token");
   const [message, setMessage] = useState("");
@@ -21,6 +21,7 @@ const Chats = ({ id, name, price }) => {
   const [displayedMessage, setDisplayedMessage] = useState(message);
   const [selectedUser, setSelectedUser] = useState(null);
   const [isFirstChat, setIsFirstChat] = useState(true);
+  const [file, setFile] = useState(null);
   const messagesEndRef = useRef(null);
   const isDesktop = useMediaQuery("(min-width: 1024px)");
   const [failedMessages, setFailedMessages] = useState([]); // State to store failed messages
@@ -35,9 +36,10 @@ const Chats = ({ id, name, price }) => {
   });
 
   const { data: messages } = useFetchItems({
-    url: selectedUser || id
-      ? `${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser?._id || id}`
-      : null,
+    url:
+      selectedUser || id
+        ? `${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser?._id || id}`
+        : null,
     enabled: !!selectedUser || id,
   });
 
@@ -133,26 +135,30 @@ const Chats = ({ id, name, price }) => {
     if (id && isFirstChat) {
       const sendInitialMessage = async () => {
         try {
-          const messageSent = localStorage.getItem(`initialMessageSent_${id}`);
-          if (messageSent) {
-            setIsFirstChat(false);
+        //  const messageSent = localStorage.getItem(`initialMessageSent_${id}`);
+          // if (messageSent) {
+           setIsFirstChat(false);
             setIsChatOpen(true);
-            return;
-          }
-  
+          
+          // }
+
           // Retrieve product details if undefined
+          let productImage = featuredImage
           let productName = name;
           let productPrice = price;
-          if (!productName || !productPrice) {
-            const storedProduct = localStorage.getItem(`clickedProduct_${id}`);
-            if (storedProduct) {
-              const { name: storedName, price: storedPrice } = JSON.parse(storedProduct);
-              productName = storedName || name;
-              productPrice = storedPrice || price;
-            }
-          }
-  
-          const payload = { message: `${productName}\n${productPrice}` };
+          console.log(productImage)
+          // if (!productImage || !productName || !productPrice) {
+          //   const storedProduct = localStorage.getItem(`clickedProduct_${id}`);
+          //   if (storedProduct) {
+          //     const {featuredImage:storedImage, name: storedName, price: storedPrice } =
+          //       JSON.parse(storedProduct);
+          //     productImage = storedImage || featuredImage;
+          //     productName = storedName || name;
+          //     productPrice = storedPrice || price;
+          //   }
+          // }
+
+          const payload = { message: `${productImage}\n${productName}\n${productPrice}` };
           await axios.post(
             `${process.env.NEXT_PUBLIC_API_URL}/chat/${id}`,
             payload,
@@ -162,38 +168,45 @@ const Chats = ({ id, name, price }) => {
               },
             }
           );
-  
-          queryClient.invalidateQueries([`${process.env.NEXT_PUBLIC_API_URL}/chat/${id}`]);
-          queryClient.invalidateQueries([`${process.env.NEXT_PUBLIC_API_URL}/chats`]);
-          localStorage.setItem(`initialMessageSent_${id}`, "true");
+
+          queryClient.invalidateQueries([
+            `${process.env.NEXT_PUBLIC_API_URL}/chat/${id}`,
+          ]);
+          queryClient.invalidateQueries([
+            `${process.env.NEXT_PUBLIC_API_URL}/chats`,
+          ]);
+         // localStorage.setItem(`initialMessageSent_${id}`, "true");
           setIsFirstChat(false);
           setIsChatOpen(true);
         } catch (error) {
           console.error("Error sending initial message:", error);
         }
       };
-  
+
       sendInitialMessage();
     }
-  }, [id, isFirstChat, name, price, token, user?.data?._id, queryClient]);
-  
+  }, [id, isFirstChat, featuredImage, name, price, token, user?.data?._id, queryClient]);
+
   const handleClick = useCallback(
     (user) => {
       setSelectedUser(user);
-  
+
       if (!isFirstChat) {
         const productInfo = {
+          featuredImage,
           name,
           price,
           id,
         };
-        localStorage.setItem(`clickedProduct_${id}`, JSON.stringify(productInfo));
+        localStorage.setItem(
+          `clickedProduct_${id}`,
+          JSON.stringify(productInfo)
+        );
         console.log("Stored product info in local storage:", productInfo);
       }
     },
-    [name, price, id, isFirstChat]
+    [featuredImage, name, price, id, isFirstChat]
   );
-  
 
   const sendMessageMutation = useMutation({
     mutationFn: async () => {
@@ -225,7 +238,7 @@ const Chats = ({ id, name, price }) => {
   });
 
   const handleSendMessage = useCallback(
-    async (retryMessage = null) => {
+    async (retryMessage = null, file = null) => {
       const messageToSend = retryMessage || message;
 
       // Ensure messageToSend is a string
@@ -233,15 +246,14 @@ const Chats = ({ id, name, price }) => {
         console.log("Message is empty or not a string, not sending.");
         return;
       }
-
       const newMessage = {
         _id: Date.now().toString(), // Temporary ID
-        message: messageToSend, // Use the current message state or retry message
+        message: messageToSend || "",
         senderId: user?.data?._id,
         createdAt: new Date().toISOString(),
-        status: "sending", // Add status to track message state
+        status: "sending", // Track message state
+        file: file ? file.name : null, 
       };
-
       console.log("Sending message:", newMessage);
 
       // Optimistically update the UI
@@ -267,6 +279,7 @@ const Chats = ({ id, name, price }) => {
       // Keep the message input intact until the message is successfully sent
       setSending(true);
       setDisplayedMessage("");
+      setFile(null);
       try {
         const response = await sendMessageMutation.mutateAsync();
         console.log("Message sent successfully:", response);
@@ -331,6 +344,21 @@ const Chats = ({ id, name, price }) => {
     },
     [message, sendMessageMutation, user?.data?._id, id, queryClient]
   );
+  const handleFileUpload = useCallback(
+    async (event) => {
+      const selectedFile = event.target.files[0];
+      if (selectedFile) {
+        setFile(selectedFile); // Store the selected file
+        setDisplayedMessage("Uploading file..."); // Optional: Set a temporary message
+
+        console.log("File selected for upload:", selectedFile);
+
+        // Call the sendMessage function with the selected file
+        await handleSendMessage(selectedFile); // Send the file to handleSendMessage
+      }
+    },
+    [handleSendMessage]
+  );
 
   const retrySendMessage = async (failedMessage) => {
     await handleSendMessage(failedMessage.message);
@@ -367,7 +395,6 @@ const Chats = ({ id, name, price }) => {
               userData={userData}
               setSelectedUser={setSelectedUser}
               setIsChatOpen={setIsChatOpen}
-              
             />
           </div>
         )}
@@ -386,7 +413,9 @@ const Chats = ({ id, name, price }) => {
             handleInputChange={handleInputChange}
             handleKeyPress={handleKeyPress}
             sending={sending}
+            retrySendMessage={retrySendMessage}
             handleButtonClick={handleButtonClick}
+            handleFileUpload={handleFileUpload}
             isOnline={onlineUsers.includes(id)}
           />
         )}

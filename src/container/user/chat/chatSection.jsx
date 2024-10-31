@@ -6,7 +6,7 @@ import React, { useCallback } from "react";
 import Cookies from "js-cookie";
 import axios from "axios";
 
-const ChatSection = ({ userData, setSelectedUser,setIsChatOpen }) => {
+const ChatSection = ({ userData, setSelectedUser, setIsChatOpen }) => {
   const token = Cookies.get("token");
 
   // Function to mark messages as read
@@ -28,7 +28,7 @@ const ChatSection = ({ userData, setSelectedUser,setIsChatOpen }) => {
         console.error("Error marking messages as read:", error);
       }
     },
-    [token] 
+    [token]
   );
 
   const handleClick = useCallback(
@@ -36,15 +36,13 @@ const ChatSection = ({ userData, setSelectedUser,setIsChatOpen }) => {
       setSelectedUser(user);
       setIsChatOpen(true);
       user.unreadMessagesCount = 0;
-  
+
       if (user?.conversationId) {
         markMessagesAsRead(user.conversationId, user._id);
       }
     },
     [setSelectedUser, markMessagesAsRead]
   );
-  
-  
 
   return (
     <div className="flex flex-col gap-5">
@@ -74,7 +72,19 @@ const ChatSection = ({ userData, setSelectedUser,setIsChatOpen }) => {
                     {user?.businessInfo?.businessName}
                   </p>
                   <p className="text-gray-600 text-[12px] font-[500] line-clamp-1">
-                    {user?.lastMessage?.message}
+                    {user?.lastMessage?.message?.match(
+                      /(https?:\/\/[^\s]+)/
+                    ) ? (
+                      <span className="flex items-center">
+                        <MdImage
+                          className="inline-block text-gray-600"
+                          size={16}
+                        />{" "}
+                        Photo
+                      </span>
+                    ) : (
+                      user?.lastMessage?.message
+                    )}
                   </p>
                 </div>
                 <div>

@@ -26,6 +26,18 @@ const UserChat = () => {
   const [userData, setUserData] = useState(null);
   const [isChatOpen, setIsChatOpen] = useState(false);
 
+
+  const handleFileUpload = useCallback((event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setDisplayedMessage((prev) => ({
+        ...prev,
+        file: URL.createObjectURL(file),
+      }));
+      console.log("File selected for upload:", file);
+    }
+  }, []);
+
   const fetchUserData = async () => {
     try {
       const response = await axios.get(
@@ -193,26 +205,29 @@ const UserChat = () => {
     },
   });
 
+
   const handleSendMessage = useCallback(
     async (retryMessage = null) => {
       const messageToSend = retryMessage || message;
-
-      // Ensure messageToSend is a string
-      if (typeof messageToSend !== "string" || !messageToSend.trim()) {
-        console.log("Message is empty or not a string, not sending.");
+  
+      // Check if messageToSend is empty or invalid
+      if ((!messageToSend || (typeof messageToSend !== "string" && !messageToSend.file)) || 
+          (typeof messageToSend === "string" && !messageToSend.trim())) {
+        console.log("Message is empty or not a valid file or text, not sending.");
         return;
       }
-
+  
       const newMessage = {
-        _id: Date.now().toString(), // Temporary ID
-        message: messageToSend, // Use the current message state or retry message
+        _id: Date.now().toString(), // Temporary ID for optimistic UI
+        message: typeof messageToSend === "string" ? messageToSend : "",
+        file: messageToSend.file || null, // Attach the file if present
         senderId: user?.data?._id,
         createdAt: new Date().toISOString(),
-        status: "sending", // Add status to track message state
+        status: "sending",
       };
-
+  
       console.log("Sending message:", newMessage);
-
+  
       // Optimistically update the UI
       const updateChatData = (oldData) => {
         if (!oldData) return oldData;
@@ -227,18 +242,24 @@ const UserChat = () => {
           },
         };
       };
-
+  
       queryClient.setQueryData(
         [`${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser._id}`],
         updateChatData
       );
-
+  
       // Keep the message input intact until the message is successfully sent
       setSending(true);
       setDisplayedMessage("");
+  
       try {
-        const response = await sendMessageMutation.mutateAsync();
+        const payload = new FormData(); // Prepare FormData for file handling
+        payload.append("message", typeof messageToSend === "string" ? messageToSend : "");
+        if (messageToSend.file) payload.append("file", messageToSend.file);
+  
+        const response = await sendMessageMutation.mutateAsync(payload);
         console.log("Message sent successfully:", response);
+  
         // Update message status to 'sent'
         queryClient.setQueryData(
           [`${process.env.NEXT_PUBLIC_API_URL}/chat/${selectedUser._id}`],
@@ -251,15 +272,14 @@ const UserChat = () => {
                 conversation: {
                   ...oldData.data.conversation,
                   messages: oldData.data.conversation.messages.map((msg) =>
-                    msg._id === newMessage._id
-                      ? { ...msg, status: "sent" }
-                      : msg
+                    msg._id === newMessage._id ? { ...msg, status: "sent" } : msg
                   ),
                 },
               },
             };
           }
         );
+  
         // Remove from failed messages if retry was successful
         setFailedMessages((prev) =>
           prev.filter((msg) => msg._id !== newMessage._id)
@@ -278,15 +298,14 @@ const UserChat = () => {
                 conversation: {
                   ...oldData.data.conversation,
                   messages: oldData.data.conversation.messages.map((msg) =>
-                    msg._id === newMessage._id
-                      ? { ...msg, status: "failed" }
-                      : msg
+                    msg._id === newMessage._id ? { ...msg, status: "failed" } : msg
                   ),
                 },
               },
             };
           }
         );
+  
         // Add to failed messages if not already present
         setFailedMessages((prev) => {
           if (!prev.find((msg) => msg._id === newMessage._id)) {
@@ -300,6 +319,7 @@ const UserChat = () => {
     },
     [message, sendMessageMutation, user?.data?._id, queryClient]
   );
+  
 
   const retrySendMessage = async (failedMessage) => {
     await handleSendMessage(failedMessage.message);
@@ -334,6 +354,8 @@ const UserChat = () => {
     handleSendMessage();
   };
 
+
+
   return (
     <div className="flex flex-col gap-5 h-[100dvh] ">
       <div className="flex justify-between items-center text-[18px] font-medium">
@@ -367,6 +389,7 @@ const UserChat = () => {
             sending={sending}
             retrySendMessage={retrySendMessage}
             handleButtonClick={handleButtonClick}
+            handleFileUpload={handleFileUpload}
             isOnline={onlineUsers.includes(selectedUser._id)}
           />
         ) : (

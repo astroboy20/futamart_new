@@ -14,6 +14,7 @@ import { IoIosArrowBack } from "react-icons/io";
 import { useWebsocket } from "@/hooks/useWebsocket";
 import Image from "next/image";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { MdPhotoCamera, MdImage } from "react-icons/md";
 
 const notificationSound = new Audio("/sounds/notification.mp3");
 
@@ -175,14 +176,14 @@ const Chats = () => {
     },
     [token]
   );
-  
+
   const handleClick = useCallback(
     (user) => {
       setSelectedUser(user);
-  
+
       // Optimistically update the unread message count to 0
       user.unreadMessagesCount = 0;
-  
+
       // Mark messages as read if a conversationId is present
       if (user?.conversationId) {
         markMessagesAsRead(user.conversationId, user._id);
@@ -190,7 +191,7 @@ const Chats = () => {
     },
     [setSelectedUser, markMessagesAsRead]
   );
-  
+
   const sendMessageMutation = useMutation({
     mutationFn: async () => {
       const response = await axios.post(
@@ -281,6 +282,31 @@ const Chats = () => {
     e.target.style.height = `${e.target.scrollHeight}px`; // Set height to scrollHeight
   };
   const isOnline = onlineUsers.includes(selectedUser?._id);
+
+  const renderMessageWithImages = (message) => {
+    const lines = message.split("\n");
+    const imageUrlPattern = /(https?:\/\/.*\.(?:png|jpg|jpeg|gif))/gi;
+    const firstLine = lines[0].trim();
+
+    let htmlContent = "";
+
+    // Check if the first line is a valid image URL
+    if (imageUrlPattern.test(firstLine)) {
+      htmlContent += `<img src="${firstLine}" alt="Message Image" class="rounded-lg mb-2 max-w-full max-h-48" /><br />`;
+    }
+
+    // Combine remaining text and truncate if too long
+    const remainingText = lines.slice(1).join("<br />");
+    const truncatedText =
+      remainingText.length > 100
+        ? remainingText.substring(0, 100) +
+          '... <span class="text-blue-500 cursor-pointer">Show more</span>'
+        : remainingText;
+    htmlContent += truncatedText;
+
+    return htmlContent;
+  };
+
   return (
     <div className="flex flex-col gap-10">
       <div className="flex justify-between items-center">
@@ -292,7 +318,7 @@ const Chats = () => {
           </Link>
         </div>
       </div>
-  
+
       <div className="flex flex-col lg:flex-row lg:justify-between w-full h-[100vh]">
         {/* Scrollable User List */}
         {(!selectedUser || isDesktop) && (
@@ -307,7 +333,7 @@ const Chats = () => {
               </p>
               <p className="hidden lg:flex">Oldest</p>
             </div>
-  
+
             <div>
               {userData?.data?.map((user) => (
                 <div
@@ -319,11 +345,23 @@ const Chats = () => {
                     <p className="text-[14px] font-[500]">
                       {user?.userInfo?.firstname} {user?.userInfo?.lastname}
                     </p>
-                    <p className="text-gray-600 text-[12px] font-[500]">
-                      {user?.lastMessage?.message}
+                    <p className="text-gray-600 text-[12px] font-[500] line-clamp-1">
+                      {user?.lastMessage?.message?.match(
+                        /(https?:\/\/[^\s]+)/
+                      ) ? (
+                        <span className="flex items-center">
+                          <MdImage
+                            className="inline-block text-gray-600"
+                            size={16}
+                          />{" "}
+                          Photo
+                        </span>
+                      ) : (
+                        user?.lastMessage?.message
+                      )}
                     </p>
                   </div>
-  
+
                   <div>
                     {user?.unreadMessagesCount > 0 && (
                       <span className="bg-black text-white text-[10px] font-[600] rounded-full h-5 w-5 flex items-center justify-center border border-white">
@@ -331,7 +369,9 @@ const Chats = () => {
                       </span>
                     )}
                     <p className="text-[#51A40A] text-[10px] font-[600]">
-                      {useTimestamp({ timestamp: user?.lastMessage?.createdAt })}
+                      {useTimestamp({
+                        timestamp: user?.lastMessage?.createdAt,
+                      })}
                     </p>
                   </div>
                 </div>
@@ -339,14 +379,16 @@ const Chats = () => {
             </div>
           </div>
         )}
-  
+
         {/* Message when no chat is selected in desktop mode */}
         {isDesktop && !selectedUser && (
           <div className="flex items-center justify-center w-full lg:w-[60%] h-[70vh]">
-            <p className="text-gray-500 text-xl">Select a chat to begin messaging.</p>
+            <p className="text-gray-500 text-xl">
+              Select a chat to begin messaging.
+            </p>
           </div>
         )}
-  
+
         {/* Fixed Chat Area */}
         {selectedUser && (
           <div className="w-full lg:w-[60%] flex flex-col h-[100dvh] lg:h-[70vh] bg-[url('/images/products/chat-bg.png')] bg-cover bg-no-repeat lg:rounded-lg shadow-lg">
@@ -383,7 +425,7 @@ const Chats = () => {
                 </div>
               </h2>
             </div>
-  
+
             {/* Chat Messages Section */}
             <div className="flex-grow overflow-y-auto p-4" ref={messagesEndRef}>
               <div className="flex flex-col gap-4">
@@ -402,7 +444,14 @@ const Chats = () => {
                             : "bg-white text-black mr-auto shadow-md border border-gray-200"
                         }`}
                       >
-                        <p>{msg.message}</p>
+                        <div className="max-w-md break-words">
+                          <p
+                            className="text-sm text-white-700"
+                            dangerouslySetInnerHTML={{
+                              __html: renderMessageWithImages(msg.message),
+                            }}
+                          />
+                        </div>
                       </div>
                       <span className="text-[10px] font-[500] mt-1">
                         {new Date(msg.createdAt).toLocaleTimeString([], {
@@ -415,7 +464,7 @@ const Chats = () => {
                 ))}
               </div>
             </div>
-  
+
             {/* Message Input Section */}
             <div className="bg-white p-3 shadow-md flex items-center gap-3 z-10">
               <textarea
@@ -443,7 +492,7 @@ const Chats = () => {
         )}
       </div>
     </div>
-  );  
+  );
 };
 
 export { Chats };

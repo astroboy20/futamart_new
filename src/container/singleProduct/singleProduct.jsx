@@ -44,8 +44,8 @@ const SingleProduct = ({ getSingleProduct }) => {
     };
   }, [selectedImage]);
 
-  const handleClick = (userId, name, price, featuredImage) => {
-    const url = `/user/chat/${userId}?name=${encodeURIComponent(
+  const handleClick = (userId, featuredImage, name, price) => {
+    const url = `/user/chat/${userId}?featuredImage=${encodeURIComponent(featuredImage)}&name=${encodeURIComponent(
       name
     )}&price=${encodeURIComponent(price)}`;
     router.push(url);
@@ -261,9 +261,9 @@ const SingleProduct = ({ getSingleProduct }) => {
             onClick={() =>
               handleClick(
                 getSingleProduct?.data?.product?.user,
+                getSingleProduct?.data?.product?.featuredImage,
                 getSingleProduct?.data?.product?.name,
                 getSingleProduct?.data?.product?.price,
-                // getSingleProduct?.data?.product?.featuredImage
               )
             }
             className="bg-[#000000] text-[#FFFFFF] border border-[#000000] py-[10px] px-[24px] font-semibold text-[12px] leading-[14.63px] rounded-[4px] flex-grow sm:p-[24px] sm:text-[24px] sm:leading-[29.26px] sm:w-full"

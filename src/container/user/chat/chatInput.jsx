@@ -26,6 +26,7 @@ const ChatInput = ({
   const fileInputRef = useRef(null);
 
   const handleAttachmentClick = () => {
+    console.log("Attachment button clicked");
     fileInputRef.current.click();
   };
 
@@ -37,12 +38,35 @@ const ChatInput = ({
     setIsChatOpen(false);
   };
 
-  console.log(user);
-  console.log(messages?.data?.userInfo);
-  console.log(isChatOpen);
+  // console.log(user);
+  // console.log(messages?.data?.userInfo);
+  // console.log(isChatOpen);
 
   // Prevent rendering if the chat is closed
   if (!isChatOpen) return null;
+  const renderMessageWithImages = (message) => {
+    const lines = message.split("\n");
+    const imageUrlPattern = /(https?:\/\/.*\.(?:png|jpg|jpeg|gif))/gi;
+    const firstLine = lines[0].trim();
+
+    let htmlContent = "";
+
+    // Check if the first line is a valid image URL
+    if (imageUrlPattern.test(firstLine)) {
+      htmlContent += `<img src="${firstLine}" alt="Message Image" class="rounded-lg mb-2 max-w-full max-h-48" /><br />`;
+    }
+
+    // Combine remaining text and truncate if too long
+    const remainingText = lines.slice(1).join("<br />");
+    const truncatedText =
+      remainingText.length > 100
+        ? remainingText.substring(0, 100) +
+          '... <span class="text-blue-500 cursor-pointer">Show more</span>'
+        : remainingText;
+    htmlContent += truncatedText;
+
+    return htmlContent;
+  };
 
   return (
     <div
@@ -61,14 +85,13 @@ const ChatInput = ({
               </button>
             )}
             <Avatar>
-              
-                <AvatarImage
-                  src={
-                    messages?.data?.userInfo?.business_logo ||
-                    selectedUser?.businessInfo?.business_logo
-                  }
-                />
-              
+              <AvatarImage
+                src={
+                  messages?.data?.userInfo?.business_logo ||
+                  selectedUser?.businessInfo?.business_logo
+                }
+              />
+
               <AvatarFallback>
                 {messages?.data?.userInfo?.businessName ||
                   selectedUser?.businessInfo?.businessName}
@@ -111,11 +134,14 @@ const ChatInput = ({
                       : "bg-white text-black mr-auto shadow-md border border-gray-200"
                   }`}
                 >
-                  <p
-                    dangerouslySetInnerHTML={{
-                      __html: msg.message.replace(/\n/g, "<br />"),
-                    }}
-                  />
+                  <div className="max-w-md break-words">
+                    <p
+                      className="text-sm text-white-700"
+                      dangerouslySetInnerHTML={{
+                        __html: renderMessageWithImages(msg.message),
+                      }}
+                    />
+                  </div>
 
                   {msg.file && msg.file.match(/\.(jpeg|jpg|gif|png)$/) && (
                     <img
@@ -124,7 +150,6 @@ const ChatInput = ({
                       className="mt-2 max-w-[200px] rounded"
                     />
                   )}
-
                   {msg.file && msg.file.match(/\.(pdf|doc|docx)$/) && (
                     <div className="mt-2">
                       <iframe
@@ -134,7 +159,6 @@ const ChatInput = ({
                       />
                     </div>
                   )}
-
                   {msg.status === "failed" && (
                     <div
                       className="text-red-500 text-[10px] mt-1 cursor-pointer"
@@ -171,9 +195,9 @@ const ChatInput = ({
           disabled={sending}
         />
 
-        <button onClick={handleAttachmentClick} className="p-2">
+        {/* <button onClick={handleAttachmentClick} className="p-2">
           <FiPaperclip size={20} />
-        </button>
+        </button> */}
 
         <input
           type="file"

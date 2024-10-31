@@ -10,6 +10,7 @@ export default function Page() {
   const searchParams = useSearchParams();
 
   const { id } = params;
+  const featuredImage = searchParams.get("featuredImage");
   const name = searchParams.get("name");
   const price = searchParams.get("price");
 
@@ -17,7 +18,7 @@ console.log(id, name, price);
   return (
     <div>
       <Header/>
-      <Chats id={id} name={name} price={price} />
+      <Chats id={id} featuredImage={featuredImage} name={name} price={price} />
     </div>
   );
 }
