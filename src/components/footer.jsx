@@ -7,6 +7,7 @@ import axios from "axios";
 import { BASE_URL } from "@/hooks/useFetchItems";
 import { useToast } from "@chakra-ui/react";
 import { ClipLoader } from "react-spinners";
+import Link from "next/link";
 
 const Footer = () => {
   const toast = useToast();
@@ -53,10 +54,10 @@ const Footer = () => {
           </div>
           <div className="flex flex-col gap-2.5 text-[14px] font-[400] lg:text-[18px] ">
             <p className="flex gap-2.5 items-center">
-              <WhatsappIcon /> +234-123-123-123
+              <WhatsappIcon /> +234-705-428-9365
             </p>
             <p className="flex gap-2.5 items-center">
-              <PhoneIcon /> +234-123-123-123
+              <PhoneIcon /> +234-705-428-9365
             </p>
           </div>
           <div className="text-[16px] font-[500]">
@@ -85,12 +86,22 @@ const Footer = () => {
           <h1 className="text-[16px] font-[600] lg:text-[24px] ">
             All Categories
           </h1>
-          <div className="text-[14px] font-[400] lg:text-[18px]  flex flex-col gap-2.5">
-            <p>Food</p>
-            <p>Electronics & Gadgets</p>
-            <p>Fashion & Clothing</p>
-            <p>Beauty & Skincare</p>
-            <p>Hair products</p>
+          <div className="text-[14px] font-[400] lg:text-[18px] flex flex-col gap-2.5">
+            <Link href="/food">
+              <p>Food</p>
+            </Link>
+            <Link href="/electronic-and-gadgets">
+              <p>Electronics & Gadgets</p>
+            </Link>
+            <Link href="/fashion-and-clothing">
+              <p>Fashion & Clothing</p>
+            </Link>
+            <Link href="/beauty-and-skincare">
+              <p>Beauty & Skincare</p>
+            </Link>
+            <Link href="/hair-products">
+              <p>Hair products</p>
+            </Link>
           </div>
         </div>
         <div className="flex flex-col gap-2.5 ">
