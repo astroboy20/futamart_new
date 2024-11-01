@@ -8,6 +8,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { X } from "lucide-react";
+import { useToast } from "@chakra-ui/react";
 
 const SingleProduct = ({ getSingleProduct }) => {
   const token = Cookies.get("token");
@@ -16,6 +17,7 @@ const SingleProduct = ({ getSingleProduct }) => {
   const dropdownRef = useRef(null);
   const [selectedImage, setSelectedImage] = useState(null);
   const modalRef = useRef(null);
+  const toast = useToast();
 
   const toggleDropdown = () => {
     setDropdownOpen(!isDropdownOpen);
@@ -45,9 +47,9 @@ const SingleProduct = ({ getSingleProduct }) => {
   }, [selectedImage]);
 
   const handleClick = (userId, featuredImage, name, price) => {
-    const url = `/user/chat/${userId}?featuredImage=${encodeURIComponent(featuredImage)}&name=${encodeURIComponent(
-      name
-    )}&price=${encodeURIComponent(price)}`;
+    const url = `/user/chat/${userId}?featuredImage=${encodeURIComponent(
+      featuredImage
+    )}&name=${encodeURIComponent(name)}&price=${encodeURIComponent(price)}`;
     router.push(url);
   };
 
@@ -257,15 +259,26 @@ const SingleProduct = ({ getSingleProduct }) => {
           >
             Add to cart
           </AddToCart>
+
           <button
-            onClick={() =>
+            onClick={() => {
+              if (!token) {
+                toast({
+                  title: "Login Required",
+                  description: "Please log in to chat with the seller.",
+                  status: "warning",
+                  duration: 3000,
+                  isClosable: true,
+                });
+                return;
+              }
               handleClick(
                 getSingleProduct?.data?.product?.user,
                 getSingleProduct?.data?.product?.featuredImage,
                 getSingleProduct?.data?.product?.name,
-                getSingleProduct?.data?.product?.price,
-              )
-            }
+                getSingleProduct?.data?.product?.price
+              );
+            }}
             className="bg-[#000000] text-[#FFFFFF] border border-[#000000] py-[10px] px-[24px] font-semibold text-[12px] leading-[14.63px] rounded-[4px] flex-grow sm:p-[24px] sm:text-[24px] sm:leading-[29.26px] sm:w-full"
           >
             Chat with seller

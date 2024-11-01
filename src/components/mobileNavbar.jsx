@@ -30,7 +30,7 @@ const MobileNavbar = ({ handleShow }) => {
     "beauty-and-skincare": <PiFanLight size={"30px"} />,
     "hair-products": <GiChemicalTank size={"30px"} />,
     footwears: <TbShoe size={"30px"} />,
-    "bakery":<PiBreadBold size={"30px"}/>
+    bakery: <PiBreadBold size={"30px"} />,
   };
 
   return (
@@ -56,12 +56,15 @@ const MobileNavbar = ({ handleShow }) => {
           </div>
 
           <div className="flex flex-col gap-5">
-            <Link href={"/user/chat"} onClick={handleShow}>
-              <p className="flex items-center gap-3">
-                <FiMessageCircle className="text-[23px]" />
-                Chats
-              </p>
-            </Link>
+            {token ? (
+              <Link href="/user/chat" onClick={handleShow}>
+                <p className="flex items-center gap-3">
+                  <FiMessageCircle className="text-[23px]" />
+                  Chats
+                </p>
+              </Link>
+            ) : null}
+
             <Link href={"/profile"} onClick={handleShow}>
               <p className="flex items-center gap-3">
                 <UserIcon />
