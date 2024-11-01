@@ -30,7 +30,7 @@ const MobileNavbar = ({ handleShow }) => {
     "beauty-and-skincare": <PiFanLight size={"30px"} />,
     "hair-products": <GiChemicalTank size={"30px"} />,
     footwears: <TbShoe size={"30px"} />,
-    "bakery":<PiBreadBold />
+    "bakery":<PiBreadBold size={"30px"}/>
   };
 
   return (
