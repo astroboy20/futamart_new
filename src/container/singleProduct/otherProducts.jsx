@@ -38,14 +38,14 @@ const OtherProducts = ({ relatedProducts }) => {
                   </p>
                   <span className="lg:hidden">
                     <StarRating
-                      rating={singleProduct.averageRating || 5}
+                      rating={singleProduct.averageRating}
                       width={10}
                       height={10}
                     />
                   </span>
                   <span className="hidden lg:flex">
                     <StarRating
-                      rating={singleProduct.averageRating || 5}
+                      rating={singleProduct.averageRating}
                       width={20}
                       height={20}
                     />
