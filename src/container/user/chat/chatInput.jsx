@@ -3,7 +3,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import React, { useRef } from "react";
 import { FiSend, FiPaperclip } from "react-icons/fi"; // Import paperclip icon
 import { IoIosArrowBack } from "react-icons/io";
-
+import { useRouter } from 'next/navigation';
+import { usePathname } from "next/navigation";
 const ChatInput = ({
   user,
   messages,
@@ -30,17 +31,23 @@ const ChatInput = ({
     fileInputRef.current.click();
   };
 
+  const router = useRouter();
+  const pathname = usePathname();
+
   const handleCloseChat = () => {
     if (typeof window !== "undefined") {
       localStorage.removeItem(`initialMessageSent_${id}`);
     }
-    setSelectedUser(null);
-    setIsChatOpen(false);
-  };
 
-  // console.log(user);
-  // console.log(messages?.data?.userInfo);
-  // console.log(isChatOpen);
+    setSelectedUser(null);
+
+    if (pathname.startsWith(`/user/chat/`) && id) {
+      router.push('/user/chat'); 
+    } 
+    else if (pathname === '/user/chat') {
+      setIsChatOpen(false);
+    }
+  };
 
   // Prevent rendering if the chat is closed
   if (!isChatOpen) return null;
