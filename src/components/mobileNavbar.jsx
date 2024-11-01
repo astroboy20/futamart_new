@@ -11,6 +11,7 @@ import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import Cookies from "js-cookie";
 import { FiMessageCircle } from "react-icons/fi";
+import { PiBreadBold } from "react-icons/pi";
 
 const MobileNavbar = ({ handleShow }) => {
   const token = Cookies.get("token");
@@ -29,6 +30,7 @@ const MobileNavbar = ({ handleShow }) => {
     "beauty-and-skincare": <PiFanLight size={"30px"} />,
     "hair-products": <GiChemicalTank size={"30px"} />,
     footwears: <TbShoe size={"30px"} />,
+    "bakery":<PiBreadBold />
   };
 
   return (

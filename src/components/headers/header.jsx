@@ -109,7 +109,7 @@ const Header = () => {
       </div>
 
       {/* Conditionally render the search bar based on the pathname */}
-      {pathname !== "/user/chat" && (
+      {(pathname !== "/user/chat" && !pathname.startsWith("/user/chat/")) && (
         <div className="flex items-center flex-grow lg:justify-center w-full lg:w-4/6 gap-5 lg:px-10">
           <div className="w-full lg:w-full flex items-center shadow-[2px_2px_4px_0_rgba(0,0,0,0.1)] bg-[#f2f3f4] rounded-[2px] px-4 py-1">
             <div>
