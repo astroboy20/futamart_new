@@ -18,10 +18,10 @@ const PopularBrand = () => {
         ) {
           scrollRef.current.scrollTo({ left: 0, behavior: "smooth" });
         } else {
-          scrollRef.current.scrollBy({ left: 300, behavior: "smooth" }); // Adjust scrolling amount as needed
+          scrollRef.current.scrollBy({ left: 300, behavior: "smooth" }); 
         }
       }
-    }, 5000); // Adjust interval duration as needed
+    }, 3000); // Adjust interval duration as needed
 
     return () => clearInterval(interval);
   }, []);
