@@ -26,7 +26,7 @@ const RecentProducts = () => {
 
   return (
     <div className="flex flex-col gap-10 py-10">
-      <div className="flex bg-black py-[8px] justify-center items-center">
+      <div className="flex bg-black justify-center items-center">
         <h1 className="text-[15px] text-white lg:text-[25px] font-[600]">
           Recently Added
         </h1>
@@ -35,7 +35,7 @@ const RecentProducts = () => {
   {recentProducts?.data?.map((singleProduct) => (
     <div
       key={singleProduct._id}
-      className="flex-none w-[180px] cursor-pointer shadow-md bg-[#f2f4f4] sm:w-[295px] transition-transform duration-300 hover:scale-105"
+      className="flex-none w-[180px] cursor-pointer shadow-md bg-black sm:w-[295px] transition-transform duration-300 hover:scale-105"
     >
       <Link href={`/products/${singleProduct.slug}`}>
         <img
@@ -47,12 +47,12 @@ const RecentProducts = () => {
       <div className="px-3 pt-[.5em] flex flex-col gap-2">
         <div className="flex items-center justify-between">
           <Link href={`/products/${singleProduct.slug}`}>
-            <p className="capitalize font-semibold text-sm lg:text-lg w-[98px] h-[12px] leading-[12.19px] sm:w-[215px] sm:h-[22px] sm:text-[18px] sm:leading-[21.94px] truncate">
+            <p className="capitalize font-semibold text-sm lg:text-lg w-[98px] h-[12px] leading-[12.19px] sm:w-[215px] sm:h-[22px] sm:text-[18px] sm:leading-[21.94px] text-white truncate">
               {singleProduct.name}
             </p>
           </Link>
         </div>
-        <p className="text-[#888282] text-[10px] lg:text-base leading-[9.75px] truncate font-semibold">
+        <p className="text-[#F68B1E] text-[10px] lg:text-base leading-[9.75px] truncate font-semibold pb-[10px]">
           &#8358;{singleProduct.price.toLocaleString()}
         </p>
       </div>
