@@ -26,7 +26,7 @@ const RecentProducts = () => {
 
   return (
     <div className="flex flex-col gap-10 py-10">
-      <div className="flex bg-black justify-center items-center">
+      <div className="flex bg-black py-[8px] justify-center items-center">
         <h1 className="text-[15px] text-white lg:text-[25px] font-[600]">
           Recently Added
         </h1>

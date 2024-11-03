@@ -1,0 +1,19 @@
+/* PopularBrand.module.css */
+
+@keyframes slideIn {
+    0% {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    100% {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+  
+  .slideIn {
+    animation: slideIn 0.8s ease-out forwards;
+    animation-delay: calc(0.2s * var(--animation-order)); /* Stagger animation for each card */
+    opacity: 0; /* Initial opacity for smooth animation */
+  }
+  
