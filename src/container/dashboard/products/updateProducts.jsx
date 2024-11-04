@@ -153,7 +153,7 @@ const UpdateProducts = ({ onClose, product }) => {
   return (
     <main className="p-3 lg:p-5 w-full mt-10">
       <div className="flex justify-between items-center lg:items-start">
-        <h1 className="underline text-[24px] font-[600]">Add Products</h1>
+        <h1 className="underline text-[24px] font-[600]">Update Products</h1>
 
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mt-10">
