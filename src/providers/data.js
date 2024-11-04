@@ -14,10 +14,10 @@ export const categories = [
 
 export const promotionData = {
   itemName: "Laptop Stand",
-  oldPrice: "3,000",
-  newPrice: "3,000",
+  oldPrice: "18,000",
+  newPrice: "14,000",
   text: "Get your laptop stand, phone stand and mouse pad all for",
-  imgUrl: "https://fakestoreapi.com/img/81QpkIctqPL._AC_SX679_.jpg",
+  imgUrl: "https://s3-alpha-sig.figma.com/img/159a/0c01/7013aea8d056b0fc4c2a082c2227ccd3?Expires=1731888000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=OB4~1FvVpRrBUufSnYq5uU9LradYjij905-MioMAWrtvVI4jmjDSp7XjU2341Ny4MHehu6keTgHPakiqobfDXwNxb1MEi2C16pmap~EfF1ec7R17ybsW-zxZQjdDmexciFrcQfdyb0sb76v3nAFDqq-ZkLwWWdi5hg5d3HE1qlCxYUFUqgw4rUag3g~dfKtYmO~dWThooF16vmu8oD7xH3r8Y~i5IbYkRlm3-~wBk02g6oAr9WN8ZoAiULgyeNl1fizfRiYlzgd-NZ6hyt~U4eaFF~5InsKCybQ4k1xfAzqLKaNFlBiYFru1nGDYbKXiAMDLaWkKMYDK-YGcZzKsvw__",
 };
 
 export const products = [

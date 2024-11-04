@@ -10,13 +10,18 @@ const nextConfig = {
         hostname: "logo.com",
         pathname: "/image-cdn/images/**",
       },
+      {
+        protocol: "https",
+        hostname: "fakestoreapi.com",
+        pathname: "/img/**", 
+      },
     ],
     domains: [
       "res.cloudinary.com",
       "localhost",
       "api.futamart.com",
       "logo.com",
-      "media.istockphoto.com", 
+      "media.istockphoto.com",
     ],
   },
 };

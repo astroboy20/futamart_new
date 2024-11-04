@@ -27,7 +27,7 @@ const Promotion = () => {
             Was {promotionData.oldPrice} <br /> Now {promotionData.newPrice}
           </p>
           <div className="text-[20px] leading-[29.26px] sm:text-[40px] font-semibold text-wrap sm:leading-[48.76px] ">
-            {promotionData.text} <span className="text-[#FFAD33]">#1400</span>
+            {promotionData.text} <span className="text-[#FFAD33]">#{promotionData.newPrice}</span>
           </div>
           <button className="bg-[#FFFFFF] p-1 text-[18px] leading-[21.94px] w-[156px] h-[40px] sm:w-[241px] sm:h-[60px] sm:text-[24px] sm:leading-[29.26px] text-[#000000] rounded-sm border-none">
             Chat with seller
