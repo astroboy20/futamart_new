@@ -16,7 +16,7 @@ const Introduction = ({ nextStep }) => {
           Requirements to become a seller on futamart
         </p>
         <p className="text-[14px] leading-[17.07px] md:text-[20px] md:leading-[26.82px]">
-          To become a seller on FUTA MART, you must:
+          To become a seller on futamart, you must:
         </p>
         <ul className="list-disc p-3 flex flex-col gap-6 md:gap-4 text-[14px] leading-[17.07px] md:text-[20px] md:leading-[26.82px]">
           <li>
