@@ -10,7 +10,7 @@ import { useState } from "react";
 import { BASE_URL, useFetchItems } from "@/hooks/useFetchItems";
 import { Loading } from "@/components/loading";
 import { AddToFavourite } from "@/components/AddToFavourite";
-import { Search } from "@/container/home/search/search";
+import { Search } from "@/app/search/components/search";
 export default function Page() {
   const searchParams = useSearchParams();
 
