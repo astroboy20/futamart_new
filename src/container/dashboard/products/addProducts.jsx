@@ -214,7 +214,7 @@ const AddProducts = ({ onClose }) => {
     onError: (error) => {
       toast({
         title: "Error",
-        description: error.message || "There was an error uploading the product.",
+        description: error.message,
         status: "error",
         duration: 3000,
         isClosable: true,
