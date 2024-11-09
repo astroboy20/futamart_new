@@ -20,8 +20,14 @@ const RecentProducts = () => {
       </div>
     );
   }
+
   if (error) {
     return <div>{error.message}</div>;
+  }
+
+  // Return nothing if no recent products are found
+  if (!recentProducts?.data?.length) {
+    return null;
   }
 
   return (
@@ -32,34 +38,33 @@ const RecentProducts = () => {
         </h1>
       </div>
       <div className="flex gap-[15px] no-scrollbar overflow-x-auto scrollbar-hide py-3">
-  {recentProducts?.data?.map((singleProduct) => (
-    <div
-      key={singleProduct._id}
-      className="flex-none w-[180px] cursor-pointer shadow-md bg-black sm:w-[295px] transition-transform duration-300 hover:scale-105"
-    >
-      <Link href={`/products/${singleProduct.slug}`}>
-        <img
-          className="h-[175px] bg-[white] w-[180px] object-contain sm:h-[290px] sm:w-[295px]"
-          src={singleProduct.featuredImage}
-          alt={singleProduct.name}
-        />
-      </Link>
-      <div className="px-3 pt-[.5em] flex flex-col gap-2">
-        <div className="flex items-center justify-between">
-          <Link href={`/products/${singleProduct.slug}`}>
-            <p className="capitalize font-semibold text-sm lg:text-lg w-[98px] h-[12px] leading-[12.19px] sm:w-[215px] sm:h-[22px] sm:text-[18px] sm:leading-[21.94px] text-white truncate">
-              {singleProduct.name}
-            </p>
-          </Link>
-        </div>
-        <p className="text-[#F68B1E] text-[10px] lg:text-base leading-[9.75px] truncate font-semibold pb-[10px]">
-          &#8358;{singleProduct.price.toLocaleString()}
-        </p>
+        {recentProducts.data.map((singleProduct) => (
+          <div
+            key={singleProduct._id}
+            className="flex-none w-[180px] cursor-pointer shadow-md bg-black sm:w-[295px] transition-transform duration-300 hover:scale-105"
+          >
+            <Link href={`/products/${singleProduct.slug}`}>
+              <img
+                className="h-[175px] bg-[white] w-[180px] object-contain sm:h-[290px] sm:w-[295px]"
+                src={singleProduct.featuredImage}
+                alt={singleProduct.name}
+              />
+            </Link>
+            <div className="px-3 pt-[.5em] flex flex-col gap-2">
+              <div className="flex items-center justify-between">
+                <Link href={`/products/${singleProduct.slug}`}>
+                  <p className="capitalize font-semibold text-sm lg:text-lg w-[98px] h-[12px] leading-[12.19px] sm:w-[215px] sm:h-[22px] sm:text-[18px] sm:leading-[21.94px] text-white truncate">
+                    {singleProduct.name}
+                  </p>
+                </Link>
+              </div>
+              <p className="text-[#F68B1E] text-[10px] lg:text-base leading-[9.75px] truncate font-semibold pb-[10px]">
+                &#8358;{singleProduct.price.toLocaleString()}
+              </p>
+            </div>
+          </div>
+        ))}
       </div>
-    </div>
-  ))}
-</div>
-
     </div>
   );
 };

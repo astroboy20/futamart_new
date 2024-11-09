@@ -13,7 +13,7 @@ const ExploreProducts = () => {
     isLoading,
     error,
   } = useFetchItems({ url: `${BASE_URL}/products` });
-  // console.log(exploreProducts);
+
   if (isLoading) {
     return (
       <div className="p-3 sm:py-3 sm:px-0 grid grid-cols-2 gap-2 lg:gap-[15px] md:grid-cols-2 lg:grid-cols-4 w-full">
@@ -21,9 +21,14 @@ const ExploreProducts = () => {
       </div>
     );
   }
-
-  if (error) {
-    return <div> {error.message}</div>;
+  // Check if products array is empty and show "Launching Soon" message if true
+  if (!exploreProducts?.data?.products?.length) {
+    return (
+      <div className="flex flex-col gap-10 pb-10">
+        <h1 className="text-[20px] lg:text-[35px] font-[600]">Explore Products</h1>
+        <p className="text-center text-xl font-semibold">Launching Soon...</p>
+      </div>
+    );
   }
 
   return (
@@ -39,7 +44,7 @@ const ExploreProducts = () => {
       </div>
 
       <div className="py-3 sm:py-3 sm:px-0 grid grid-cols-2 gap-[15px] md:grid-cols-2 lg:grid-cols-4">
-        {exploreProducts?.data?.products?.map((singleProduct) => (
+        {exploreProducts.data.products.map((singleProduct) => (
           <div
             key={singleProduct._id}
             className="pb-3 max-w-[180px] cursor-pointer shadow-md bg-[#f2f4f4] sm:max-w-[295px]"
