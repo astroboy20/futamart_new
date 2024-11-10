@@ -57,7 +57,7 @@ const HomeContainer = () => {
         <RecentProducts />
         <ExploreProducts />
       </div>
-      <Promotion />
+      {/* <Promotion /> */}
     </>
   );
 };

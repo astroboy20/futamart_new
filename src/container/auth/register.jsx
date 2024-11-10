@@ -30,6 +30,11 @@ const Register = () => {
   };
   const { login } = useAuth();
 
+  const handleGoogleLogin = () => {
+    // Redirect the user to the Google login URL
+    window.location.href = "https://api.futamart.com/v1/user/google";
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -54,7 +59,8 @@ const Register = () => {
         setLoading(false);
         toast({
           title: "An error occurred.",
-          description: result?.message || "Unable to sign in. Please try again later.",
+          description:
+            result?.message || "Unable to sign in. Please try again later.",
           status: "error",
           duration: 5000,
           isClosable: true,
@@ -73,7 +79,6 @@ const Register = () => {
     } catch (error) {
       console.log(error?.message);
       setLoading(false);
-      
     }
   };
 
@@ -87,7 +92,10 @@ const Register = () => {
         </p>
       </div>
       <div className="flex flex-col w-full lg:w-4/5">
-        <Button className="bg-[#F7F7F7] flex gap-[10px] items-center text-[16px] font-[600] w-full rounded-[16px] border-2 border-[#292D32BA] text-[#000] py-[25px]">
+        <Button
+          onClick={handleGoogleLogin}
+          className="bg-[#F7F7F7] flex gap-[10px] items-center text-[16px] font-[600] w-full rounded-[16px] border-2 border-[#292D32BA] text-[#000] py-[25px]"
+        >
           <GoogleIcon /> Continue with Google
         </Button>
 
@@ -215,13 +223,13 @@ const Register = () => {
               <span className="text-[#F18341]">Policy</span>
             </label>
           </div>
-         
+
           <Button
             disabled={!checked}
             className="bg-[#1A1A1A] w-full rounded-[16px] text-[16px] text-[#fff] my-5 font-[700] py-[25px]"
             type="submit"
           >
-            {loading ? <ClipLoader color="white"/> : "Continue"}
+            {loading ? <ClipLoader color="white" /> : "Continue"}
           </Button>
         </form>
 

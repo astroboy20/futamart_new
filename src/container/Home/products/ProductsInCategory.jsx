@@ -33,7 +33,7 @@ const ProductsInCategory = ({ slug }) => {
           objectFit="cover"
           alt=">Web interface icons created by mim_studio - Flaticon"
         />
-        {error.message}
+        No Product Found
       </div>
     );
   return (

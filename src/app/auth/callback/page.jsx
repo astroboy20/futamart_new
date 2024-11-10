@@ -14,7 +14,7 @@ const AuthCallback = () => {
     const token = urlParams.get('token');
     if (token) {
       login(token);
-      router.push('https://futamart.vercel.app');
+      router.push('https://shop.futamart.com');
     }
   }, [router, login]);
 

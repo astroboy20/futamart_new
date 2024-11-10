@@ -3,10 +3,10 @@
 import Image from "next/image";
 import { useEffect, useRef } from "react";
 import styles from "./PopularBrand.module.css"; // Import custom CSS module
-
+import { useRouter } from "next/navigation";
 const PopularBrand = () => {
   const scrollRef = useRef(null);
-
+  const router = useRouter()
   // Auto-scroll function
   useEffect(() => {
     const interval = setInterval(() => {
@@ -25,6 +25,10 @@ const PopularBrand = () => {
 
     return () => clearInterval(interval);
   }, []);
+
+  const handleOnClick = () => {
+    router.push("/seller");
+};
 
   return (
     <div className="pt-10 flex flex-col gap-6">
@@ -49,7 +53,7 @@ const PopularBrand = () => {
               Reach more customers with our platform, designed to help business owners thrive with ease and enjoy increased visibility.
               </p>
             </div>
-            <button className="mt-auto w-fit text-[8px] px-[20px] lg:text-[16px] font-[400] text-[#FFFFFF] lg:px-[40px] py-[8px] rounded-[4px] bg-black">
+            <button onClick={handleOnClick} className="mt-auto w-fit text-[8px] px-[20px] lg:text-[16px] font-[400] text-[#FFFFFF] lg:px-[40px] py-[8px] rounded-[4px] bg-black">
             Start Selling Today
             </button>
           </div>

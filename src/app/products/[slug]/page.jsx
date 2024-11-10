@@ -53,7 +53,7 @@ const Page = ({ params }) => {
         />
       </div>
 
-      <Promotion />
+      {/* <Promotion /> */}
       <Footer />
     </main>
   );
