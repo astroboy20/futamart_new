@@ -53,9 +53,18 @@ const Footer = () => {
             <Logo_Black_Small /> futamart
           </div>
           <div className="flex flex-col gap-2.5 text-[14px] font-[400] lg:text-[18px] ">
-            <p className="flex gap-2.5 items-center">
-              <WhatsappIcon /> +234-705-428-9365
+            <p className="flex items-center gap-2.5">
+              <a
+                href="https://wa.me/+2347054289365"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2.5"
+              >
+                <WhatsappIcon />
+                <span>+234-705-428-9365</span>
+              </a>
             </p>
+
             <p className="flex gap-2.5 items-center">
               <PhoneIcon /> +234-705-428-9365
             </p>

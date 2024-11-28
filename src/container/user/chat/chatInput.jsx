@@ -3,7 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import React, { useRef } from "react";
 import { FiSend, FiPaperclip } from "react-icons/fi"; // Import paperclip icon
 import { IoIosArrowBack } from "react-icons/io";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
 const ChatInput = ({
   user,
@@ -42,9 +42,8 @@ const ChatInput = ({
     setSelectedUser(null);
 
     if (pathname.startsWith(`/user/chat/`) && id) {
-      router.push('/user/chat'); 
-    } 
-    else if (pathname === '/user/chat') {
+      router.push("/user/chat");
+    } else if (pathname === "/user/chat") {
       setIsChatOpen(false);
     }
   };
@@ -54,10 +53,10 @@ const ChatInput = ({
   const renderMessageWithImages = (message) => {
     const lines = message.split("\n");
     const imageUrlPattern = /(https?:\/\/.*\.(?:png|jpg|jpeg|gif))/gi;
-  
+
     let htmlContent = "";
     let imageFound = false;
-  
+
     // Check each line for an image URL
     for (let line of lines) {
       const trimmedLine = line.trim();
@@ -68,15 +67,14 @@ const ChatInput = ({
         htmlContent += `<p>${line}</p>`;
       }
     }
-  
+
     // If no image is found, return the message as a plain text
     if (!imageFound) {
       htmlContent = message;
     }
-  
+
     return htmlContent;
   };
-  
 
   return (
     <div
@@ -97,21 +95,27 @@ const ChatInput = ({
             <Avatar>
               <AvatarImage
                 src={
-                  messages?.data?.userInfo?.business_logo ||
+                  messages?.data?.userInfo?.profile_image ||
                   selectedUser?.businessInfo?.business_logo
                 }
               />
 
               <AvatarFallback>
-                {messages?.data?.userInfo?.businessName ||
+                {(messages?.data?.userInfo?.firstname?.[0] || "") +
+                  (messages?.data?.userInfo?.lastname?.[0] || "") ||
                   selectedUser?.businessInfo?.businessName}
               </AvatarFallback>
             </Avatar>
             <div className="flex flex-col">
               <span>
-                {messages?.data?.userInfo?.businessName ||
-                  selectedUser?.businessInfo?.businessName}
+                {messages?.data?.userInfo?.firstname ||
+                messages?.data?.userInfo?.lastname
+                  ? `${messages?.data?.userInfo?.firstname || ""} ${
+                      messages?.data?.userInfo?.lastname || ""
+                    }`.trim()
+                  : selectedUser?.businessInfo?.businessName}
               </span>
+
               <span
                 className={`text-[12px] font-[400] ${
                   isOnline ? "text-green-500" : "text-red-500"

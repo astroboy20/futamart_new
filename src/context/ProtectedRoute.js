@@ -11,24 +11,32 @@ export const ProtectedRoute = ({ children }) => {
   });
 
   const role = user?.data?.role?.name;
+  const hasJustRegistered = sessionStorage.getItem("hasJustRegistered");
 
   useEffect(() => {
-    if (!isLoading && role && role !== "seller") {
+    // Only redirect if not loading, user is not a seller, and there's no registration flag
+    if (!isLoading && role && role !== "seller" && !hasJustRegistered) {
       router.push("/seller"); 
     }
-  }, [role, isLoading, router]);
+
+    // Clear the registration flag after checking it once
+    if (hasJustRegistered) {
+      sessionStorage.removeItem("hasJustRegistered");
+    }
+  }, [role, isLoading, router, hasJustRegistered]);
 
   if (isLoading) {
-    return <div></div>;
+    return <div>Loading...</div>;
   }
 
   if (error) {
     return <div>Error fetching user data.</div>; 
   }
 
-  if (role && role !== "seller") {
+  if (role && role !== "seller" && !hasJustRegistered) {
     return null; 
   }
 
   return <>{children}</>; 
 };
+

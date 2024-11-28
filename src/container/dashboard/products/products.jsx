@@ -38,11 +38,11 @@ const Products = () => {
   const [modalType, setModalType] = useState("add");
 
   const handleAddProduct = () => {
-    setSelectedProduct(null); 
+    setSelectedProduct(null);
     setModalType("add");
     setShowModal(true);
   };
-  
+
   const handleEdit = (product) => {
     setSelectedProduct(product);
     setModalType("edit");
@@ -52,7 +52,7 @@ const Products = () => {
   const handleCloseModal = () => {
     setShowModal(false);
     setSelectedProduct(null);
-    setModalType("add"); 
+    setModalType("add");
   };
 
   const deleteProductMutation = useMutation({
@@ -112,13 +112,16 @@ const Products = () => {
   console.log("d", selectedProduct);
   return (
     <main className="flex flex-col gap-5 lg:gap-10 mt-[100px] lg:mt-0">
-    <ModalContainer isOpen={showModal} onClose={handleCloseModal}>
-      {modalType === "add" ? (
-        <AddProducts onClose={handleCloseModal} />
-      ) : (
-        <UpdateProducts product={selectedProduct} onClose={handleCloseModal} />
-      )}
-    </ModalContainer>
+      <ModalContainer isOpen={showModal} onClose={handleCloseModal}>
+        {modalType === "add" ? (
+          <AddProducts onClose={handleCloseModal} />
+        ) : (
+          <UpdateProducts
+            product={selectedProduct}
+            onClose={handleCloseModal}
+          />
+        )}
+      </ModalContainer>
 
       <div className="flex justify-between items-center lg:items-start">
         <div className="w-[80%] lg:w-[70%] h-fit px-3 py-1 border-2 shadow-[2px_2px_4px_0_rgba(0,0,0,0.12)] rounded flex items-center gap-5">
@@ -204,8 +207,7 @@ const Products = () => {
                       <TableCell
                         className="flex items-center gap-2 text-[#00000066] cursor-pointer"
                         onClick={() => {
-                         handleEdit(data);
-                         
+                          handleEdit(data);
                         }}
                       >
                         <EditIcon /> Edit
@@ -225,7 +227,7 @@ const Products = () => {
             </TableBody>
           </Table>
           <span
-            className="lg:hidden flex absolute bottom-[30px] left-[75%]"
+            className="lg:hidden flex absolute bottom-[100px] left-[70%]"
             onClick={handleAddProduct}
           >
             <AddIcon />

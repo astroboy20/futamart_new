@@ -19,7 +19,7 @@ const FileUpload = ({ nextStep }) => {
   const [isChecked, setIsChecked] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [files, setFiles] = useState({
-    Credentials: {
+    Credential: {
       front_side: null,
       back_side: null,
     },
@@ -75,8 +75,8 @@ const FileUpload = ({ nextStep }) => {
 
       setFiles((prevFiles) => ({
         ...prevFiles,
-        Credentials: {
-          ...prevFiles.Credentials,
+        Credential: {
+          ...prevFiles.Credential,
           [side]: imageUrl,
         },
       }));
@@ -110,6 +110,7 @@ const FileUpload = ({ nextStep }) => {
         return response.data;
       } catch (error) {
         console.error("Error during registration:", error);
+        throw error
       }
     },
     onSuccess: (response) => {
@@ -124,10 +125,10 @@ const FileUpload = ({ nextStep }) => {
         isClosable: true,
       });
     },
-    onError: () => {
+    onError: (error) => {
       toast({
         title: "Registration Failed",
-        description: "There was an error registering the business.",
+        description:  error?.response?.data?.message || "There was an error registering the business.",
         status: "error",
         duration: 5000,
         isClosable: true,
@@ -193,13 +194,13 @@ const FileUpload = ({ nextStep }) => {
           />
           <label
             className={`border ${
-              files.Credentials.front_side
+              files.Credential.front_side
                 ? "border-transparent"
                 : "border-black"
             } cursor-pointer text-[8.75px] leading-[10.36px] lg:text-[11px] lg:leading-[13.41px] border-[#000000] rounded-full p-2`}
             htmlFor="front_side"
           >
-            {files.Credentials.front_side ? (
+            {files.Credential.front_side ? (
               <p className="border cursor-pointer text-[8.75px] leading-[10.36px] lg:text-[11px] lg:leading-[13.41px] text-[#fff] bg-[#000]  rounded-full p-2">
                 Uploaded
               </p>
@@ -221,7 +222,7 @@ const FileUpload = ({ nextStep }) => {
             <path d="M261.7-140.78q-98.95 0-169.09-68.09-70.13-68.09-70.13-166.43 0-83.66 47.85-150.03 47.84-66.37 127.8-84.5 28.39-94.26 106.22-151.82 77.82-57.57 175.65-57.57 119.83 0 205 82.07 85.17 82.06 91.39 201.32 70.7 14.22 115.92 69.68 45.21 55.45 45.21 127.85 0 82.3-58.43 139.91-58.44 57.61-140.79 57.61H541.48q-43.73 0-74.86-31.14-31.14-31.14-31.14-74.86V-418.3l-67.96 67.08-62.22-61.65L480-588.13l174.7 175.26-62.22 61.65-67.96-67.08v171.52H738.3q38.61 0 65.92-27.31 27.3-27.3 27.3-65.91t-27.3-65.91q-27.31-27.31-65.92-27.31h-66.78v-88.48q0-79.48-56.02-135.5-56.02-56.02-135.5-56.02-80.74 0-136.13 59.07-55.39 59.06-55.39 140.93H261.7q-55.19 0-94.21 39.01-39.01 39.01-39.01 94.2 0 55.18 39.01 94.21 39.02 39.02 94.21 39.02h93.78v106H261.7ZM480-427Z" />
           </svg>
           <p className="text-[12px] leading-[14.63px] font-semibold lg:text-[15px] lg:leading-[18.29px]">
-            Back side of your document
+            Back side of your document <span className="text-gray-400">(Optional)</span>
           </p>
           <p className="text-[8px] leading-[9.75px] lg:text-[10px] lg:leading-[12.19px]">
             Upload the back page of your document. Supports JPG, PNG, PDF.
@@ -235,13 +236,13 @@ const FileUpload = ({ nextStep }) => {
           />
           <label
             className={`border ${
-              files.Credentials.back_side
+              files.Credential.back_side
                 ? "border-transparent"
                 : "border-black"
             } cursor-pointer text-[8.75px] leading-[10.36px] lg:text-[11px] lg:leading-[13.41px] border-[#000000] rounded-full  p-2`}
             htmlFor="back_side"
           >
-            {files.Credentials.back_side ? (
+            {files.Credential.back_side ? (
               <p className="border cursor-pointer text-[8.75px] leading-[10.36px] lg:text-[11px] lg:leading-[13.41px] text-[#fff] bg-[#000]  rounded-full p-2">
                 Uploaded
               </p>
@@ -265,7 +266,7 @@ const FileUpload = ({ nextStep }) => {
         </p>
       </label>
       <Button
-        // disabled={!isChecked || !uploaded.front_side || !uploaded.back_side}
+        disabled={!isChecked || !uploaded.front_side}
         onClick={handleSubmit}
         type="submit"
         className="text-[15px] leading-[18.29px] w-full bg-[#000000] text-[#FFFFFF] p-3 rounded-md lg:text-[24px] lg:leading-[29.26px] h-[50px]"

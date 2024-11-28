@@ -198,7 +198,10 @@ const AddProducts = ({ onClose }) => {
         );
         return response.data;
       } catch (error) {
-        throw new Error("Something went wrong!", error?.response?.data);
+        throw new Error(
+          "Something went wrong, please ensure your inputs are valid!",
+          error?.response?.data
+        );
       }
     },
     onSuccess: (response) => {
@@ -222,67 +225,72 @@ const AddProducts = ({ onClose }) => {
     },
   });
 
- const handleSubmit = async () => {
-  setIsLoading(true);
+  const handleSubmit = async () => {
+    setIsLoading(true);
 
-  // Validation
-  const {
-    name,
-    category,
-    price,
-    description,
-    featuredImage,
-    additionalImages,
-    attributes,
-  } = formData;
+    // Validation
+    const {
+      name,
+      category,
+      price,
+      description,
+      featuredImage,
+      additionalImages,
+      attributes,
+    } = formData;
 
-  const missingFields = [];
-  if (!name) missingFields.push("Product Name");
-  if (!category) missingFields.push("Category");
-  if (!price) missingFields.push("Price");
-  if (!description) missingFields.push("Description");
-  if (!featuredImage) missingFields.push("Featured Image");
+    const missingFields = [];
+    if (!name) missingFields.push("Product Name");
+    if (!category) missingFields.push("Category");
+    if (!price) missingFields.push("Price");
+    if (!description) missingFields.push("Description");
+    if (!featuredImage) missingFields.push("Featured Image");
 
-  if (missingFields.length > 0) {
-    toast({
-      title: "Missing Fields",
-      description: `Please fill in the following: ${missingFields.join(", ")}.`,
-      status: "error",
-      duration: 3000,
-      isClosable: true,
+    // Check for at least one additional image
+    if (!additionalImages || additionalImages.length === 0) {
+      missingFields.push("At least one Additional Image");
+    }
+
+    if (missingFields.length > 0) {
+      toast({
+        title: "Missing Fields",
+        description: `Please fill in the following: ${missingFields.join(
+          ", "
+        )}.`,
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      setIsLoading(false);
+      return;
+    }
+
+    // Prepare formData for submission
+    const submissionData = new FormData();
+    submissionData.append("name", name);
+    submissionData.append("category", category);
+    submissionData.append("price", price);
+    submissionData.append("description", description);
+    submissionData.append("featuredImage", featuredImage);
+    additionalImages.forEach((file) => {
+      submissionData.append("additionalImages", file);
     });
-    setIsLoading(false);  
-    return;
-  }
+    submissionData.append("attributes", JSON.stringify(attributes));
 
-  // Prepare formData for submission
-  const submissionData = new FormData();
-  submissionData.append("name", name);
-  submissionData.append("category", category);
-  submissionData.append("price", price);
-  submissionData.append("description", description);
-  submissionData.append("featuredImage", featuredImage);
-  additionalImages.forEach((file) => {
-    submissionData.append("additionalImages", file);
-  });
-  submissionData.append("attributes", JSON.stringify(attributes));
-
-  try {
-    await mutation.mutateAsync(submissionData); 
-    onClose();
-  } catch (error) {
-    console.error("Something went wrong:", error);
-  } finally {
-    setIsLoading(false); 
-  }
-};
-
+    try {
+      await mutation.mutateAsync(submissionData);
+      onClose();
+    } catch (error) {
+      console.error("Something went wrong:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <main className="p-3 lg:p-5 w-full mt-10">
       <div className="flex justify-between items-center lg:items-start">
         <h1 className="underline text-[24px] font-[600]">Add Products</h1>
-        
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mt-10">
         <div className="h-fit text-black rounded-[16px] flex flex-col gap-10">
@@ -379,7 +387,15 @@ const AddProducts = ({ onClose }) => {
 
           {/* Attribute Management Section */}
           <div className="flex flex-col gap-5">
-            <label className="text-[16px] font-[500]">Attributes</label>
+            <label className="text-[16px] font-[500]">
+              Attributes{" "}
+              <span className="text-sm text-gray-500 mb-4">(Optional)</span>{" "}
+            </label>
+            <span className="text-sm text-gray-500 mb-2">
+              Add product attributes (e.g., Color, Size). Variants (e.g., Black,
+              Medium).
+            </span>
+
             {formData.attributes?.map((attr, attrIndex) => (
               <div key={attrIndex} className="flex flex-col gap-2 mb-4">
                 <div className="flex items-center gap-2 w-full">
@@ -398,6 +414,7 @@ const AddProducts = ({ onClose }) => {
                     <FaTrash />
                   </Button>
                 </div>
+
                 {attr.variants.map((variant, variantIndex) => (
                   <div
                     key={variantIndex}
@@ -425,6 +442,7 @@ const AddProducts = ({ onClose }) => {
                     </Button>
                   </div>
                 ))}
+
                 <Button
                   onClick={() => handleAddVariant(attrIndex)}
                   className="ml-auto w-fit mt-2 h-[40px]"
@@ -433,19 +451,24 @@ const AddProducts = ({ onClose }) => {
                 </Button>
               </div>
             ))}
+
             <Button onClick={handleAddAttribute}>Add Attribute</Button>
           </div>
 
-          <div className="flex flex-col gap-5">
+          <div className="flex flex-col gap-2">
             <label className="text-[16px] font-[500]">Product Price</label>
             <Input
               className="h-[55px]"
-              placeholder="#5000"
+              placeholder="5000"
               value={formData.price}
               name="price"
               onChange={handleChange}
             />
+            <span className="text-sm text-gray-500">
+              Please enter a price without commas, hashtags, or other symbols.
+            </span>
           </div>
+
           <div className="flex flex-col gap-5">
             <label className="text-[16px] font-[500]">Description</label>
             <Textarea

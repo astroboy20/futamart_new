@@ -4,7 +4,6 @@ import { BASE_URL, useFetchItems } from "@/hooks/useFetchItems";
 import { StarRating } from "@/components/rating";
 import { AddToCart } from "@/components/addToCart";
 import { Fav, Next_Icon } from "@/assets";
-import { Loading } from "@/components/loading";
 import { AddToFavourite } from "@/components/AddToFavourite";
 
 const BestProducts = () => {
@@ -14,16 +13,8 @@ const BestProducts = () => {
     error,
   } = useFetchItems({ url: `${BASE_URL}/top-rated-products` });
 
-  if (isLoading) {
-    return (
-      <div className="p-3 sm:py-3 sm:px-0 grid grid-cols-2 gap-2 lg:gap-[15px] md:grid-cols-2 lg:grid-cols-4 w-full">
-        <Loading />
-      </div>
-    );
-  }
-
-  // Return nothing if no products are found
-  if (!bestProducts?.data?.length) {
+  // Only render the component if data is successfully fetched and has content
+  if (isLoading || !bestProducts?.data?.length) {
     return null;
   }
 
@@ -31,7 +22,7 @@ const BestProducts = () => {
     <div className="flex flex-col gap-10 py-10">
       <div className="flex justify-between items-center">
         <h1 className="text-[20px] lg:text-[35px] font-[600]">
-          Best Selling Products
+          Top Rated Products
         </h1>
         <Link
           href={"/best-products"}
@@ -64,14 +55,14 @@ const BestProducts = () => {
                 </Link>
                 <AddToFavourite productId={singleProduct._id} />
               </div>
-              <p className="text-[#888282] text-[10px] lg:text-base leading-[9.75px] w-[70px] h-[10px] sm:w-[105px] sm:h-[20px] sm:text-[16px] sm:leading-[19.5px] truncate font-semibold">
+              <p className="text-[#888282] text-sm sm:text-lg font-semibold truncate">
                 &#8358;{singleProduct.price.toLocaleString()}
               </p>
               <span className="lg:hidden">
                 <StarRating
                   rating={singleProduct.averageRating || 5}
-                  width={10}
-                  height={10}
+                  width={15}
+                  height={15}
                 />
               </span>
               <span className="hidden lg:flex">

@@ -21,15 +21,21 @@ const ExploreProducts = () => {
       </div>
     );
   }
+
   // Check if products array is empty and show "Launching Soon" message if true
   if (!exploreProducts?.data?.products?.length) {
     return (
       <div className="flex flex-col gap-10 pb-10">
-        <h1 className="text-[20px] lg:text-[35px] font-[600]">Explore Products</h1>
+        <h1 className="text-[20px] lg:text-[35px] font-[600]">
+          Explore Products
+        </h1>
         <p className="text-center text-xl font-semibold">Launching Soon...</p>
       </div>
     );
   }
+
+  // Limit the displayed products to 20
+  const limitedProducts = exploreProducts.data.products.slice(0, 20);
 
   return (
     <div className="flex flex-col gap-10 pb-10">
@@ -37,14 +43,17 @@ const ExploreProducts = () => {
         <h1 className="text-[20px] lg:text-[35px] font-[600]">
           Explore Products
         </h1>
-        <Link href={"/explore-products"} className="flex items-center gap-3 text-[10px] lg:text-[20px]">
+        <Link
+          href={"/explore-products"}
+          className="flex items-center gap-3 text-[10px] lg:text-[20px]"
+        >
           View all
           <Next_Icon />
         </Link>
       </div>
 
       <div className="py-3 sm:py-3 sm:px-0 grid grid-cols-2 gap-[15px] md:grid-cols-2 lg:grid-cols-4">
-        {exploreProducts.data.products.map((singleProduct) => (
+        {limitedProducts.map((singleProduct) => (
           <div
             key={singleProduct._id}
             className="pb-3 max-w-[180px] cursor-pointer shadow-md bg-[#f2f4f4] sm:max-w-[295px]"
@@ -65,14 +74,15 @@ const ExploreProducts = () => {
                 </Link>
                 <AddToFavourite productId={singleProduct._id} />
               </div>
-              <p className="text-[#888282] text-[10px] lg:text-base font-semibold leading-[9.75px] w-[70px] h-[10px] sm:w-[105px] sm:h-[20px] sm:text-[16px] sm:leading-[19.5px] truncate">
+              <p className="text-[#888282] text-sm sm:text-lg font-semibold truncate">
                 &#8358;{singleProduct.price.toLocaleString()}
               </p>
+
               <span className="lg:hidden">
                 <StarRating
                   rating={singleProduct.averageRating}
-                  width={10}
-                  height={10}
+                  width={15}
+                  height={15}
                 />
               </span>
               <span className="hidden lg:flex">

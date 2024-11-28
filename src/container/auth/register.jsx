@@ -211,16 +211,18 @@ const Register = () => {
               </div>
             </formcontrol>
           </div>
-          <div className="flex justify-center  text-[16px] font-[400]">
-            <label className="flex gap-[5px] items-center">
+          <div className="flex justify-center text-[16px] font-[400] w-full">
+            <label className="flex gap-[5px] items-center flex-wrap justify-center">
               <input
                 type="checkbox"
                 checked={checked}
                 onChange={handleChecked}
               />
-              I agree to the{" "}
-              <span className="text-[#F18341]">Terms of Service</span> and
-              <span className="text-[#F18341]">Policy</span>
+              <span>
+                I agree to the{" "}
+                <span className="text-[#F18341]">Terms of Service</span> and
+                <span className="text-[#F18341]"> Policy</span>
+              </span>
             </label>
           </div>
 

@@ -25,15 +25,18 @@ const ProductsInCategory = ({ slug }) => {
     );
   if (error)
     return (
-      <div className="w-full h-fit my-[10%] flex flex-col items-center justify-center text-[20px] font-bold">
-        <Image
-          src={"/images/error.png"}
-          width={200}
-          height={200}
-          objectFit="cover"
-          alt=">Web interface icons created by mim_studio - Flaticon"
-        />
-        No Product Found
+      <div className="w-full h-fit my-[10%] flex flex-col items-center justify-center text-[15px] font-bold text-center">
+        <video
+          className="w-[200px] h-[200px] object-cover"
+          autoPlay
+          loop
+          muted
+          playsInline
+        >
+          <source src="/animation.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+        <p>No Seller Listed A Product Here Yet, Check Back Later</p>
       </div>
     );
   return (

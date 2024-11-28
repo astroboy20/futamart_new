@@ -1,12 +1,20 @@
 "use client";
-
+import Cookies from "js-cookie";
 import Image from "next/image";
+import { BASE_URL, useFetchItems } from "@/hooks/useFetchItems";
 import { useEffect, useRef } from "react";
 import styles from "./PopularBrand.module.css"; // Import custom CSS module
 import { useRouter } from "next/navigation";
 const PopularBrand = () => {
+  const token = Cookies.get("token");
+  const { data: userData } = useFetchItems({
+    url: `${BASE_URL}/user`,
+  });
+
   const scrollRef = useRef(null);
   const router = useRouter()
+  const role = userData?.data?.role?.name;
+
   // Auto-scroll function
   useEffect(() => {
     const interval = setInterval(() => {
@@ -27,8 +35,21 @@ const PopularBrand = () => {
   }, []);
 
   const handleOnClick = () => {
-    router.push("/seller");
-};
+    if (!token) {
+      // Redirect to login page if the user is not logged in
+      router.push("/login");
+    } else if (role === "seller") {
+      // If the user is logged in and has a seller role, navigate to /dashboard
+      router.push("/dashboard");
+    } else {
+      // Otherwise, navigate to /seller
+      router.push("/seller");
+    }
+  };
+  
+  const handleStartShopping = () =>{
+    router.push("/explore-products")
+  }
 
   return (
     <div className="pt-10 flex flex-col gap-6">
@@ -82,7 +103,7 @@ const PopularBrand = () => {
               Find exactly what you need without the hassle of searching far and wide. futamart brings products from verified local divers sellers to your fingertips.
               </p>
             </div>
-            <button className="mt-auto w-fit text-[8px] px-[20px] lg:text-[16px] font-[400] text-[#FFFFFF] lg:px-[40px] py-[8px] rounded-[4px] bg-black">
+            <button onClick={handleStartShopping} className="mt-auto w-fit text-[8px] px-[20px] lg:text-[16px] font-[400] text-[#FFFFFF] lg:px-[40px] py-[8px] rounded-[4px] bg-black">
             Start Shopping
             </button>
           </div>

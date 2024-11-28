@@ -12,6 +12,7 @@ import { useAuth } from "@/context/AuthContext";
 import Cookies from "js-cookie";
 import { FiMessageCircle } from "react-icons/fi";
 import { PiBreadBold } from "react-icons/pi";
+import { GiDelicatePerfume } from "react-icons/gi";
 
 const MobileNavbar = ({ handleShow }) => {
   const token = Cookies.get("token");
@@ -26,7 +27,8 @@ const MobileNavbar = ({ handleShow }) => {
   const categoryIcons = {
     Food: <PiBowlFood size={"30px"} />,
     "electronic-and-gadgets": <IoMdPhonePortrait size={"30px"} />,
-    "fashion-and-clothing": <TbHanger size={"30px"} />,
+    "fashion-&-clothing": <TbHanger size={"30px"} />,
+    "cosmetics": <GiDelicatePerfume size={"30px"}/>,
     "beauty-and-skincare": <PiFanLight size={"30px"} />,
     "hair-products": <GiChemicalTank size={"30px"} />,
     footwears: <TbShoe size={"30px"} />,
@@ -65,18 +67,23 @@ const MobileNavbar = ({ handleShow }) => {
               </Link>
             ) : null}
 
-            <Link href={"/profile"} onClick={handleShow}>
-              <p className="flex items-center gap-3">
-                <UserIcon />
-                Profile
-              </p>
-            </Link>
-            <Link href={"/favourite"} onClick={handleShow}>
-              <p className="flex items-center gap-3">
-                <SmallFavouriteIcon />
-                Favourite
-              </p>
-            </Link>
+            {token ? (
+              <Link href={"/profile"} onClick={handleShow}>
+                <p className="flex items-center gap-3">
+                  <UserIcon />
+                  Profile
+                </p>
+              </Link>
+            ) : null}
+
+            {token ? (
+              <Link href={"/favourite"} onClick={handleShow}>
+                <p className="flex items-center gap-3">
+                  <SmallFavouriteIcon />
+                  Favourite
+                </p>
+              </Link>
+            ) : null}
           </div>
 
           <hr />

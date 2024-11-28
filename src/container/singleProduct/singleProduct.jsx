@@ -9,8 +9,12 @@ import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { X } from "lucide-react";
 import { useToast } from "@chakra-ui/react";
+import RatingModal from "@/components/RatingModal";
+import { BiAddToQueue } from "react-icons/bi";
+
 
 const SingleProduct = ({ getSingleProduct }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const token = Cookies.get("token");
   const router = useRouter();
   const [isDropdownOpen, setDropdownOpen] = useState(false);
@@ -249,6 +253,12 @@ const SingleProduct = ({ getSingleProduct }) => {
                 </div>
               </div>
             )}
+            <button onClick={() => setIsModalOpen(true)} className="text-[24px]"><BiAddToQueue/></button>
+            <RatingModal
+              isOpen={isModalOpen}
+              onClose={() => setIsModalOpen(false)}
+              productId={getSingleProduct.data.product._id}
+            />
           </div>
         </div>
         <div className="flex items-center gap-2 mt-5 sm:flex-col">

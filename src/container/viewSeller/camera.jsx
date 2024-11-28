@@ -22,37 +22,16 @@ const Camera = ({ nextStep }) => {
         videoRef.current.srcObject = stream;
         videoRef.current.play();
       } catch (err) {
-        setError("Error accessing camera: " + err.message);
-        handleFallback();
+        setError(
+          err.name === "NotAllowedError"
+            ? "Camera access denied. Please enable it in your browser settings."
+            : "Error accessing camera: " + err.message
+        );
       }
     };
 
     getUserMedia();
   }, []);
-
-  const handleFallback = async () => {
-    try {
-      const devices = await navigator.mediaDevices.enumerateDevices();
-      const videoDevices = devices.filter(
-        (device) => device.kind === "videoinput"
-      );
-      const device = videoDevices.find(
-        (device) => device.label.includes("back") // or "front", depending on the camera
-      );
-
-      if (device && device.deviceId) {
-        const constraints = { deviceId: device.deviceId };
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: constraints,
-        });
-        videoRef.current.srcObject = stream;
-      } else {
-        console.error("Camera device not found or missing deviceId.");
-      }
-    } catch (err) {
-      console.error("Error accessing camera on fallback:", err);
-    }
-  };
 
   const capture = async () => {
     const canvas = canvasRef.current;
@@ -128,11 +107,14 @@ const Camera = ({ nextStep }) => {
 
   return (
     <div className="flex flex-col items-center justify-center py-2 text-center gap-5">
-      {/* Instructions will only show when a picture hasn't been taken */}
       {!pictureTaken && (
         <>
           <p>Position your face into the frame</p>
-          {error && <p className="text-red-500">{error}</p>}
+          {error && (
+            <p className="text-red-500">
+              {error}
+            </p>
+          )}
           <div className="relative w-80 h-80 mb-4 border-2 border-[#1A1A1A] rounded-full border-dashed">
             <video
               ref={videoRef}
@@ -142,8 +124,8 @@ const Camera = ({ nextStep }) => {
             <canvas ref={canvasRef} className="hidden" width="320" height="320" />
           </div>
           <p>
-            Make sure your face and shoulder is showing <br /> and Please remove any
-            covering from your face
+            Make sure your face and shoulders are visible <br /> and remove any
+            coverings from your face.
           </p>
         </>
       )}
@@ -155,7 +137,10 @@ const Camera = ({ nextStep }) => {
           </div>
           <Button
             onClick={handleContinue}
-            className="bg-[#000000] text-[#FFFFFF] p-3 w-full mt-5 shadow-sm rounded-[8px] md:text-[18px] sm:leading-[29.26px] h-[50px]"
+            disabled={!imageUrl} // Prevent proceeding if image is not uploaded
+            className={`${
+              !imageUrl ? "bg-gray-400 cursor-not-allowed" : "bg-[#000000]"
+            } text-[#FFFFFF] p-3 w-full mt-5 shadow-sm rounded-[8px] md:text-[18px] sm:leading-[29.26px] h-[50px]`}
           >
             Continue
           </Button>
@@ -169,7 +154,10 @@ const Camera = ({ nextStep }) => {
       ) : (
         <Button
           onClick={capture}
-          className="bg-[#000000] text-[#FFFFFF] p-3 w-full my-5 shadow-sm rounded-[8px] md:text-[18px] sm:leading-[29.26px] h-[50px]"
+          disabled={!!error} // Prevent capturing if there's an error
+          className={`${
+            error ? "bg-gray-400 cursor-not-allowed" : "bg-[#000000]"
+          } text-[#FFFFFF] p-3 w-full my-5 shadow-sm rounded-[8px] md:text-[18px] sm:leading-[29.26px] h-[50px]`}
         >
           {uploading ? "Uploading..." : "Take Picture"}
         </Button>

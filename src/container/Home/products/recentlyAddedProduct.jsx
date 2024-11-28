@@ -1,10 +1,7 @@
 "use client";
 import Link from "next/link";
 import { BASE_URL, useFetchItems } from "@/hooks/useFetchItems";
-import { StarRating } from "@/components/rating";
-import { AddToCart } from "@/components/addToCart";
 import { Loading } from "@/components/loading";
-import { AddToFavourite } from "@/components/AddToFavourite";
 
 const RecentProducts = () => {
   const {
@@ -30,6 +27,9 @@ const RecentProducts = () => {
     return null;
   }
 
+  // Get only the first 10 recent products
+  const limitedRecentProducts = recentProducts.data.slice(0, 10);
+
   return (
     <div className="flex flex-col gap-10 py-10">
       <div className="flex bg-black justify-center items-center">
@@ -38,7 +38,7 @@ const RecentProducts = () => {
         </h1>
       </div>
       <div className="flex gap-[15px] no-scrollbar overflow-x-auto scrollbar-hide py-3">
-        {recentProducts.data.map((singleProduct) => (
+        {limitedRecentProducts.map((singleProduct) => (
           <div
             key={singleProduct._id}
             className="flex-none w-[180px] cursor-pointer shadow-md bg-black sm:w-[295px] transition-transform duration-300 hover:scale-105"

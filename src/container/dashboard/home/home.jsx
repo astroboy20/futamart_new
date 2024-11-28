@@ -167,7 +167,7 @@ const Home = () => {
               of this opportunity to boost your sales and reach more customers.
             </p>
           </div>
-          <Link href={"/dahboard/products"} className="bg-[#F2F3F4] rounded text-center text-black w-fit m-auto px-[16px] py-2 lg:w-full">
+          <Link href={"/dashboard/products"} className="bg-[#F2F3F4] rounded text-center text-black w-fit m-auto px-[16px] py-2 lg:w-full">
             Add product
           </Link>
         </Card>

@@ -47,6 +47,11 @@ const Search = ({ search_query }) => {
         {error.message}
       </div>
     );
+
+  // Check if no products were found
+  const noProductsFound =
+    !search?.data?.products || search?.data?.products.length === 0;
+
   return (
     <main>
       <div className="flex flex-col gap-6 py-[3%] px-[6%]">
@@ -56,55 +61,75 @@ const Search = ({ search_query }) => {
           </h1>
         </div>
 
-        <div className="py-3 sm:py-3 sm:px-0 grid grid-cols-2 gap-[15px] md:grid-cols-2 lg:grid-cols-4">
-          {search?.data?.products?.map((singleProduct) => (
-            <div
-              key={singleProduct._id}
-              className="pb-3 max-w-[180px] cursor-pointer shadow-md bg-[#f2f4f4] sm:max-w-[295px]"
+        {/* If no products found, display the video */}
+        {noProductsFound ? (
+          <div className="w-full h-fit my-[10%] flex flex-col items-center justify-center text-[15px] font-bold text-center">
+            <video
+              className="w-[200px] h-[200px] object-cover"
+              autoPlay
+              loop
+              muted
+              playsInline
             >
-              <Link href={`/products/${singleProduct.slug}`}>
-                <img
-                  className="h-[175px] bg-[white] w-[180px] object-contain sm:h-[290px] sm:w-[295px]"
-                  src={singleProduct.featuredImage}
-                  alt={singleProduct.name}
-                />
-              </Link>
-              <div className="px-3 pt-[.5em] flex flex-col gap-[.5em]">
-                <div className="flex items-center justify-between">
-                  <Link href={`/products/${singleProduct.slug}`}>
-                    <p className="capitalize font-semibold text-sm lg:text-lg w-[98px] h-[12px] leading-[12.19px] sm:w-[215px] sm:h-[22px] sm:text-[18px] sm:leading-[21.94px] truncate">
-                      {singleProduct.name}
-                    </p>
-                  </Link>
-                  <AddToFavourite productId={singleProduct._id} />
+              <source src="/animation.mp4" type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+            <p>
+              No products found for "{search_query}". Please check back later!
+            </p>
+          </div>
+        ) : (
+          // If products are found, render the list
+          <div className="py-3 sm:py-3 sm:px-0 grid grid-cols-2 gap-[15px] md:grid-cols-2 lg:grid-cols-4">
+            {search?.data?.products?.map((singleProduct) => (
+              <div
+                key={singleProduct._id}
+                className="pb-3 max-w-[180px] cursor-pointer shadow-md bg-[#f2f4f4] sm:max-w-[295px]"
+              >
+                <Link href={`/products/${singleProduct.slug}`}>
+                  <img
+                    className="h-[175px] bg-[white] w-[180px] object-contain sm:h-[290px] sm:w-[295px]"
+                    src={singleProduct.featuredImage}
+                    alt={singleProduct.name}
+                  />
+                </Link>
+                <div className="px-3 pt-[.5em] flex flex-col gap-[.5em]">
+                  <div className="flex items-center justify-between">
+                    <Link href={`/products/${singleProduct.slug}`}>
+                      <p className="capitalize font-semibold text-sm lg:text-lg w-[98px] h-[12px] leading-[12.19px] sm:w-[215px] sm:h-[22px] sm:text-[18px] sm:leading-[21.94px] truncate">
+                        {singleProduct.name}
+                      </p>
+                    </Link>
+                    <AddToFavourite productId={singleProduct._id} />
+                  </div>
+                  <p className="text-[#888282] text-[10px] lg:text-base font-semibold leading-[9.75px] w-[70px] h-[10px] sm:w-[105px] sm:h-[20px] sm:text-[16px] sm:leading-[19.5px] truncate">
+                    &#8358;{singleProduct.price.toLocaleString()}
+                  </p>
+                  <span className="lg:hidden">
+                    <StarRating
+                      rating={singleProduct.averageRating}
+                      width={10}
+                      height={10}
+                    />
+                  </span>
+                  <span className="hidden lg:flex">
+                    <StarRating
+                      rating={singleProduct.averageRating}
+                      width={20}
+                      height={20}
+                    />
+                  </span>
+                  <AddToCart
+                    id={singleProduct._id}
+                    className="bg-black w-1/2 min-w-[70px] h-[20px] text-[8px] leading-[9.75px] sm:w-[132px] sm:h-[36px] sm:text-[14px] sm:leading-[17.07px] text-white rounded-sm border-none"
+                  >
+                    Add to cart
+                  </AddToCart>
                 </div>
-                <p className="text-[#888282] text-[10px] lg:text-base font-semibold leading-[9.75px] w-[70px] h-[10px] sm:w-[105px] sm:h-[20px] sm:text-[16px] sm:leading-[19.5px] truncate">
-                  &#8358;{singleProduct.price.toLocaleString()}
-                </p>
-                <span className="lg:hidden">
-                  <StarRating
-                    rating={singleProduct.averageRating}
-                    width={10}
-                    height={10}
-                  />
-                </span>
-                <span className="hidden lg:flex">
-                  <StarRating
-                    rating={singleProduct.averageRating}
-                    width={20}
-                    height={20}
-                  />
-                </span>
-                <AddToCart
-                  id={singleProduct._id}
-                  className="bg-black w-1/2 min-w-[70px] h-[20px] text-[8px] leading-[9.75px] sm:w-[132px] sm:h-[36px] sm:text-[14px] sm:leading-[17.07px] text-white rounded-sm border-none"
-                >
-                  Add to cart
-                </AddToCart>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
 
         {/* Pagination */}
         {totalPages > 1 && (
