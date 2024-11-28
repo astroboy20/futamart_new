@@ -135,18 +135,18 @@ const Chats = ({ id, featuredImage, name, price }) => {
     if (id && isFirstChat) {
       const sendInitialMessage = async () => {
         try {
-        //  const messageSent = localStorage.getItem(`initialMessageSent_${id}`);
+          //  const messageSent = localStorage.getItem(`initialMessageSent_${id}`);
           // if (messageSent) {
-           setIsFirstChat(false);
-            setIsChatOpen(true);
-          
+          setIsFirstChat(false);
+          setIsChatOpen(true);
+
           // }
 
           // Retrieve product details if undefined
-          let productImage = featuredImage
+          let productImage = featuredImage;
           let productName = name;
           let productPrice = price;
-          console.log(productImage)
+          console.log(productImage);
           // if (!productImage || !productName || !productPrice) {
           //   const storedProduct = localStorage.getItem(`clickedProduct_${id}`);
           //   if (storedProduct) {
@@ -158,7 +158,9 @@ const Chats = ({ id, featuredImage, name, price }) => {
           //   }
           // }
 
-          const payload = { message: `${productImage}\n${productName}\n${productPrice}` };
+          const payload = {
+            message: `${productImage}\n${productName}\n${productPrice}`,
+          };
           await axios.post(
             `${process.env.NEXT_PUBLIC_API_URL}/chat/${id}`,
             payload,
@@ -175,7 +177,7 @@ const Chats = ({ id, featuredImage, name, price }) => {
           queryClient.invalidateQueries([
             `${process.env.NEXT_PUBLIC_API_URL}/chats`,
           ]);
-         // localStorage.setItem(`initialMessageSent_${id}`, "true");
+          // localStorage.setItem(`initialMessageSent_${id}`, "true");
           setIsFirstChat(false);
           setIsChatOpen(true);
         } catch (error) {
@@ -185,7 +187,16 @@ const Chats = ({ id, featuredImage, name, price }) => {
 
       sendInitialMessage();
     }
-  }, [id, isFirstChat, featuredImage, name, price, token, user?.data?._id, queryClient]);
+  }, [
+    id,
+    isFirstChat,
+    featuredImage,
+    name,
+    price,
+    token,
+    user?.data?._id,
+    queryClient,
+  ]);
 
   const handleClick = useCallback(
     (user) => {
@@ -252,7 +263,7 @@ const Chats = ({ id, featuredImage, name, price }) => {
         senderId: user?.data?._id,
         createdAt: new Date().toISOString(),
         status: "sending", // Track message state
-        file: file ? file.name : null, 
+        file: file ? file.name : null,
       };
       console.log("Sending message:", newMessage);
 
