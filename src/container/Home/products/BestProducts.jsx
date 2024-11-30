@@ -26,7 +26,7 @@ const BestProducts = () => {
         </h1>
         <Link
           href={"/best-products"}
-          className="flex items-center gap-3 text-xs lg:text-[20px]"
+          className="flex items-center gap-3 text-[15px] lg:text-[20px]"
         >
           View all
           <Next_Icon />

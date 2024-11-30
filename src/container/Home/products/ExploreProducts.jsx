@@ -45,7 +45,7 @@ const ExploreProducts = () => {
         </h1>
         <Link
           href={"/explore-products"}
-          className="flex items-center gap-3 text-[10px] lg:text-[20px]"
+          className="flex items-center gap-3 text-[15px] lg:text-[20px]"
         >
           View all
           <Next_Icon />

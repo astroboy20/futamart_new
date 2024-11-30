@@ -7,7 +7,7 @@ const HeaderWithMarquee = () => {
     <div className="overflow-hidden">
       <div className="whitespace-nowrap animate-marquee">
         <span className="px-4 text-l font-extrabold">
-        Register as a seller today and enjoy a 30-day free subscription. Explore exclusive deals, discover exciting local products, and be part of the futamart revolution!
+        Register as a seller today and enjoy a 60-days free subscription. Explore exclusive deals, discover exciting local products, and be part of the futamart revolution!
         </span>
       </div>
     </div>
