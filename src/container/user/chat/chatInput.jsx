@@ -132,7 +132,7 @@ const ChatInput = ({
         className="flex-grow overflow-y-auto p-4 bg-[url('/images/products/chat-bg.png')] bg-cover bg-no-repeat lg:rounded-lg shadow-lg"
         ref={messagesEndRef}
       >
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col">
           {messages?.data?.conversation?.messages?.map((msg) => (
             <div
               key={msg._id}
