@@ -116,8 +116,8 @@ const Footer = () => {
         <div className="flex flex-col gap-2.5 ">
           <h1 className="text-[16px] font-[600] lg:text-[24px] ">Support</h1>
           <div className="text-[14px] font-[400] lg:text-[18px]  flex flex-col gap-2.5">
-            <p>Privacy Policy</p>
-            <p>Terms of service</p>
+            <Link href={"/privacy-policy"}>Privacy Policy</Link>
+            <Link href={"/terms-of-service"}>Terms of service</Link>
             <p>Customer Ratings</p>
           </div>
         </div>
