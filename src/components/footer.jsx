@@ -8,6 +8,9 @@ import { BASE_URL } from "@/hooks/useFetchItems";
 import { useToast } from "@chakra-ui/react";
 import { ClipLoader } from "react-spinners";
 import Link from "next/link";
+import { FaSquareXTwitter } from "react-icons/fa6";
+import { FaSquareInstagram } from "react-icons/fa6";
+import { FaYoutube } from "react-icons/fa6";
 
 const Footer = () => {
   const toast = useToast();
@@ -111,6 +114,35 @@ const Footer = () => {
             <Link href="/hair-products">
               <p>Hair products</p>
             </Link>
+          </div>
+
+          <div>
+            <h1 className="text-[16px] font-[600] lg:text-[24px] ">
+              Join us on
+            </h1>
+            <div className="flex gap-2.5">
+              <a
+                href="https://x.com/futa_mart"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <FaSquareXTwitter className="text-[25px] " />
+              </a>
+              <a
+                href="https://instagram.com/futamart"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <FaSquareInstagram className="text-[25px] " />
+              </a>
+              <a
+                href="https://www.youtube.com/@futamartvideos"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <FaYoutube className="text-[25px] " />
+              </a>
+            </div>
           </div>
         </div>
         <div className="flex flex-col gap-2.5 ">
