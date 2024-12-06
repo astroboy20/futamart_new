@@ -10,11 +10,13 @@ const PiracyPolicy = () => {
   };
   return (
     <div className="flex flex-col gap-5  py-[3%] px-[6%]">
-      <div className="w-full m-auto bg-[url('/images/overlay.png')] h-[400px] flex justify-center items-center">
-        <h1 className="text-[30px] lg:text-[60px] font-[600] text-[white]">
-          Privacy Settings
-        </h1>
-      </div>
+     <div className="relative w-full m-auto bg-[url('/images/settings.png')] bg-center bg-cover h-[400px] flex justify-center items-center">
+  <div className="absolute inset-0 bg-[#00000099]"></div>
+  <h1 className="relative text-[30px] lg:text-[60px] font-[600] text-[white]">
+    Privacy Settings
+  </h1>
+</div>
+
       <div>
         <div className="text-[16p] lg:text-[20px] font-[400] list-disc flex flex-col gap-5 text-justify">
           <p>

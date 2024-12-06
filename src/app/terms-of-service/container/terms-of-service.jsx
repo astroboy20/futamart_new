@@ -10,7 +10,7 @@ const Term = () => {
   };
   return (
     <div className="flex flex-col gap-5  py-[3%] px-[6%]">
-      <div className="w-full m-auto bg-[url('/images/overlay.png')] h-[400px] flex justify-center items-center">
+      <div className="w-full m-auto bg-[url('/images/terms.png')] h-[400px] flex justify-center items-center bg-center object-cover">
         <h1 className="text-[30px] lg:text-[60px] font-[600] text-[white]">
           Terms of Service
         </h1>
