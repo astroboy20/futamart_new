@@ -28,7 +28,7 @@ const MobileNavbar = ({ handleShow }) => {
     Food: <PiBowlFood size={"30px"} />,
     "electronic-and-gadgets": <IoMdPhonePortrait size={"30px"} />,
     "fashion-&-clothing": <TbHanger size={"30px"} />,
-    "cosmetics": <GiDelicatePerfume size={"30px"}/>,
+    cosmetics: <GiDelicatePerfume size={"30px"} />,
     "beauty-and-skincare": <PiFanLight size={"30px"} />,
     "hair-products": <GiChemicalTank size={"30px"} />,
     footwears: <TbShoe size={"30px"} />,
@@ -114,7 +114,7 @@ const MobileNavbar = ({ handleShow }) => {
               </Link>
             )}
 
-            <p>Contact Us</p>
+            <Link href={"/contact-us"}>Contact us</Link>
             <p>
               {token ? (
                 <span onClick={logout}>Log Out</span>
