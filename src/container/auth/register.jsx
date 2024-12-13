@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@chakra-ui/react";
 import { ClipLoader } from "react-spinners";
+import posthog from "posthog-js";
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -52,7 +53,7 @@ const Register = () => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(formData),
-        }
+        },
       );
       const result = await response.json();
       if (!response.ok) {
@@ -74,6 +75,9 @@ const Register = () => {
         status: "success",
         duration: 5000,
         isClosable: true,
+      });
+      posthog.capture("register", {
+        email: formData.email,
       });
       login(result.data);
     } catch (error) {

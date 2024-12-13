@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
 import { ClipLoader } from "react-spinners";
 import { useToast } from "@chakra-ui/react";
+import posthog from "posthog-js";
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
@@ -17,7 +18,7 @@ const Login = () => {
 
   const handleGoogleLogin = () => {
     // Redirect the user to the Google login URL
-    window.location.href = 'https://api.futamart.com/v1/user/google';
+    window.location.href = "https://api.futamart.com/v1/user/google";
   };
   const handleOptions = (option) => {
     setOptions(option);
@@ -45,7 +46,7 @@ const Login = () => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(formData),
-        }
+        },
       );
       const result = await response.json();
       if (!response.ok) {
@@ -67,6 +68,9 @@ const Login = () => {
         status: "success",
         duration: 5000,
         isClosable: true,
+      });
+      posthog.capture("login", {
+        email: formData.email,
       });
       login(result.data?.token, result.data?.redirectUrl);
     } catch (error) {
@@ -90,7 +94,10 @@ const Login = () => {
         </p>
       </div>
       <div className="flex flex-col w-full lg:w-4/5">
-        <Button onClick={handleGoogleLogin} className="bg-[#F7F7F7] flex gap-[10px] items-center text-[16px] font-[600] w-full rounded-[16px] border-2 border-[#292D32BA] text-[#000] py-[25px]">
+        <Button
+          onClick={handleGoogleLogin}
+          className="bg-[#F7F7F7] flex gap-[10px] items-center text-[16px] font-[600] w-full rounded-[16px] border-2 border-[#292D32BA] text-[#000] py-[25px]"
+        >
           <GoogleIcon /> Continue with Google
         </Button>
 
@@ -141,7 +148,7 @@ const Login = () => {
               <p className="underline">Forgot password?</p>
             </Link>
           </div>
-        
+
           <Button
             disabled={loading}
             type="submit"
