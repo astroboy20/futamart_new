@@ -58,11 +58,12 @@ const AddProducts = ({ onClose }) => {
 
       if (discountPrice < 0) {
         toast({
-          title:"Warning",
-          description:"Discount percentage is too high, leading to a negative price!",
-          status:"warning",
-          duration:3000,
-          isClosable:true
+          title: "Warning",
+          description:
+            "Discount percentage is too high, leading to a negative price!",
+          status: "warning",
+          duration: 3000,
+          isClosable: true,
         });
         setFormData((prev) => ({
           ...prev,
@@ -333,7 +334,7 @@ const AddProducts = ({ onClose }) => {
       discountEndDate,
       discountPrice,
       discountPercentage,
-      isOnDiscount
+      isOnDiscount,
     } = formData;
 
     const missingFields = [];
@@ -616,6 +617,8 @@ const AddProducts = ({ onClose }) => {
                     onDateChange={handleStartDateChange}
                     minDate={new Date()}
                   />
+
+                 
                 </div>
                 <div className="flex flex-col gap-5">
                   <label className="text-[16px] font-[500]">End Date </label>
