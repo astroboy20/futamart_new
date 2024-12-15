@@ -14,11 +14,13 @@ import { BASE_URL, useFetchItems } from "@/hooks/useFetchItems";
 import { useToast } from "@chakra-ui/react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaPlus, FaTrash } from "react-icons/fa";
 import Cookies from "js-cookie";
 import { ClipLoader } from "react-spinners";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Switch } from "@/components/ui/switch";
+import { DatePicker } from "@/components/date-picker";
 
 const AddProducts = ({ onClose }) => {
   const toast = useToast();
@@ -27,6 +29,9 @@ const AddProducts = ({ onClose }) => {
   const { data } = useFetchItems({ url: `${BASE_URL}/categories` });
   const categoriesData = data?.data;
   const [isLoading, setIsLoading] = useState(false);
+  const [isChecked, setIsChecked] = useState(false);
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState("");
   const [formData, setFormData] = useState({
     name: "",
     category: "",
@@ -35,8 +40,45 @@ const AddProducts = ({ onClose }) => {
     attributes: [{ name: "", variants: [] }],
     featuredImage: null,
     additionalImages: [],
+    discountPercentage: "",
+    discountPrice: "",
+    isOnDiscount: false,
+    discountStartDate: "",
+    discountEndDate: "",
   });
 
+  //final price logic
+  useEffect(() => {
+    const price = parseFloat(formData.price);
+    const discountPercentage = parseFloat(formData.discountPercentage);
+
+    if (!isNaN(price) && !isNaN(discountPercentage)) {
+      const discountAmount = (price * discountPercentage) / 100;
+      const discountPrice = price - discountAmount;
+
+      if (discountPrice < 0) {
+        toast({
+          title:"Warning",
+          description:"Discount percentage is too high, leading to a negative price!",
+          status:"warning",
+          duration:3000,
+          isClosable:true
+        });
+        setFormData((prev) => ({
+          ...prev,
+          discountPercentage: "0",
+        }));
+        return;
+      }
+
+      setFormData((prev) => ({
+        ...prev,
+        discountPrice: discountPrice.toFixed(2),
+      }));
+    }
+  }, [formData.price, formData.discountPercentage]);
+
+  //handle change logic
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -183,6 +225,56 @@ const AddProducts = ({ onClose }) => {
     }));
   };
 
+  //discount start date
+  const handleStartDateChange = (newDate) => {
+    const selectedStartDate = new Date(newDate);
+
+    setFormData((prevData) => ({
+      ...prevData,
+      discountStartDate: selectedStartDate,
+    }));
+  };
+
+  //discount end date
+  const handleEndDateChange = (newDate) => {
+    const selectedStartDate = new Date(formData.discountStartDate);
+    const selectedEndDate = new Date(newDate);
+
+    if (selectedEndDate < selectedStartDate) {
+      setEndDate("");
+      setFormData((prevData) => ({
+        ...prevData,
+        discountEndDate: "",
+      }));
+      toast({
+        title: "Invalid End Date",
+        description: "End date must be after the start date.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    setFormData((prevData) => ({
+      ...prevData,
+      discountEndDate: selectedEndDate,
+    }));
+  };
+
+  //discount switch
+  const handleSwitch = () => {
+    setIsChecked((prev) => {
+      const newIschecked = !prev;
+      setFormData((prevData) => ({
+        ...prevData,
+        isOnDiscount: newIschecked,
+      }));
+      return newIschecked;
+    });
+  };
+
+  //form mutation
   const mutation = useMutation({
     mutationFn: async (submissionData) => {
       try {
@@ -237,6 +329,11 @@ const AddProducts = ({ onClose }) => {
       featuredImage,
       additionalImages,
       attributes,
+      discountStartDate,
+      discountEndDate,
+      discountPrice,
+      discountPercentage,
+      isOnDiscount
     } = formData;
 
     const missingFields = [];
@@ -244,7 +341,9 @@ const AddProducts = ({ onClose }) => {
     if (!category) missingFields.push("Category");
     if (!price) missingFields.push("Price");
     if (!description) missingFields.push("Description");
-    if (!featuredImage) missingFields.push("Featured Image");
+    // if (!discountEndDate) missingFields.push("Discount EndDate");
+    // if (!discountStartDate) missingFields.push("Discount StartDate");
+    // if (!discountPrice) missingFields.push("Discount Price");
 
     // Check for at least one additional image
     if (!additionalImages || additionalImages.length === 0) {
@@ -272,6 +371,11 @@ const AddProducts = ({ onClose }) => {
     submissionData.append("price", price);
     submissionData.append("description", description);
     submissionData.append("featuredImage", featuredImage);
+    submissionData.append("discountPrice", discountPrice);
+    submissionData.append("isOnDiscount", isOnDiscount);
+    submissionData.append("discountStartDate", discountStartDate);
+    submissionData.append("discountEndDate", discountEndDate);
+    submissionData.append("discountPercentage", discountPercentage);
     additionalImages.forEach((file) => {
       submissionData.append("additionalImages", file);
     });
@@ -279,6 +383,7 @@ const AddProducts = ({ onClose }) => {
 
     try {
       await mutation.mutateAsync(submissionData);
+      // console.log(formData);
       onClose();
     } catch (error) {
       console.error("Something went wrong:", error);
@@ -455,6 +560,16 @@ const AddProducts = ({ onClose }) => {
             <Button onClick={handleAddAttribute}>Add Attribute</Button>
           </div>
 
+          <div className="flex flex-col gap-5">
+            <label className="text-[16px] font-[500]">Description</label>
+            <Textarea
+              placeholder="Enter description..."
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+            />
+          </div>
+
           <div className="flex flex-col gap-2">
             <label className="text-[16px] font-[500]">Product Price</label>
             <Input
@@ -467,17 +582,65 @@ const AddProducts = ({ onClose }) => {
             <span className="text-sm text-gray-500">
               Please enter a price without commas, hashtags, or other symbols.
             </span>
+
+            <div className="flex gap-2 items-center mt-2">
+              <Switch
+                checked={isChecked}
+                onCheckedChange={handleSwitch}
+                aria-readonly
+                id="discount"
+              />{" "}
+              <label htmlFor="discount" className="text-[16px] font-[500]">
+                Add Discount Bonus
+              </label>
+            </div>
           </div>
 
-          <div className="flex flex-col gap-5">
-            <label className="text-[16px] font-[500]">Description</label>
-            <Textarea
-              placeholder="Description of the product"
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-            />
-          </div>
+          {isChecked && (
+            <div className="flex flex-col gap-5">
+              <div className="flex flex-col gap-5">
+                <label className="text-[16px] font-[500] ">Discount %</label>
+                <Input
+                  placeholder="15%"
+                  name="discountPercentage"
+                  value={formData.discountPercentage}
+                  onChange={handleChange}
+                  className="h-[55px]"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-5">
+                <div className="flex flex-col gap-5">
+                  <label className="text-[16px] font-[500]">Start Date </label>
+                  <DatePicker
+                    selectedDate={formData.discountStartDate}
+                    onDateChange={handleStartDateChange}
+                    minDate={new Date()}
+                  />
+                </div>
+                <div className="flex flex-col gap-5">
+                  <label className="text-[16px] font-[500]">End Date </label>
+
+                  <DatePicker
+                    selectedDate={formData.discountEndDate}
+                    onDateChange={handleEndDateChange}
+                    minDate={new Date()}
+                  />
+                </div>
+              </div>
+              <div className="flex flex-col gap-5">
+                <label className="text-[16px] font-[500] ">Final Price</label>
+                <Input
+                  placeholder="Discount Price"
+                  type="number"
+                  name="discountPrice"
+                  value={formData.discountPrice}
+                  className="h-[55px]"
+                  readOnly
+                />
+              </div>
+            </div>
+          )}
+
           <div className="lg:ml-auto">
             <Button
               onClick={handleSubmit}
