@@ -291,10 +291,7 @@ const AddProducts = ({ onClose }) => {
         );
         return response.data;
       } catch (error) {
-        throw new Error(
-          "Something went wrong, please ensure your inputs are valid!",
-          error?.response?.data
-        );
+        throw error;
       }
     },
     onSuccess: (response) => {
@@ -308,9 +305,12 @@ const AddProducts = ({ onClose }) => {
       });
     },
     onError: (error) => {
+      const errorMessage =
+        error.response?.data?.message || "An unexpected error occurred.";
+
       toast({
         title: "Error",
-        description: error.message,
+        description: errorMessage, 
         status: "error",
         duration: 3000,
         isClosable: true,
@@ -617,8 +617,6 @@ const AddProducts = ({ onClose }) => {
                     onDateChange={handleStartDateChange}
                     minDate={new Date()}
                   />
-
-                 
                 </div>
                 <div className="flex flex-col gap-5">
                   <label className="text-[16px] font-[500]">End Date </label>

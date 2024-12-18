@@ -6,7 +6,7 @@ import { Input } from "@chakra-ui/react";
 
 // Helper function to format the date into a more readable format
 const formatDateToLocal = (date) => {
-  if (!date) return ""; // Handle null or undefined date
+  if (!date) return "";
   const adjustedDate = new Date(date);
   adjustedDate.setMinutes(
     adjustedDate.getMinutes() - adjustedDate.getTimezoneOffset()
@@ -18,12 +18,22 @@ const formatDateToLocal = (date) => {
   return `${year}-${month}-${day}`;
 };
 
+// Helper function to get the start of today
+const getStartOfToday = () => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return today;
+};
+
 export const DatePicker = ({ selectedDate, onDateChange, minDate }) => {
   const toast = useToast();
 
   const handleDateSelect = (selected) => {
-    // Check if selected date is after or equal to minDate
-    if (minDate && new Date(selected) < new Date(minDate)) {
+    // Parse selected date and minDate to remove time components
+    const selectedDateOnly = new Date(selected).setHours(0, 0, 0, 0);
+    const minDateOnly = new Date(minDate).setHours(0, 0, 0, 0);
+
+    if (minDate && selectedDateOnly < minDateOnly) {
       toast({
         title: "Invalid Date!",
         description: "The selected date cannot be in the past.",
@@ -35,7 +45,7 @@ export const DatePicker = ({ selectedDate, onDateChange, minDate }) => {
     }
 
     if (onDateChange) {
-      onDateChange(selected); // Pass the Date object back to the parent
+      onDateChange(selected);
     }
   };
 
@@ -47,8 +57,9 @@ export const DatePicker = ({ selectedDate, onDateChange, minDate }) => {
         placeholder="Select Date"
         size="md"
         type="date"
-        value={formatDateToLocal(selectedDate)} // Updated to use formatted date for display
-        onChange={(e) => handleDateSelect(e.target.value)} // Handle date change
+        value={formatDateToLocal(selectedDate)}
+        onChange={(e) => handleDateSelect(e.target.value)}
+        min={formatDateToLocal(getStartOfToday())}
       />
     </div>
   );
