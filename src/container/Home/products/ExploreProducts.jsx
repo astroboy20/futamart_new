@@ -58,13 +58,23 @@ const ExploreProducts = () => {
             key={singleProduct._id}
             className="pb-3 max-w-[180px] cursor-pointer shadow-md bg-[#f2f4f4] sm:max-w-[295px]"
           >
-            <Link href={`/products/${singleProduct.slug}`}>
+            <Link href={`/products/${singleProduct.slug}`} className="relative">
               <img
                 className="h-[175px] bg-[white] w-[180px] object-contain sm:h-[290px] sm:w-[295px]"
                 src={singleProduct.featuredImage}
                 alt={singleProduct.name}
               />
+
+              {singleProduct?.discount?.isOnDiscount &&
+                singleProduct?.discount?.discountStartDate && (
+                  <>
+                    <div className="absolute top-2 right-5 text-[#FFAD33] bg-[#FFF5E5] text-[16px] font-[600] p-2">
+                      <p>-{singleProduct?.discount?.discountPercentage}%</p>
+                    </div>
+                  </>
+                )}
             </Link>
+
             <div className="px-3 pt-[.5em] flex flex-col gap-[.5em]">
               <div className="flex items-center justify-between">
                 <Link href={`/products/${singleProduct.slug}`}>
@@ -98,6 +108,18 @@ const ExploreProducts = () => {
               >
                 Add to cart
               </AddToCart>
+
+              {singleProduct?.discount?.isOnDiscount && (
+                <p className="text-[14px] font-[600] text-grey">
+                  Ends in:{" "}
+                  <span className="text-[#C40000]">
+                    {singleProduct?.discount?.discountEndDate &&
+                      new Date(
+                        singleProduct.discount.discountEndDate
+                      ).toLocaleDateString()}
+                  </span>{" "}
+                </p>
+              )}
             </div>
           </div>
         ))}

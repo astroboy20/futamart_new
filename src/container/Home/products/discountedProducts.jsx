@@ -56,7 +56,7 @@ const DiscountedProducts = () => {
             key={singleProduct._id}
             className="pb-3 max-w-[180px] cursor-pointer shadow-md bg-[#f2f4f4] sm:max-w-[295px]"
           >
-            <div className="relative">
+            <Link href={`/products/${singleProduct.slug}`} className="relative">
               <img
                 className="h-[175px] bg-[white] w-[180px] object-contain sm:h-[290px] sm:w-[295px]"
                 src={singleProduct.featuredImage}
@@ -65,14 +65,14 @@ const DiscountedProducts = () => {
               <div className="absolute top-2 right-5 text-[#FFAD33] bg-[#FFF5E5] text-[16px] font-[600] p-2">
                 <p>{-singleProduct?.discount?.discountPercentage}%</p>
               </div>
-            </div>
+            </Link>
             <div className="px-3 pt-[.5em] flex flex-col gap-2">
               <div className="flex items-center justify-between">
-                <div>
+                <Link href={`/products/${singleProduct.slug}`}>
                   <p className="capitalize font-semibold text-sm lg:text-lg w-[98px] h-[12px] leading-[12.19px] sm:w-[215px] sm:h-[22px] sm:text-[18px] sm:leading-[21.94px] truncate">
                     {singleProduct.name}
                   </p>
-                </div>
+                </Link>
                 <AddToFavourite productId={singleProduct._id} />
               </div>
               <p className="truncate flex flex-col">

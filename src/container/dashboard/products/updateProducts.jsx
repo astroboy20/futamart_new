@@ -142,24 +142,6 @@ const UpdateProducts = ({ onClose, product }) => {
 
   //discount switch
   const handleSwitch = () => {
-    if (!formData.price || formData.price.trim() === "") {
-      toast({
-        title: "Warning",
-        description: "Please add a price",
-        status: "warning",
-        duration: 3000,
-        isClosable: true,
-      });
-
-      // Reset discount percentage if price is invalid
-      setFormData((prev) => ({
-        ...prev,
-        discountPercentage: "",
-        discountPrice: "",
-      }));
-
-      return;
-    }
     setIsChecked((prev) => {
       const newIschecked = !prev;
       setFormData((prevData) => ({

@@ -12,7 +12,6 @@ import { useToast } from "@chakra-ui/react";
 import RatingModal from "@/components/RatingModal";
 import { BiAddToQueue } from "react-icons/bi";
 
-
 const SingleProduct = ({ getSingleProduct }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const token = Cookies.get("token");
@@ -175,9 +174,43 @@ const SingleProduct = ({ getSingleProduct }) => {
           </p>
         </div>
         <div className="flex flex-col gap-2 sm:gap-4">
-          <p className="text-[16px] font-semibold leading-[19.5px] sm:text-[18px] sm:leading-[21.94px]">
-            &#8358;{getSingleProduct?.data?.product?.price.toLocaleString()}
-          </p>
+          <div className="flex flex-col lg:flex-row gap-5 lg:gap-10 lg:items-center">
+            <div className="text-[16px] font-semibold leading-[19.5px] sm:text-[18px] sm:leading-[21.94px] flex gap-1 items-end">
+              {getSingleProduct?.data?.product?.discount?.isOnDiscount && (
+                <span className="text-[20px] tet-[#4A4545] font-[600]">
+                  &#8358;
+                  {getSingleProduct?.data?.product?.discount?.discountPrice.toLocaleString()}
+                </span>
+              )}
+
+              <div className="text-[14px] font-[600] ">
+                <span className="line-through text-[#A3AA9E]">
+                  &#8358;
+                  {getSingleProduct?.data?.product?.price.toLocaleString()}
+                </span>
+                {getSingleProduct?.data?.product?.discount?.isOnDiscount && (
+                  <sup className="text-[#FFAD33]">
+                    -
+                    {
+                      getSingleProduct?.data?.product?.discount
+                        ?.discountPercentage
+                    }
+                    %
+                  </sup>
+                )}
+              </div>
+            </div>
+            {getSingleProduct?.data?.product?.discount?.isOnDiscount && (
+              <p className="text-[16px] font-[600] text-[#C40000] leading-[19.5px] sm:text-[18px] sm:leading-[21.94px]">
+                Ends in{" "}
+                {getSingleProduct?.data?.product?.discount?.discountStartDate &&
+                  new Date(
+                    getSingleProduct?.data?.product?.discount?.discountStartDate
+                  ).toLocaleDateString()}
+              </p>
+            )}
+          </div>
+
           <div className="relative flex items-center gap-2 sm:gap-4">
             <StarRating
               rating={getSingleProduct?.data?.product?.averageRating}
@@ -253,7 +286,12 @@ const SingleProduct = ({ getSingleProduct }) => {
                 </div>
               </div>
             )}
-            <button onClick={() => setIsModalOpen(true)} className="text-[24px]"><BiAddToQueue/></button>
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="text-[24px]"
+            >
+              <BiAddToQueue />
+            </button>
             <RatingModal
               isOpen={isModalOpen}
               onClose={() => setIsModalOpen(false)}
