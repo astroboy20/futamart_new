@@ -63,7 +63,7 @@ const DiscountedProducts = () => {
                 alt={singleProduct.name}
               />
               <div className="absolute top-2 right-5 text-[#FFAD33] bg-[#FFF5E5] text-[16px] font-[600] p-2">
-                <p>{singleProduct?.discount?.discountPercentage} %</p>
+                <p>{-singleProduct?.discount?.discountPercentage}%</p>
               </div>
             </div>
             <div className="px-3 pt-[.5em] flex flex-col gap-2">

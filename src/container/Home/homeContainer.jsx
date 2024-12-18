@@ -33,8 +33,8 @@ const HomeContainer = () => {
       <div className="px-[6%]">
         <Categories />
         <PopularBrand />
-        <BestProducts />
         <DiscountedProducts />
+        <BestProducts />
         <Categories2 />
         <RecentProducts />
         <CustomCarousel />
