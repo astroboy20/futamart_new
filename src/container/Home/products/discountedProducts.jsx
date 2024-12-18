@@ -5,17 +5,32 @@ import { StarRating } from "@/components/rating";
 import { AddToCart } from "@/components/addToCart";
 import { Fav, Next_Icon } from "@/assets";
 import { AddToFavourite } from "@/components/AddToFavourite";
+import { Loading } from "@/components/loading";
 
 const DiscountedProducts = () => {
   const {
-    data: bestProducts,
+    data: discountedProducts,
     isLoading,
     error,
   } = useFetchItems({ url: `${BASE_URL}/discount-products` });
 
-  // Only render the component if data is successfully fetched and has content
-  if (isLoading || !bestProducts?.data?.length) {
-    return null;
+  if (isLoading) {
+    return (
+      <div className="p-3 sm:py-3 sm:px-0 grid grid-cols-2 gap-2 lg:gap-[15px] md:grid-cols-2 lg:grid-cols-4 w-full">
+        <Loading />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <p className="text-red-500">Error fetching products: {error.message}</p>
+    );
+  }
+
+  // Check if discounted products exist in the response
+  if (!discountedProducts?.data?.discountProducts?.length) {
+    return <p className="text-gray-500">No discounted products available.</p>;
   }
 
   return (
@@ -24,50 +39,53 @@ const DiscountedProducts = () => {
         <h1 className="text-[20px] lg:text-[35px] font-[600]">
           Discounted Products
         </h1>
-        <Link
+        {/* <Link
           href={"/best-products"}
           className="flex items-center gap-3 text-[15px] lg:text-[20px]"
         >
           View all
           <Next_Icon />
-        </Link>
+        </Link> */}
       </div>
 
       <div className="py-3 sm:py-3 sm:px-0 grid grid-cols-2 gap-[15px] md:grid-cols-2 lg:grid-cols-4">
-        {bestProducts.data.map((singleProduct) => (
+        {discountedProducts.data.discountProducts.map((singleProduct) => (
           <div
             key={singleProduct._id}
             className="pb-3 max-w-[180px] cursor-pointer shadow-md bg-[#f2f4f4] sm:max-w-[295px]"
           >
-            <Link href={`/products/${singleProduct.slug}`}>
+            <div>
               <img
                 className="h-[175px] bg-[white] w-[180px] object-contain sm:h-[290px] sm:w-[295px]"
                 src={singleProduct.featuredImage}
                 alt={singleProduct.name}
               />
-            </Link>
+            </div>
             <div className="px-3 pt-[.5em] flex flex-col gap-2">
               <div className="flex items-center justify-between">
-                <Link href={`/products/${singleProduct.slug}`}>
+                <div>
                   <p className="capitalize font-semibold text-sm lg:text-lg w-[98px] h-[12px] leading-[12.19px] sm:w-[215px] sm:h-[22px] sm:text-[18px] sm:leading-[21.94px] truncate">
                     {singleProduct.name}
                   </p>
-                </Link>
+                </div>
                 <AddToFavourite productId={singleProduct._id} />
               </div>
-              <p className="text-[#888282] text-sm sm:text-lg font-semibold truncate">
-                &#8358;{singleProduct.price.toLocaleString()}
+              <p className="text-[#888282] text-sm sm:text-lg font-semibold truncate flex justify-between items-center">
+                <span className="line-through">
+                  &#8358;{singleProduct.price.toLocaleString()}
+                </span>
+                <span>&#8358;{singleProduct?.discount.discountPrice}</span>
               </p>
               <span className="lg:hidden">
                 <StarRating
-                  rating={singleProduct.averageRating || 5}
+                  rating={singleProduct.averageRating}
                   width={15}
                   height={15}
                 />
               </span>
               <span className="hidden lg:flex">
                 <StarRating
-                  rating={singleProduct.averageRating || 5}
+                  rating={singleProduct.averageRating}
                   width={20}
                   height={20}
                 />
