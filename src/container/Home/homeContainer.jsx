@@ -10,6 +10,7 @@ import { PopularBrand } from "./popularBrand";
 import { RecentProducts } from "./products/recentlyAddedProduct";
 import CustomCarousel from "@/components/CustomCarousel";
 import { Categories2 } from "./Categories";
+import { DiscountedProducts } from "./products/discountedProducts";
 
 const HomeContainer = () => {
   const [showPopup, setShowPopup] = useState(true);
@@ -32,6 +33,7 @@ const HomeContainer = () => {
       <div className="px-[6%]">
         <Categories />
         <PopularBrand />
+        <DiscountedProducts/>
         <BestProducts />
         <Categories2 />
         <RecentProducts />
