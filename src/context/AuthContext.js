@@ -41,7 +41,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const login = async (jwt, redirect) => {
-    Cookies.set("token", jwt, { expires: 7 });
+    Cookies.set("token", jwt, { expires: 30  });
     await fetchUser(jwt);
     router.push(redirect || "/");
   };

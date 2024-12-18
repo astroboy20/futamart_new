@@ -30,7 +30,7 @@ const DiscountedProducts = () => {
 
   // Check if discounted products exist in the response
   if (!discountedProducts?.data?.discountProducts?.length) {
-    return <p className="text-gray-500">No discounted products available.</p>;
+    return null
   }
 
   return (
