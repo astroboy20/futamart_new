@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
@@ -33,14 +33,13 @@ const HomeContainer = () => {
       <div className="px-[6%]">
         <Categories />
         <PopularBrand />
-        <DiscountedProducts/>
         <BestProducts />
+        <DiscountedProducts />
         <Categories2 />
         <RecentProducts />
         <CustomCarousel />
         <ExploreProducts />
       </div>
-    
     </>
   );
 };
