@@ -150,7 +150,7 @@ const CartContainer = () => {
                     </p>
                   </Link>
                   <p className="text-[#888282] text-[12px] leading-[14.63px] font-semibold sm:text-[18px] sm:leading-[21.94px]">
-                    &#8358;{item?.product?.price}
+                    &#8358;{item?.product?.price.toLocaleString()}
                   </p>
                   <div className="flex justify-between items-center">
                     <button
