@@ -120,16 +120,15 @@ const ExploreProducts = () => {
               </div>
 
               {singleProduct?.discount?.isOnDiscount ? (
-                <div className="flex items-center">
-                  <span className="text-[20px] text-[#4A4545] font-[600]">
-                    &#8358;
-                    {singleProduct?.discount?.discountPrice.toLocaleString()}
-                  </span>
-                  <span className="line-through text-[#A3AA9E] ml-2">
-                    &#8358;
-                    {singleProduct?.price.toLocaleString()}
-                  </span>
-                </div>
+                 <p className="truncate flex flex-col">
+                 <span className="text-[#4A4545] text-sm sm:text-lg font-semibold">
+                   &#8358;
+                   {singleProduct?.discount.discountPrice.toLocaleString()}
+                 </span>
+                 <span className="text-[#888282] text-[16px] line-through">
+                   &#8358;{singleProduct.price.toLocaleString()}
+                 </span>
+               </p>
               ) : (
                 <p className="text-[#888282] text-sm sm:text-lg font-semibold truncate">
                   &#8358;{singleProduct.price.toLocaleString()}
