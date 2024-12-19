@@ -6,6 +6,7 @@ import { AddToCart } from "@/components/addToCart";
 import { Fav, Next_Icon } from "@/assets";
 import { Loading } from "@/components/loading";
 import { AddToFavourite } from "@/components/AddToFavourite";
+import { useState, useEffect } from "react";
 
 const ExploreProducts = () => {
   const {
@@ -22,7 +23,6 @@ const ExploreProducts = () => {
     );
   }
 
-  // Check if products array is empty and show "Launching Soon" message if true
   if (!exploreProducts?.data?.products?.length) {
     return (
       <div className="flex flex-col gap-10 pb-10">
@@ -34,8 +34,45 @@ const ExploreProducts = () => {
     );
   }
 
-  // Limit the displayed products to 20
   const limitedProducts = exploreProducts.data.products.slice(0, 20);
+
+  const getTimeRemaining = (endDate) => {
+    const countdownDate = new Date(endDate).getTime();
+    const now = new Date().getTime();
+    const distance = countdownDate - now;
+
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+    return { days, hours, minutes, seconds, distance };
+  };
+
+  const CountdownTimer = ({ discountEndDate}) => {
+    const [timeRemaining, setTimeRemaining] = useState(getTimeRemaining(discountEndDate));
+
+    useEffect(() => {
+      const interval = setInterval(() => {
+        const time = getTimeRemaining(discountEndDate);
+        if (time.distance < 0) {
+          clearInterval(interval); // Stop the interval once the countdown is over
+        } else {
+          setTimeRemaining(time);
+        }
+      }, 1000);
+
+      return () => clearInterval(interval); // Clean up on unmount
+    }, [discountEndDate]);
+
+    return (
+      <span className="text-[#C40000]">
+        {timeRemaining.distance < 0
+          ? "Expired"
+          : `${timeRemaining.days}d ${timeRemaining.hours}h ${timeRemaining.minutes}m ${timeRemaining.seconds}s`}
+      </span>
+    );
+  };
 
   return (
     <div className="flex flex-col gap-10 pb-10">
@@ -64,14 +101,11 @@ const ExploreProducts = () => {
                 src={singleProduct.featuredImage}
                 alt={singleProduct.name}
               />
-
               {singleProduct?.discount?.isOnDiscount &&
                 singleProduct?.discount?.discountStartDate && (
-                  <>
-                    <div className="absolute top-2 right-5 text-[#FFAD33] bg-[#FFF5E5] text-[16px] font-[600] p-2">
-                      <p>-{singleProduct?.discount?.discountPercentage}%</p>
-                    </div>
-                  </>
+                  <div className="absolute top-2 right-5 text-[#FFAD33] bg-[#FFF5E5] text-[16px] font-[600] p-2">
+                    <p>-{singleProduct?.discount?.discountPercentage}%</p>
+                  </div>
                 )}
             </Link>
 
@@ -84,9 +118,23 @@ const ExploreProducts = () => {
                 </Link>
                 <AddToFavourite productId={singleProduct._id} />
               </div>
-              <p className="text-[#888282] text-sm sm:text-lg font-semibold truncate">
-                &#8358;{singleProduct.price.toLocaleString()}
-              </p>
+
+              {singleProduct?.discount?.isOnDiscount ? (
+                <div className="flex items-center">
+                  <span className="text-[20px] text-[#4A4545] font-[600]">
+                    &#8358;
+                    {singleProduct?.discount?.discountPrice.toLocaleString()}
+                  </span>
+                  <span className="line-through text-[#A3AA9E] ml-2">
+                    &#8358;
+                    {singleProduct?.price.toLocaleString()}
+                  </span>
+                </div>
+              ) : (
+                <p className="text-[#888282] text-sm sm:text-lg font-semibold truncate">
+                  &#8358;{singleProduct.price.toLocaleString()}
+                </p>
+              )}
 
               <span className="lg:hidden">
                 <StarRating
@@ -112,12 +160,7 @@ const ExploreProducts = () => {
               {singleProduct?.discount?.isOnDiscount && (
                 <p className="text-[14px] font-[600] text-grey">
                   Ends in:{" "}
-                  <span className="text-[#C40000]">
-                    {singleProduct?.discount?.discountEndDate &&
-                      new Date(
-                        singleProduct.discount.discountEndDate
-                      ).toLocaleDateString()}
-                  </span>{" "}
+                  <CountdownTimer discountEndDate={singleProduct?.discount?.discountEndDate} />
                 </p>
               )}
             </div>

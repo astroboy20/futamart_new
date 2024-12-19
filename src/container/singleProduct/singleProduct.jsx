@@ -22,6 +22,40 @@ const SingleProduct = ({ getSingleProduct }) => {
   const modalRef = useRef(null);
   const toast = useToast();
 
+  const discountEndDate = new Date(
+    getSingleProduct?.data?.product?.discount?.discountEndDate
+  ).getTime();
+
+  const [timeLeft, setTimeLeft] = useState("");
+
+  useEffect(() => {
+    if (discountEndDate) {
+      const discountEnd = new Date(discountEndDate).getTime();
+      const timer = setInterval(() => {
+        const now = new Date().getTime();
+        const timeRemaining = discountEnd - now;
+
+        if (timeRemaining > 0) {
+          const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+          const hours = Math.floor(
+            (timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+          );
+          const minutes = Math.floor(
+            (timeRemaining % (1000 * 60 * 60)) / (1000 * 60)
+          );
+          const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+
+          setTimeLeft(`${days}d ${hours}h ${minutes}m ${seconds}s`);
+        } else {
+          clearInterval(timer);
+          setTimeLeft("Discount ended!");
+        }
+      }, 1000);
+
+      return () => clearInterval(timer);
+    }
+  }, [discountEndDate]);
+
   const toggleDropdown = () => {
     setDropdownOpen(!isDropdownOpen);
   };
@@ -176,37 +210,32 @@ const SingleProduct = ({ getSingleProduct }) => {
         <div className="flex flex-col gap-2 sm:gap-4">
           <div className="flex flex-col lg:flex-row gap-5 lg:gap-10 lg:items-center">
             <div className="text-[16px] font-semibold leading-[19.5px] sm:text-[18px] sm:leading-[21.94px] flex gap-1 items-end">
-              {getSingleProduct?.data?.product?.discount?.isOnDiscount && (
-                <span className="text-[20px] tet-[#4A4545] font-[600]">
-                  &#8358;
-                  {getSingleProduct?.data?.product?.discount?.discountPrice.toLocaleString()}
-                </span>
-              )}
-
-              <div className="text-[14px] font-[600] ">
-                <span className="line-through text-[#A3AA9E]">
-                  &#8358;
-                  {getSingleProduct?.data?.product?.price.toLocaleString()}
-                </span>
-                {getSingleProduct?.data?.product?.discount?.isOnDiscount && (
-                  <sup className="text-[#FFAD33]">
-                    -
-                    {
-                      getSingleProduct?.data?.product?.discount
-                        ?.discountPercentage
-                    }
-                    %
-                  </sup>
-                )}
-              </div>
-            </div>
+            {getSingleProduct?.data?.product?.discount?.isOnDiscount ? (
+    <>
+      <span className="text-[20px] text-[#4A4545] font-[600]">
+        &#8358;
+        {getSingleProduct?.data?.product?.discount?.discountPrice.toLocaleString()}
+      </span>
+      <div className="text-[14px] font-[600]">
+        <span className="line-through text-[#A3AA9E]">
+          &#8358;
+          {getSingleProduct?.data?.product?.price.toLocaleString()}
+        </span>
+        <sup className="text-[#FFAD33]">
+          -{getSingleProduct?.data?.product?.discount?.discountPercentage}%
+        </sup>
+      </div>
+    </>
+  ) : (
+    <span className="text-[20px] text-[#4A4545] font-[600]">
+      &#8358;
+      {getSingleProduct?.data?.product?.price.toLocaleString()}
+    </span>
+  )}
+</div>
             {getSingleProduct?.data?.product?.discount?.isOnDiscount && (
               <p className="text-[16px] font-[600] text-[#C40000] leading-[19.5px] sm:text-[18px] sm:leading-[21.94px]">
-                Ends in{" "}
-                {getSingleProduct?.data?.product?.discount?.discountStartDate &&
-                  new Date(
-                    getSingleProduct?.data?.product?.discount?.discountStartDate
-                  ).toLocaleDateString()}
+                Ends in: {timeLeft}
               </p>
             )}
           </div>

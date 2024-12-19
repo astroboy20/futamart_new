@@ -28,12 +28,16 @@ const Categories2 = () => {
 
   // Static category images
   const categoryImages = [
+    "/hair.jpg",
+    "/food.jpg",
+
     "/electronics.jpg",
+    "/food.jpg",        
     "/clothing.jpg",
     "/cosmetics.jpg",
-    "/hair.jpg",
+
     "/footwear.jpg",
-    "/food.jpg",
+
 
   ];
 

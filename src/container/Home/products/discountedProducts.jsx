@@ -1,9 +1,9 @@
 "use client";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { BASE_URL, useFetchItems } from "@/hooks/useFetchItems";
 import { StarRating } from "@/components/rating";
 import { AddToCart } from "@/components/addToCart";
-import { Fav, Next_Icon } from "@/assets";
 import { AddToFavourite } from "@/components/AddToFavourite";
 import { Loading } from "@/components/loading";
 import { IoIosArrowForward } from "react-icons/io";
@@ -14,6 +14,45 @@ const DiscountedProducts = () => {
     isLoading,
     error,
   } = useFetchItems({ url: `${BASE_URL}/discount-products` });
+
+  const [countdowns, setCountdowns] = useState({});
+
+  useEffect(() => {
+    if (discountedProducts?.data?.discountProducts?.length) {
+      const timer = setInterval(() => {
+        const updatedCountdowns = {};
+
+        discountedProducts.data.discountProducts.forEach((product) => {
+          const discountEnd = new Date(
+            product.discount.discountEndDate
+          ).getTime();
+          const now = new Date().getTime();
+          const timeRemaining = discountEnd - now;
+
+          if (timeRemaining > 0) {
+            const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+            const hours = Math.floor(
+              (timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+            );
+            const minutes = Math.floor(
+              (timeRemaining % (1000 * 60 * 60)) / (1000 * 60)
+            );
+            const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+
+            updatedCountdowns[
+              product._id
+            ] = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+          } else {
+            updatedCountdowns[product._id] = "Discount ended!";
+          }
+        });
+
+        setCountdowns(updatedCountdowns);
+      }, 1000);
+
+      return () => clearInterval(timer);
+    }
+  }, [discountedProducts]);
 
   if (isLoading) {
     return (
@@ -29,7 +68,6 @@ const DiscountedProducts = () => {
     );
   }
 
-  // Check if discounted products exist in the response
   if (!discountedProducts?.data?.discountProducts?.length) {
     return null;
   }
@@ -37,13 +75,15 @@ const DiscountedProducts = () => {
   return (
     <div className="flex flex-col gap-10 py-10">
       <div className="flex justify-between items-center bg-[#C40000] text-white p-5 lg:text-[24px]">
-        <h1 className="text-[20px]  font-[600]">Flash Sales</h1>
-        <p className="hidden lg:flex font-[600px] ">
+        <h1 className="text-[20px] sm:text-[18px] lg:text-[20px] font-[600]">
+          Flash Sales
+        </h1>
+        <p className="hidden lg:flex font-[600px]">
           Get up to 50% discount on all orders
         </p>
         <Link
-          href={"/"}
-          className="flex items-center gap-3 font-[400px] text-[20px]"
+          href="/"
+          className="flex items-center gap-3 font-[400] text-[17px] sm:text-[20px]"
         >
           View all
           <IoIosArrowForward className="text-white" />
@@ -66,6 +106,7 @@ const DiscountedProducts = () => {
                 <p>{-singleProduct?.discount?.discountPercentage}%</p>
               </div>
             </Link>
+
             <div className="px-3 pt-[.5em] flex flex-col gap-2">
               <div className="flex items-center justify-between">
                 <Link href={`/products/${singleProduct.slug}`}>
@@ -76,7 +117,7 @@ const DiscountedProducts = () => {
                 <AddToFavourite productId={singleProduct._id} />
               </div>
               <p className="truncate flex flex-col">
-                <span className=" text-[#4A4545]  text-sm sm:text-lg font-semibold ">
+                <span className="text-[#4A4545] text-sm sm:text-lg font-semibold">
                   &#8358;
                   {singleProduct?.discount.discountPrice.toLocaleString()}
                 </span>
@@ -108,11 +149,8 @@ const DiscountedProducts = () => {
               <p className="text-[14px] font-[600] text-grey">
                 Ends in:{" "}
                 <span className="text-[#C40000]">
-                  {singleProduct?.discount?.discountEndDate &&
-                    new Date(
-                      singleProduct.discount.discountEndDate
-                    ).toLocaleDateString()}
-                </span>{" "}
+                  {countdowns[singleProduct._id] || "Loading..."}
+                </span>
               </p>
             </div>
           </div>
