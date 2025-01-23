@@ -156,7 +156,7 @@ const Footer = () => {
         </div>
       </div>
       <div className="bg-black py-1 px-[5%]">
-        <p className="text-[16px] font-[400] text-[#fff]">futamart2024.</p>
+        <p className="text-[16px] font-[400] text-[#fff]">futamart2025.</p>
       </div>
     </footer>
   );
