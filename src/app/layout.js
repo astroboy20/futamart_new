@@ -25,6 +25,20 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
+        {/* Google tag */}
+        <script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-L7HNGMGVC2"
+        />
+        <script>
+          {`
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+
+              gtag('config', 'G-L7HNGMGVC2');
+            `}
+        </script>
         <link rel="icon" href="/futamart.png" />
         {/* Open Graph metadata */}
         <meta property="og:title" content={metadata.title} />
